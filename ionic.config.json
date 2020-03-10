@@ -1,0 +1,7 @@
+{
+  "name": "allocate",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
