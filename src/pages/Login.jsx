@@ -1,31 +1,34 @@
 import { IonButton, IonInput } from '@ionic/react';
 import React from 'react';
 import { Redirect } from 'react-router-dom'
+import * as validator from "validator";
+import { createBrowserHistory } from "history"
 
 import useErrorHandler from "../utils/custom-hooks/ErrorHandler";
-import { authContext } from "../contexts/AuthContext";
 import ErrorMessage from "../components/ErrorMessage";
 
-/** Utils */
-import { apiRequest, validateLoginForm } from "../utils/Helpers";
+import { getUser, setUser } from '../contexts/Session'
 
-function Login() {
+/** Utils */
+import { apiRequest } from "../utils/Helpers";
+
+const history = createBrowserHistory()
+
+function Login({ history }) {
   const [userEmail, setUserEmail] = React.useState("");
   const [userPassword, setUserPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const auth = React.useContext(authContext);
 
   const { error, showError } = useErrorHandler(null);
   const authHandler = async () => {
     try {
       setLoading(true);
-      const user_data = await apiRequest("users/login", "post",
-        { email: userEmail, password: userPassword }
-      );
+      const user_data = await apiRequest("users/login", "post", { email: userEmail, password: userPassword });
       if(user_data.status === "success") {
         console.log(user_data.data.users)
-        auth.setUser(user_data.data.users);
-        // return (<Redirect to="/page/Dashboard" />)
+        setUser(user_data.data.users);
+        history.push("/page/Dashboard")
+        // return ( <Redirect to="/page/Dashboard" /> )
       } else {
         showError("Invalid email/password provided")
       }
@@ -36,6 +39,28 @@ function Login() {
     }
   };
 
+
+  /** Handle form validation for the login form
+   * @param email - user's auth email
+   * @param password - user's auth password
+   * @param setError - function that handles updating error state value
+   */
+  const validateLoginForm = (email, password, setError) => {
+    // Check for undefined or empty input fields
+    if (!email || !password) {
+      setError("Please enter a valid email and password.");
+      return false;
+    }
+
+    // Validate email
+    if (!validator.isEmail(email)) {
+      setError("Please enter a valid email address.");
+      return false;
+    }
+
+    return true;
+  };
+
   return (
      <div className="container">
       <strong>Login</strong>
@@ -43,6 +68,10 @@ function Login() {
           <form
             onSubmit={e => {
               e.preventDefault();
+              // This to handle browser autofilling data on load.
+              setUserEmail(document.querySelector('#email').value)
+              setUserPassword(document.querySelector('#password').value) // This doesn't work. Looks like a security issue.
+
               if (validateLoginForm(userEmail, userPassword, showError)) {
                 authHandler();
               }
@@ -50,6 +79,7 @@ function Login() {
           >
           <IonInput type="email"
             name="email"
+            id="email"
             autofocus="true"
             required="true"
             value={userEmail}
@@ -58,6 +88,7 @@ function Login() {
           />
           <IonInput
             type="password"
+            id="password"
             name="password"
             requried="true"
             value={userPassword}

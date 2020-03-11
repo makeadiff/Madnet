@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const ErrorMessageContainer: React.FC<{ errorMessage: string | null }> = ({
+const ErrorMessageContainer = ({
   errorMessage
 }) => {
   return <div className="error-message">{errorMessage}</div>;

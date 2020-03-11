@@ -10,22 +10,12 @@ import {
   IonNote,
 } from '@ionic/react';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp } from 'ionicons/icons';
+import { getUser } from '../contexts/Session'
 import './Menu.css';
 
-interface MenuProps extends RouteComponentProps {
-  selectedPage: string;
-}
-
-interface AppPage {
-  url: string;
-  iosIcon: string;
-  mdIcon: string;
-  title: string;
-}
-
-const volunteerActions: AppPage[] = [
+const volunteerActions = [
   {
     title: 'Dashboard',
     url: '/page/Dashboard',
@@ -86,14 +76,14 @@ const fellowActions = [
 ];
 
 
-const Menu: React.FunctionComponent<MenuProps> = ({ selectedPage }) => {
-
+const Menu = ({ selectedPage }) => {
+  const user = getUser()
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>
         <IonList id="inbox-list">
           <IonListHeader>Dashboard</IonListHeader>
-          <IonNote>Binny V A</IonNote>
+          <IonNote>{ user.name }</IonNote>
           {volunteerActions.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>

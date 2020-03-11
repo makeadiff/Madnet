@@ -5,13 +5,13 @@ const useAuthHandler = (initialState) => {
   const [auth, setAuth] = React.useState(initialState);
 
   const setUser = (user) => {
-    console.log(user)
+    console.log(JSON.stringify(user))
     window.localStorage.setItem("user", JSON.stringify(user));
     setAuth(user);
   };
 
   const unsetUser = () => {
-    window.localStorage.clear();
+    window.localStorage.setItem("user", JSON.stringify(DEFAULT_USER_AUTH));
     setAuth(DEFAULT_USER_AUTH);
   };
 
