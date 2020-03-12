@@ -8,14 +8,15 @@ import { authContext } from "../contexts/AuthContext";
 import Menu from './Menu';
 import Page from '../pages/Page';
 import Login from "../pages/Login";
+import Dashboard from '../pages/Dashboard';
+import Shelters from '../pages/Shelters';
+import ManageShelter from '../pages/ManageShelter';
 
 const history = createBrowserHistory()
 
 const Root = () => {
 	const [selectedPage, setSelectedPage] = useState('');
 	const { auth } = React.useContext(authContext);	
-
-	console.log(auth)
 
 	return (
 	  <IonReactRouter history={history}>
@@ -25,8 +26,19 @@ const Root = () => {
 	        <Route path="/login">
 	        	<Login />
 	        </Route>
+
 	        <PrivateRoute path="/page/Dashboard">
-	        	<Page page={{name: "Dashboard"}} />
+	        	<Dashboard />
+	        </PrivateRoute>
+	        
+	        <PrivateRoute path="/page/Shelters/:shelter_id">
+	        	<ManageShelter />
+	        </PrivateRoute>
+	        <PrivateRoute path="/page/Shelters">
+	        	<Shelters />
+	        </PrivateRoute>
+	        <PrivateRoute path="/page/MyClasses">
+	        	<Page page={{name: "My Classes"}} />
 	        </PrivateRoute>
 	        <Route path="/" render={() => <Redirect to="/page/Dashboard" /> } exact={true} />
 	      </IonRouterOutlet>

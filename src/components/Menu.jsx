@@ -1,18 +1,9 @@
-import {
-  IonContent,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonMenu,
-  IonMenuToggle,
-  IonNote,
-} from '@ionic/react';
+import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote } from '@ionic/react';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp } from 'ionicons/icons';
 import './Menu.css';
+import { authContext } from "../contexts/AuthContext";
 
 const volunteerActions = [
   {
@@ -55,8 +46,8 @@ const fellowActions = [
     mdIcon: mailSharp
   },
   {
-    title: 'Allocate',
-    url: '/page/Allocate',
+    title: 'Shelters',
+    url: '/page/Shelters',
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp
   },
@@ -74,43 +65,60 @@ const fellowActions = [
   }
 ];
 
-
 const Menu = ({ selectedPage }) => {
-  const user = { name: "Binny V A" }
-  return (
-    <IonMenu contentId="main" type="overlay">
-      <IonContent>
-        <IonList id="inbox-list">
-          <IonListHeader>Dashboard</IonListHeader>
-          <IonNote>{ user.name }</IonNote>
-          {volunteerActions.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={selectedPage === appPage.title ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon slot="start" icon={appPage.iosIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
-          })}
-        </IonList>
+  const { auth } = React.useContext(authContext);  
+  let render;
 
-        <IonList id="labels-list">
-          <IonListHeader>Admin Actions</IonListHeader>
-          {fellowActions.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={selectedPage === appPage.title ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon slot="start" icon={appPage.iosIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
-          })}
-        </IonList>
-      </IonContent>
-    </IonMenu>
-  );
+  if(auth.id) {
+    render = (
+      <IonMenu contentId="main" type="overlay">
+        <IonContent>
+          <IonList id="inbox-list">
+            <IonListHeader>Dashboard</IonListHeader>
+            <IonNote>{ auth.name }</IonNote>
+            {volunteerActions.map((appPage, index) => {
+              return (
+                <IonMenuToggle key={index} autoHide={false}>
+                  <IonItem className={selectedPage === appPage.title ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                    <IonIcon slot="start" icon={appPage.iosIcon} />
+                    <IonLabel>{appPage.title}</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
+              );
+            })}
+          </IonList>
+
+          <IonList id="labels-list">
+            <IonListHeader>Admin Actions</IonListHeader>
+            {fellowActions.map((appPage, index) => {
+              return (
+                <IonMenuToggle key={index} autoHide={false}>
+                  <IonItem className={selectedPage === appPage.title ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                    <IonIcon slot="start" icon={appPage.iosIcon} />
+                    <IonLabel>{appPage.title}</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
+              );
+            })}
+          </IonList>
+        </IonContent>
+      </IonMenu>
+    );
+
+  } else {
+    render = (
+      <IonMenu contentId="main" type="overlay">
+        <IonContent>
+          <IonList id="inbox-list">
+            <IonListHeader>MADNet</IonListHeader>
+            <IonNote>Please Login to use this app</IonNote>
+          </IonList>
+        </IonContent>
+      </IonMenu>
+    );
+  }
+
+  return render
 };
 
 export default withRouter(Menu);
