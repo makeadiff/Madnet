@@ -3,26 +3,22 @@ import * as React from "react";
 /** Custom Hooks */
 import useAuthHandler from "../utils/custom-hooks/AuthHandler";
 /** Utils */
-import { getStoredUserAuth } from "../utils/Helpers";
 import { DEFAULT_USER_AUTH } from "../utils/Constants";
+import { getStoredUserAuth } from "../utils/Helpers";
 
-export const authContext = React.createContext( DEFAULT_USER_AUTH );
-
-// export const authContext = React.createContext({
-//   auth: DEFAULT_USER_AUTH,
-//   setUser: (user) => {authHandle.setUser(user)},
-//   unsetUser: () => {authHandle.unsetUser()}
-// });
-
+export const authContext = React.createContext({
+  auth: DEFAULT_USER_AUTH,
+  setAuthStatus: () => {},
+  setUnauthStatus: () => {}
+});
 
 const { Provider } = authContext;
+
 const AuthProvider = ({ children }) => {
-  const { auth, setUser, unsetUser } = useAuthHandler(
-    getStoredUserAuth()
-  );
+  const { auth, setAuthStatus, setUnauthStatus } = useAuthHandler( getStoredUserAuth() );
 
   return (
-    <Provider value={{ auth, setUser, unsetUser }}>
+    <Provider value={{ auth, setAuthStatus, setUnauthStatus }}>
       {children}
     </Provider>
   );

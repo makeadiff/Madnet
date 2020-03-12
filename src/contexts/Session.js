@@ -17,3 +17,18 @@ export const getUser = (from_x) => {
 }
 
 export const SessionContext = React.createContext( getUser('2') );
+
+const { Provider } = SessionContext;
+const SessionProvider = ({ children }) => {
+  const { auth, setUser, unsetUser } = useAuthHandler(
+    getStoredUserAuth()
+  );
+
+  return (
+    <Provider value={{ auth, setUser, unsetUser }}>
+      {children}
+    </Provider>
+  );
+};
+
+export default SessionProvider;

@@ -12,7 +12,6 @@ import {
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp } from 'ionicons/icons';
-import { getUser } from '../contexts/Session'
 import './Menu.css';
 
 const volunteerActions = [
@@ -77,7 +76,7 @@ const fellowActions = [
 
 
 const Menu = ({ selectedPage }) => {
-  const user = getUser()
+  const user = { name: "Binny V A" }
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>

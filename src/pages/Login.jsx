@@ -7,7 +7,10 @@ import { createBrowserHistory } from "history"
 import useErrorHandler from "../utils/custom-hooks/ErrorHandler";
 import ErrorMessage from "../components/ErrorMessage";
 
-import { getUser, setUser } from '../contexts/Session'
+import { authContext } from "../contexts/AuthContext";
+
+// import { getUser, setUser } from '../contexts/Session'
+// import useSession, { UseSessionProvider } from 'react-session-hook';
 
 /** Utils */
 import { apiRequest } from "../utils/Helpers";
@@ -18,17 +21,18 @@ function Login({ history }) {
   const [userEmail, setUserEmail] = React.useState("");
   const [userPassword, setUserPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const auth = React.useContext(authContext);
 
   const { error, showError } = useErrorHandler(null);
-  const authHandler = async () => {
+  const authHandler = async ( history ) => {
     try {
       setLoading(true);
       const user_data = await apiRequest("users/login", "post", { email: userEmail, password: userPassword });
       if(user_data.status === "success") {
-        console.log(user_data.data.users)
-        setUser(user_data.data.users);
+        let user = user_data.data.users;
+        // console.log(user)
+        auth.setAuthStatus(user);
         history.push("/page/Dashboard")
-        // return ( <Redirect to="/page/Dashboard" /> )
       } else {
         showError("Invalid email/password provided")
       }

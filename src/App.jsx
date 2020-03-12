@@ -1,10 +1,6 @@
-import Menu from './components/Menu';
-import Page from './pages/Page';
-import React, { useState, useEffect } from 'react';
-import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
-import { createBrowserHistory } from "history"
+import React from 'react';
+import { IonApp } from '@ionic/react';
+import Root from './components/Root'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -24,49 +20,16 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-
 import './App.css';
-import { SessionContext, getUser, setUser } from './contexts/Session'
 
-import Login from "./pages/Login";
+import AuthContextProvider from "./contexts/AuthContext";
 
-const history = createBrowserHistory()
 const App = () => {
-  const [selectedPage, setSelectedPage] = useState('');
-  const [session, setSession] = useState( getUser('1') );
-  useEffect(
-    () => { 
-      console.log("useEffect()", session)
-      //setSession( getUser('3') ); 
-    },
-    [session]
-  );
-
-  let show_component = <Login />;
-
-  if(session !== null && session.id !== 0) {
-    show_component = (
-      <IonSplitPane contentId="main">
-        <Menu selectedPage={selectedPage} />
-        <IonRouterOutlet id="main" history={history}>
-          <Route path="/page/:name" render={(props) => {
-            setSelectedPage(props.match.params.name);
-            return <Page {...props} />;
-          }} exact={true} />
-          <Route path="/" render={() => <Redirect to="/page/Inbox" />} exact={true} />
-        </IonRouterOutlet>
-      </IonSplitPane>
-    )
-  }
-
   return (
     <IonApp>
-      <SessionContext.Provider value={ session }>
-        <IonReactRouter>
-          { show_component }
-          <span>ID : { session.id }</span>
-        </IonReactRouter>
-      </SessionContext.Provider>
+      <AuthContextProvider>
+          <Root />
+      </AuthContextProvider>
     </IonApp>
   );
 };

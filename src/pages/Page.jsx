@@ -4,7 +4,7 @@ import ExploreContainer from '../components/ExploreContainer';
 
 import './Page.css';
 
-const Page = ({ match }) => {
+const Page = ({ page }) => {
   return (
     <IonPage>
       <IonHeader>
@@ -12,17 +12,17 @@ const Page = ({ match }) => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>{match.params.name}</IonTitle>
+          <IonTitle>{page.name}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">{ match.params.name }</IonTitle>
+            <IonTitle size="large">{ page.name }</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name={match.params.name} />
+        <ExploreContainer name={page.name} />
       </IonContent>
     </IonPage>
   );
