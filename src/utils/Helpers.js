@@ -3,7 +3,7 @@ import { API_AUTH, API_REST_URL, API_BASE_URL, DEFAULT_USER_AUTH } from "./Const
 
 /** Return user auth from local storage value */
 export const getStoredUserAuth = () => {
-  const auth = window.localStorage.getItem("UserAuth");
+  const auth = window.localStorage.getItem("user");
   if (auth) {
     return JSON.parse(auth);
   }

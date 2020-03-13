@@ -1,0 +1,26 @@
+
+Global error message system.
+Global loading dislpay system.
+
+Naming Conventions
+      App name_component name
+      Common_component
+Identifying common functions
+Decide standard libs
+Routes should be in format of <app>/<Route>
+
+
+Helper calls
+     api.rest / api.graphql
+     api.cache
+     
+
+Streach Goal
+------------
+Works well with auth
+       Native login should be a drop in replacement as much as possible
+
+
+Done
+----
+Global one place layout - with embedded route/page

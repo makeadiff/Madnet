@@ -23,13 +23,16 @@ import './theme/variables.css';
 import './App.css';
 
 import AuthContextProvider from "./contexts/AuthContext";
+import AppContextProvider from "./contexts/AppContext";
 
 const App = () => {
   return (
     <IonApp>
-      <AuthContextProvider>
-          <Root />
-      </AuthContextProvider>
+      <AppContextProvider>
+	    <AuthContextProvider>
+	      <Root />
+	    </AuthContextProvider>
+	  </AppContextProvider>
     </IonApp>
   );
 };

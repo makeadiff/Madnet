@@ -1,4 +1,4 @@
-import { IonButton, IonInput } from '@ionic/react';
+import { IonButton, IonInput, IonPage, IonList, IonListHeader,IonItem } from '@ionic/react';
 import React from 'react';
 import { Redirect } from 'react-router-dom'
 import * as validator from "validator";
@@ -27,11 +27,11 @@ function Login({ history }) {
   const authHandler = async ( history ) => {
     try {
       setLoading(true);
-      const user_data = await apiRequest("users/login", "post", { email: userEmail, password: userPassword });
+      const user_data = await apiRequest(`users/login?email=${userEmail}&password=${userPassword}`, "get"); //, { email: userEmail, password: userPassword });
       if(user_data.status === "success") {
         let user = user_data.data.users;
         // console.log(user)
-        auth.setAuthStatus(user);
+        auth.setUser(user);
         history.push("/page/Dashboard")
       } else {
         showError("Invalid email/password provided")
@@ -66,86 +66,54 @@ function Login({ history }) {
   };
 
   return (
-     <div className="container">
-      <strong>Login</strong>
-        <div className="login-area">
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              // This to handle browser autofilling data on load.
-              setUserEmail(document.querySelector('#email').value)
-              setUserPassword(document.querySelector('#password').value) // This doesn't work. Looks like a security issue.
+    <IonPage>
+      <IonList >
+        <IonListHeader><strong>Login</strong></IonListHeader>
 
-              if (validateLoginForm(userEmail, userPassword, showError)) {
-                authHandler();
-              }
-            }}
-          >
-          <IonInput type="email"
-            name="email"
-            id="email"
-            autofocus="true"
-            required="true"
-            value={userEmail}
-            placeholder="john@mail.com"
-            onIonChange={(e) => setUserEmail(e.target.value) }
-          />
-          <IonInput
-            type="password"
-            id="password"
-            name="password"
-            requried="true"
-            value={userPassword}
-            placeholder="Password"
-            onIonChange={e => setUserPassword(e.target.value)}
-          />
-          <IonButton type="submit" disabled={loading} block={true}>
-            {loading ? "Loading..." : "Sign In"}
-          </IonButton>
-          <br />
-          {error && <ErrorMessage errorMessage={error} />}
-          </form>
-        </div>
-      </div>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            // This to handle browser autofilling data on load.
+            setUserEmail(document.querySelector('#email').value)
+            setUserPassword(document.querySelector('#password').value) // This doesn't work. Looks like a security issue.
+
+            if (validateLoginForm(userEmail, userPassword, showError)) {
+              authHandler();
+            }
+          }}
+        >
+        <IonItem lines="none">
+        <IonInput type="email"
+          name="email"
+          id="email"
+          autofocus="true"
+          required="true"
+          value={userEmail}
+          placeholder="Enter your email..."
+          onIonChange={(e) => setUserEmail(e.target.value) }
+        />
+        </IonItem>
+        <IonItem lines="none">
+        <IonInput
+          type="password"
+          id="password"
+          name="password"
+          requried="true"
+          value={userPassword}
+          placeholder="Password"
+          onIonChange={e => setUserPassword(e.target.value)}
+        />
+        </IonItem>
+        <IonItem lines="none">
+        <IonButton type="submit" disabled={loading} block={true}>
+          {loading ? "Loading..." : "Sign In"}
+        </IonButton>
+        </IonItem>
+        <IonItem lines="none">{error && <ErrorMessage errorMessage={error} />}</IonItem>
+        </form>
+      </IonList>
+    </IonPage>
   );
 }
 
 export default Login;
-
-/*
-
-    <Form
-      onSubmit={e => {
-        e.preventDefault();
-        if (validateLoginForm(userEmail, userPassword, showError)) {
-          authHandler();
-        }
-      }}
-    >
-      <Header>Sign in</Header>
-      <br />
-      <FormGroup>
-        <Input
-          type="email"
-          name="email"
-          value={userEmail}
-          placeholder="john@mail.com"
-          onChange={e => setUserEmail(e.target.value)}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Input
-          type="password"
-          name="password"
-          value={userPassword}
-          placeholder="Password"
-          onChange={e => setUserPassword(e.target.value)}
-        />
-      </FormGroup>
-      <Button type="submit" disabled={loading} block={true}>
-        {loading ? "Loading..." : "Sign In"}
-      </Button>
-      <br />
-      {error && <ErrorMessage errorMessage={error} />}
-    </Form>
-    */
