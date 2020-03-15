@@ -3,7 +3,7 @@ import { useState } from "react";
 const useGlobalHandler = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(["", false]);
-  const [custom, setCustom] = useState([]);
+  const [data, setAllData] = useState([]);
 
   const showMessage = (message, type) => {
     setMessage([message, type]);
@@ -12,13 +12,17 @@ const useGlobalHandler = () => {
     // }, 3000);
   };
 
+  const setData = (key, value) => {
+    data[key] = value
+  }
+
   return {
     message,
     showMessage,
     loading,
     setLoading,
-    custom,
-    setCustom
+    data,
+    setData
   };
 };
 

@@ -16,10 +16,24 @@ const useAuthHandler = (initialState) => {
     setAuth(DEFAULT_USER_AUTH);
   };
 
+  const isFellow = (or_higher = true) => {
+    if(!auth.id) return false;
+
+    for(let i in auth.groups) {
+      let grp  = auth.groups[i]
+      
+      if(grp.type === "fellow") return true
+      if(or_higher && (grp.type === "strat" || grp.type === "national" || grp.type === "executive")) return true
+    }
+
+    return false
+  }
+
   return {
     auth,
     setUser,
-    unsetUser
+    unsetUser,
+    isFellow
   };
 };
 

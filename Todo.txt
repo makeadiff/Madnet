@@ -1,6 +1,6 @@
 
 Global error message system.
-Global loading dislpay system.
+
 
 Naming Conventions
       App name_component name
@@ -10,8 +10,7 @@ Decide standard libs
 Routes should be in format of <app>/<Route>
 
 
-Helper calls
-     api.rest / api.graphql
+
      api.cache
      
 
@@ -24,3 +23,8 @@ Works well with auth
 Done
 ----
 Global one place layout - with embedded route/page
+Global loading dislpay system.
+Helper calls
+     api.rest / api.graphql
+
+
