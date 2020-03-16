@@ -1,0 +1,534 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"IonCard",
+				"IonCardContent\tconst"
+			],
+			[
+				"IonCa",
+				"IonCardHeader\tconst"
+			],
+			[
+				"text-de",
+				"text-decoration-color\tproperty"
+			],
+			[
+				"lin",
+				"Link\talias"
+			],
+			[
+				"she",
+				"shelters_data\tconst"
+			],
+			[
+				"IonMen",
+				"IonMenuButton\tconst"
+			],
+			[
+				"IonButt",
+				"IonButtons\tconst"
+			],
+			[
+				"user",
+				"userPassword"
+			],
+			[
+				"con",
+				"console\tvar"
+			],
+			[
+				"IonLis",
+				"IonListItem\twarning"
+			],
+			[
+				"set",
+				"setCustom"
+			],
+			[
+				"exp",
+				"export\tkeyword"
+			],
+			[
+				"Ma",
+				"ManageSHelter\tconst"
+			],
+			[
+				"API",
+				"API_BASE_URL\tconst"
+			],
+			[
+				"shel",
+				"shelterId\tconst"
+			],
+			[
+				"sher",
+				"shelter_id\tconst"
+			],
+			[
+				"react-ro",
+				"react-router-dom\texternal module name"
+			],
+			[
+				"cit",
+				"city_id"
+			],
+			[
+				"city",
+				"cityId\tconst"
+			],
+			[
+				"setSh",
+				"setShowLoading\tconst"
+			],
+			[
+				"fetc",
+				"fetchData\tlocal function"
+			],
+			[
+				"per",
+				"person\talias"
+			],
+			[
+				"resp",
+				"responder_details"
+			],
+			[
+				"res",
+				"responder_details"
+			],
+			[
+				"ac",
+				"action\tAttr"
+			],
+			[
+				"suve",
+				"survey_template"
+			],
+			[
+				"use",
+				"username"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"in",
+				"index"
+			],
+			[
+				"ent",
+				"entries"
+			]
+		]
+	},
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"color",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 151.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/binnyva/Hiring Pipeline.txt",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/utils/Menu.js",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/components/Menu.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/utils/custom-hooks/AuthHandler.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/pages/ManageShelter.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/contexts/AuthContext.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/Todo.txt",
+		"/mnt/x/Data/www/MAD/apps/allocate/package.json",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/pages/Shelters.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/public/index.html",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/components/Title.jsx",
+		"/home/binnyva/Scripts/Php/Under Construction/Photo Time Stamp/README",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/utils/Helpers.js",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/pages/Page.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/components/ExploreContainer.css",
+		"/mnt/x/Data/www/MAD/apps/allocate/.eslintrc.js",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/components/ErrorMessage.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/pages/Login.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/pages/Page.css",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/utils/API.js",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/utils/custom-hooks/AppHandler.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/contexts/AppContext.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/App.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/src/components/ExploreContainer.jsx",
+		"/mnt/x/Data/www/MAD/apps/allocate/Allocate.sublime-project",
+		"/mnt/x/Data/www/MAD/api/.env",
+		"/mnt/x/Data/www/MAD/apps/allocate/node_modules/async/constant.js",
+		"/mnt/x/Data/www/MAD/apps/madnet/node_modules/ionicons/icons/index.js",
+		"/mnt/x/Data/www/Projects/Beefapp/bfv/src/App.js",
+		"/home/binnyva/menu.txt",
+		"/mnt/x/Data/www/MAD/apps/madnet/package.json",
+		"/mnt/x/Data/www/MAD/apps/madnet/src/pages/Home.css",
+		"/mnt/x/Data/www/MAD/apps/formad/survey_assets/template_3/style.css",
+		"/home/binnyva/Downloads/intro_to_pandas.ipynb",
+		"/home/binnyva/Dropbox/Arathi Email.txt",
+		"/mnt/x/Backup/Archive/cvs/atem/kirtu/Sav/temp/97/get.sh",
+		"/mnt/x/Backup/Archive/cvs/atem/kirtu/Sav/temp/SB.txt",
+		"/home/binnyva/Dropbox/Rough Work/Recommendations.txt",
+		"/home/binnyva/Dropbox/Rough Work/Goals.txt",
+		"/home/binnyva/Dropbox/CBT Process.txt",
+		"/mnt/x/Data/www/MAD/api/.htaccess",
+		"/mnt/x/Data/Text/Learning/Development Methodology.txt",
+		"/mnt/x/Data/Text/Life Definitions/Communication Channels.txt",
+		"/mnt/x/Data/www/test.php",
+		"/home/binnyva/Dropbox/DotFiles/.zshrc",
+		"/home/binnyva/.oh-my-zsh/oh-my-zsh.sh",
+		"/home/binnyva/.oh-my-zsh/lib/functions.zsh",
+		"/home/binnyva/Scripts/Php/Tools/Multi System Syncer/restore.php",
+		"/mnt/x/Data/www/Projects/Beefapp/bvue/package.json",
+		"/mnt/x/Data/www/Server/phpMyAdmin/1config.inc.php"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"sm",
+			"xs",
+			"size-md=\"6\"",
+			"sizeSm",
+			"danger",
+			"h3",
+			"<h3>",
+			"IonCard>",
+			"IonCard",
+			"export ",
+			"IonLabel",
+			"div",
+			"IonLabel",
+			"IonItem",
+			"custom",
+			"setCustom",
+			"custom",
+			"setCustom",
+			"Custom",
+			"custom",
+			"Custom",
+			"custom",
+			"setShowLoading",
+			"app",
+			"ExploreContainer",
+			" no-lines",
+			"IonListItem",
+			"userAuth",
+			"UserAuth",
+			"userAuth",
+			"setUnauthStatus",
+			"setAuthStatus",
+			"setUnauthStatus",
+			"setAuthStatus",
+			"useAuthHandler",
+			"React.",
+			"auth",
+			"pageTitle",
+			"Shelters",
+			"Actions",
+			"batches",
+			"shelter_data",
+			"shelters_data",
+			"graphql",
+			"API_END_POINT",
+			"SherterId",
+			"sherterId",
+			"cityId",
+			"fetchData",
+			"shelters",
+			"Allocate",
+			"Page"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 39.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.doc":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"replace":
+	{
+		"height": 70.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Menu",
+				"src/components/Menu.jsx"
+			],
+			[
+				"Tit",
+				"src/components/Title.jsx"
+			],
+			[
+				"She",
+				"src/pages/Shelters.jsx"
+			],
+			[
+				"Ex",
+				"src/components/ExploreContainer.css"
+			],
+			[
+				"Err",
+				"src/components/ErrorMessage.jsx"
+			],
+			[
+				"SHe",
+				"src/pages/Shelters.jsx"
+			],
+			[
+				"Pag",
+				"src/pages/Page.jsx"
+			],
+			[
+				"page",
+				"src/pages/Page.css"
+			],
+			[
+				"Logi",
+				"src/pages/Login.jsx"
+			],
+			[
+				"Man",
+				"src/pages/ManageShelter.jsx"
+			],
+			[
+				"SHel",
+				"src/pages/Shelters.jsx"
+			],
+			[
+				"Hel",
+				"src/utils/Helpers.js"
+			],
+			[
+				"auth",
+				"src/utils/custom-hooks/AuthHandler.jsx"
+			],
+			[
+				"dash",
+				"src/pages/Dashboard.jsx"
+			],
+			[
+				"Meun",
+				"src/utils/Menu.js"
+			],
+			[
+				"App",
+				"src/utils/custom-hooks/AppHandler.jsx"
+			],
+			[
+				"Ma",
+				"src/pages/ManageShelter.jsx"
+			],
+			[
+				"roo",
+				"src/components/Root.jsx"
+			],
+			[
+				"app",
+				"src/App.jsx"
+			],
+			[
+				"Con",
+				"src/utils/Constants.js"
+			],
+			[
+				"ap",
+				"src/App.jsx"
+			],
+			[
+				"ro",
+				"src/components/Root.jsx"
+			],
+			[
+				"const",
+				"node_modules/async/constant.js"
+			],
+			[
+				"Root",
+				"src/components/Root.jsx"
+			],
+			[
+				"ind",
+				"templates/index.php"
+			],
+			[
+				"inde",
+				"index.php"
+			],
+			[
+				"Basi",
+				"app/Http/Middleware/BasicAuth.php"
+			],
+			[
+				"USer",
+				"app/Models/User.php"
+			],
+			[
+				"user",
+				"app/Models/User.php"
+			],
+			[
+				"rout",
+				"app/Http/routes.php"
+			],
+			[
+				"Ent",
+				"app/Models/Entry.php"
+			],
+			[
+				"Sour",
+				"app/Models/Source.php"
+			],
+			[
+				"api",
+				"routes/api.php"
+			],
+			[
+				"ent",
+				"app/Http/Controllers/EntryController.php"
+			],
+			[
+				"USerEn",
+				"app/Models/UserEntry.php"
+			],
+			[
+				"cron",
+				"app/Http/Controllers/Cron.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 249.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

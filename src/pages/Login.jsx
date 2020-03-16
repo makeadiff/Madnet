@@ -57,8 +57,7 @@ function Login({ history }) {
             <IonList >
                 <IonListHeader><strong>Login</strong></IonListHeader>
 
-                <form
-                    onSubmit={e => {
+                <form onSubmit={e => {
                         e.preventDefault();
                         // This to handle browser autofilling data on load.
                         setUserEmail(document.querySelector('#email').value)
@@ -67,8 +66,7 @@ function Login({ history }) {
                         if (validateLoginForm(userEmail, userPassword, showError)) {
                             authHandler();
                         }
-                    }}
-                >
+                    }} >
                     <IonItem lines="none">
                         <IonInput type="email"
                             name="email"

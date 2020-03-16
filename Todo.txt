@@ -1,17 +1,65 @@
+https://trello.com/b/Zni3SYTi/madnet
 
 Global error message system.
 
+Permissions
+	Use MADApp Permission system.
+	authContext should have a 'isAllowedTo()' call.
 
-Naming Conventions
-      App name_component name
-      Common_component
+Survey System
+	Select Students
+	Show Survey Form
+	Fill / Save Survey
+
+Profile page
+	View
+	Edit / Save
+	Profile Image Should save from Camera / Gallery
+
+Volunteers Page 
+	List
+	View Single Volunteer Details - Click thru
+
+PWA 
+Notification 
+	Push 
+
+Alerts System
+	Name
+	Description
+	Link
+	Type : danger, warning, etc.
+	Image
+	Priority
+	API call to return a list of alerts for provided user.
+		Compliance stuff (High priority)
+			CPP, Code of Conduct, MADCred
+		Must Attend Events
+			Classes, Events
+		Data Not filled
+			Classes, Event Feedback (?)
+		Low Priority Events
+			Events
+		Custom Alerts Pushed from Directors / Strats / Fellows
+			Launchs, Surveys, 
+
+
+-------------------
+Dev Exp
+
 Identifying common functions
 Decide standard libs
 Routes should be in format of <app>/<Route>
 
+api.cache
 
+Naming Conventions
+      App name_component name
+      Common_component
 
-     api.cache
+Routes
+	Follow REST convention.
+
      
 
 Streach Goal

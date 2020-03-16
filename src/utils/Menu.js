@@ -1,34 +1,35 @@
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, 
     paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp } from 'ionicons/icons';
+import { SITE_URL } from './Constants';
 
 export const volunteerPages = [
     {
         title: 'Dashboard',
-        url: '/page/Dashboard',
+        url: '/dashboard',
         iosIcon: mailOutline,
         mdIcon: mailSharp
     },
     {
         title: 'My Classes',
-        url: '/page/MyClasses',
+        url: '/classes',
         iosIcon: paperPlaneOutline,
         mdIcon: paperPlaneSharp
     },
     {
         title: 'Donations',
-        url: '/page/Donations',
+        url: SITE_URL + 'donut',
         iosIcon: heartOutline,
         mdIcon: heartSharp
     },
     {
         title: 'Events',
-        url: '/page/Events',
+        url: '/events',
         iosIcon: archiveOutline,
         mdIcon: archiveSharp
     },
     {
         title: 'Profile',
-        url: '/page/Profile',
+        url: '/profile',
         iosIcon: trashOutline,
         mdIcon: trashSharp
     }
@@ -37,25 +38,25 @@ export const volunteerPages = [
 export const fellowPages = [
     {
         title: 'Volunteers',
-        url: '/page/Volunteers',
+        url: '/volunteers',
         iosIcon: mailOutline,
         mdIcon: mailSharp
     },
     {
         title: 'Shelters',
-        url: '/page/Shelters',
+        url: '/shelters',
         iosIcon: paperPlaneOutline,
         mdIcon: paperPlaneSharp
     },
     {
         title: 'Deposit',
-        url: '/page/Deposit',
+        url: '/donations/deposits',
         iosIcon: heartOutline,
         mdIcon: heartSharp
     },
     {
         title: 'Create Events',
-        url: '/page/CreateEvents',
+        url: '/events/new',
         iosIcon: archiveOutline,
         mdIcon: archiveSharp
     }

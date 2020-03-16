@@ -3,16 +3,16 @@ import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading } from '@ionic/react
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 import { createBrowserHistory } from "history"
-import { authContext } from "../contexts/AuthContext";
-import { appContext } from "../contexts/AppContext";
-import { volunteerPages, fellowPages } from "../utils/Menu"
+import { authContext } from "./contexts/AuthContext";
+import { appContext } from "./contexts/AppContext";
+import { volunteerPages, fellowPages } from "./utils/Menu"
 
-import Menu from './Menu';
-import Page from '../pages/Page';
-import Login from "../pages/Login";
-import Dashboard from '../pages/Dashboard';
-import Shelters from '../pages/Shelters';
-import ManageShelter from '../pages/ManageShelter';
+import Menu from './components/Menu';
+import Page from './pages/Page';
+import Login from "./pages/Login";
+import Dashboard from './pages/Dashboard';
+import Shelters from './pages/Shelters';
+import ManageShelter from './pages/ManageShelter';
 
 const history = createBrowserHistory()
 
@@ -39,22 +39,23 @@ const Root = () => {
                             <Login />
                         </Route>
 
-                        <PrivateRoute path="/page/Dashboard">
+                        <PrivateRoute path="/dashboard">
                             <Dashboard />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/page/Shelters/:shelter_id">
+                        <PrivateRoute path="/shelters/:shelter_id">
                             <ManageShelter />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/page/Shelters">
+                        <PrivateRoute path="/shelters">
                             <Shelters />
                         </PrivateRoute>
-                        <PrivateRoute path="/page/MyClasses">
+
+                        <PrivateRoute path="/classes">
                             <Page page={{name: "My Classes"}} />
                         </PrivateRoute>
 
-                        <Route path="/" render={() => <Redirect to="/page/Dashboard" /> } exact={true} />
+                        <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>
               </IonPage>
             </IonSplitPane>
@@ -74,6 +75,7 @@ function PrivateRoute({ children, ...rest }) {
     );
 }
 
+// The purpose of this function is so that we have globaly accessable path information.
 function SetPage() { // Why not put this code in the Root itself? Because this has to be inside the Router componet to work. Otherwise it gives a can't find useContext error.
     const { setData } = React.useContext(appContext);
 

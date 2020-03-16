@@ -8,7 +8,6 @@ import { volunteerPages, fellowPages } from "../utils/Menu"
 
 const Menu = () => {
     const { auth } = React.useContext(authContext);
-    const { data } = React.useContext(appContext);
     let render;
 
     if(auth.id) {
@@ -18,30 +17,12 @@ const Menu = () => {
                     <IonList id="inbox-list">
                         <IonListHeader>MADNet</IonListHeader>
                         <IonNote>{ auth.name }</IonNote>
-                        {volunteerPages.map((appPage, index) => {
-                            return (
-                                <IonMenuToggle key={index} autoHide={false}>
-                                    <IonItem className={data.path.includes(appPage.url) ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                                        <IonIcon slot="start" icon={appPage.iosIcon} />
-                                        <IonLabel>{appPage.title}</IonLabel>
-                                    </IonItem>
-                                </IonMenuToggle>
-                            );
-                        })}
+                        <MenuSection pages={volunteerPages} />
                     </IonList>
 
                     <IonList id="labels-list">
                         <IonListHeader>Admin Section</IonListHeader>
-                        {fellowPages.map((appPage, index) => {
-                            return (
-                                <IonMenuToggle key={index} autoHide={false}>
-                                    <IonItem className={data.path.includes(appPage.url) ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                                        <IonIcon slot="start" icon={appPage.iosIcon} />
-                                        <IonLabel>{appPage.title}</IonLabel>
-                                    </IonItem>
-                                </IonMenuToggle>
-                            );
-                        })}
+                        <MenuSection pages={fellowPages} />
                     </IonList>
                 </IonContent>
             </IonMenu>
@@ -62,5 +43,25 @@ const Menu = () => {
 
     return render
 };
+
+const MenuSection = ({ pages }) => {
+    const { data } = React.useContext(appContext);
+
+    return ( pages.map((appPage, index) => {
+        let attr = {}
+        // External links go out.
+        if(appPage.url.includes("http")) attr['href'] = appPage.url
+        else attr['routerLink'] = appPage.url
+
+        return (
+            <IonMenuToggle key={index} autoHide={false}>
+                <IonItem className={data.path.includes(appPage.url) ? 'selected' : ''} { ...attr }>
+                    <IonIcon slot="start" icon={appPage.iosIcon} />
+                    <IonLabel>{appPage.title}</IonLabel>
+                </IonItem>
+            </IonMenuToggle>
+        );
+    }) )
+}
 
 export default withRouter(Menu);
