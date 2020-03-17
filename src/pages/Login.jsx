@@ -1,4 +1,4 @@
-import { IonButton, IonInput, IonPage, IonList, IonListHeader,IonItem } from '@ionic/react';
+import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent } from '@ionic/react';
 import React from 'react';
 import * as validator from "validator";
 import { createBrowserHistory } from "history"
@@ -8,8 +8,18 @@ import ErrorMessage from "../components/ErrorMessage";
 
 import { authContext } from "../contexts/AuthContext";
 import api from "../utils/API";
+import Title from '../components/Title';
 
 const history = createBrowserHistory()
+
+/*
+:TODO:
+- Forget password
+- Sign in with Google
+- Identifier based login rather than email
+- Remember me (?)
+- Key Check on return.
+*/
 
 function Login({ history }) {
     const [userEmail, setUserEmail] = React.useState("");
@@ -54,9 +64,9 @@ function Login({ history }) {
 
     return (
         <IonPage>
-            <IonList >
-                <IonListHeader><strong>Login</strong></IonListHeader>
-
+            <Title name="Login" />
+            <IonContent>
+            <IonList>
                 <form onSubmit={e => {
                         e.preventDefault();
                         // This to handle browser autofilling data on load.
@@ -74,7 +84,7 @@ function Login({ history }) {
                             autofocus="true"
                             required="true"
                             value={userEmail}
-                            placeholder="Enter your email..."
+                            placeholder="Email/Phone..."
                             onIonChange={(e) => setUserEmail(e.target.value) }
                         />
                     </IonItem>
@@ -85,18 +95,19 @@ function Login({ history }) {
                             name="password"
                             requried="true"
                             value={userPassword}
-                            placeholder="Password"
+                            placeholder="Password..."
                             onIonChange={e => setUserPassword(e.target.value)}
                         />
                     </IonItem>
                     <IonItem lines="none">
-                        <IonButton type="submit" disabled={loading} block={true}>
+                        <IonButton type="submit" disabled={loading} block={true} size="default">
                             {loading ? "Loading..." : "Sign In"}
                         </IonButton>
                     </IonItem>
                     <IonItem lines="none">{error && <ErrorMessage errorMessage={error} />}</IonItem>
                 </form>
             </IonList>
+            </IonContent>
         </IonPage>
     );
 }

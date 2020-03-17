@@ -1,37 +1,37 @@
-import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, 
-    paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp } from 'ionicons/icons';
+import { appsOutline, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp, calendarOutline, calendarSharp, 
+    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp } from 'ionicons/icons';
 import { SITE_URL } from './Constants';
 
 export const volunteerPages = [
     {
         title: 'Dashboard',
         url: '/dashboard',
-        iosIcon: mailOutline,
-        mdIcon: mailSharp
+        iosIcon: appsOutline,
+        mdIcon: appsSharp
     },
     {
         title: 'My Classes',
         url: '/classes',
-        iosIcon: paperPlaneOutline,
-        mdIcon: paperPlaneSharp
+        iosIcon: bookOutline,
+        mdIcon: bookSharp
     },
     {
         title: 'Donations',
         url: SITE_URL + 'donut',
-        iosIcon: heartOutline,
-        mdIcon: heartSharp
+        iosIcon: cashOutline,
+        mdIcon: cashSharp
     },
     {
         title: 'Events',
         url: '/events',
-        iosIcon: archiveOutline,
-        mdIcon: archiveSharp
+        iosIcon: calendarOutline,
+        mdIcon: calendarSharp
     },
     {
         title: 'Profile',
         url: '/profile',
-        iosIcon: trashOutline,
-        mdIcon: trashSharp
+        iosIcon: personOutline,
+        mdIcon: personSharp
     }
 ];
 
@@ -39,26 +39,14 @@ export const fellowPages = [
     {
         title: 'Volunteers',
         url: '/volunteers',
-        iosIcon: mailOutline,
-        mdIcon: mailSharp
+        iosIcon: peopleOutline,
+        mdIcon: peopleSharp
     },
     {
         title: 'Shelters',
         url: '/shelters',
-        iosIcon: paperPlaneOutline,
-        mdIcon: paperPlaneSharp
-    },
-    {
-        title: 'Deposit',
-        url: '/donations/deposits',
-        iosIcon: heartOutline,
-        mdIcon: heartSharp
-    },
-    {
-        title: 'Create Events',
-        url: '/events/new',
-        iosIcon: archiveOutline,
-        mdIcon: archiveSharp
+        iosIcon: businessOutline,
+        mdIcon: businessSharp
     }
 ];
 

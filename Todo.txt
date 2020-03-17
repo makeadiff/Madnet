@@ -27,21 +27,23 @@ Notification
 Alerts System
 	Name
 	Description
-	Link
+	Link - can be internal link of app or external 
 	Type : danger, warning, etc.
+		Decides the color of the card.
 	Image
 	Priority
 	API call to return a list of alerts for provided user.
 		Compliance stuff (High priority)
 			CPP, Code of Conduct, MADCred
-		Must Attend Events
-			Classes, Events
 		Data Not filled
 			Classes, Event Feedback (?)
+		Must Attend Events
+			Classes, Events
 		Low Priority Events
 			Events
 		Custom Alerts Pushed from Directors / Strats / Fellows
 			Launchs, Surveys, 
+			Backend needs to be built for this - so not going to be done soon.
 
 
 -------------------
