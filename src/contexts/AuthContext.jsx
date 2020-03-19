@@ -8,18 +8,20 @@ import { getStoredUserAuth } from "../utils/Helpers";
 
 export const authContext = React.createContext({
   auth: DEFAULT_USER_AUTH,
-  setUser: () => {},
-  unsetUser: () => {},
-  isFellow: () => {}
+  user: DEFAULT_USER_AUTH,
+  setCurrentUser: () => {},
+  unsetCurrentUser: () => {},
+  isFellow: () => {},
+  hasPermission: () => {}
 });
 
 const { Provider } = authContext;
 
 const AuthProvider = ({ children }) => {
-  const { auth, setUser, unsetUser, isFellow } = useAuthHandler( getStoredUserAuth() );
+  const { auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission } = useAuthHandler( getStoredUserAuth() );
 
   return (
-    <Provider value={{ auth, setUser, unsetUser, isFellow }}>
+    <Provider value={{ auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission }}>
       {children}
     </Provider>
   );

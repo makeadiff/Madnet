@@ -34,7 +34,7 @@ function Login({ history }) {
             const user_data = await api.rest(`users/login?email=${userEmail}&password=${userPassword}`, "get"); //, { email: userEmail, password: userPassword });
             if(user_data) {
                 let user = user_data.users;
-                auth.setUser(user);
+                auth.setCurrentUser(user);
                 history.push("/page/Dashboard")
             } else {
                 showError("Invalid email/password provided")
