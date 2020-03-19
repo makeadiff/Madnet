@@ -1,4 +1,4 @@
-import { IonPage, IonList,IonMenuToggle,IonItem,IonLabel,IonContent } from '@ionic/react';
+import { IonPage,IonList,IonItem,IonLabel,IonContent } from '@ionic/react';
 import React, { useState, useEffect } from 'react';
 import { authContext } from "../contexts/AuthContext";
 import { appContext } from "../contexts/AppContext";

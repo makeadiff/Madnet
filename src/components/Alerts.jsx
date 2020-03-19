@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { authContext } from "../contexts/AuthContext";
-import { appContext } from "../contexts/AppContext";
-import api from "../utils/API";
-import './Alerts.css';
-import { alert } from 'ionicons/icons';
+import React, { useState, useEffect } from 'react'
+import { authContext } from "../contexts/AuthContext"
+import { appContext } from "../contexts/AppContext"
+import api from "../utils/API"
+import './Alerts.css'
 
 const Alerts = () => {
-    const { auth } = React.useContext(authContext);
-    const { setLoading } = React.useContext(appContext);
-    const [alerts, setAlerts] = useState([]);
+    const { auth } = React.useContext(authContext)
+    const { setLoading } = React.useContext(appContext)
+    const [alerts, setAlerts] = useState([])
     const [ userId ] = useState(auth.id); // if we don't do this, infinite loading.
 
     useEffect(() => {
         async function fetchAlerts() {
             setLoading(true)
-            const alerts_data = await api.rest("users/" + userId + "/alerts", "get");
+            const alerts_data = await api.rest("users/" + userId + "/alerts", "get")
             if(alerts_data) {
                 setAlerts(alerts_data.alerts)
             } else {

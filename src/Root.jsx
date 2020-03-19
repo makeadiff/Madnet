@@ -5,7 +5,6 @@ import { Redirect, Route, useLocation } from 'react-router-dom'
 import { createBrowserHistory } from "history"
 import { authContext } from "./contexts/AuthContext"
 import { appContext } from "./contexts/AppContext"
-import { volunteerPages, fellowPages } from "./utils/Menu"
 
 import Menu from './components/Menu'
 import Page from './pages/Page'
@@ -18,7 +17,7 @@ import EventIndex from './pages/Events/Index'
 const history = createBrowserHistory()
 
 const Root = () => {
-    const { loading, setLoading } = React.useContext(appContext);
+    const { loading, setLoading } = React.useContext(appContext)
 
     return (
         <IonReactRouter history={history}>
@@ -82,10 +81,10 @@ function PrivateRoute({ children, ...rest }) {
 function SetPage() { // Why not put this code in the Root itself? Because this has to be inside the Router componet to work. Otherwise it gives a can't find useContext error.
     const { setData } = React.useContext(appContext);
 
-    let location = useLocation();
+    let location = useLocation()
     setData("path", location.pathname)
 
     return null
 }
 
-export default Root;
+export default Root

@@ -16,10 +16,10 @@ const ManageShelter = () => {
         async function fetchShelter() {
             setLoading(true)
             const shelter_data = await api.graphql(`{ center(id: ${shelterId}) { 
-          id name
-          batches { id batch_name }
-          levels { id level_name }
-        }}`);
+                id name
+                batches { id batch_name }
+                levels { id level_name }
+            }}`);
 
             if(shelter_data.center) {
                 setShelter(shelter_data.center)

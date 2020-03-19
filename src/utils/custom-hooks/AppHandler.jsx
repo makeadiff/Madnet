@@ -3,13 +3,10 @@ import { useState } from "react";
 const useGlobalHandler = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(["", false]);
-  const [data, setAllData] = useState([]);
+  const [data] = useState([]);
 
   const showMessage = (message, type) => {
     setMessage([message, type]);
-    // window.setTimeout(() => {
-    //   setError(null);
-    // }, 3000);
   };
 
   const setData = (key, value) => {
