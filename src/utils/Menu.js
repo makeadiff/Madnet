@@ -23,7 +23,7 @@ export const volunteerPages = [
     },
     {
         title: 'Events',
-        url: '/events',
+        url: '/events/invitations',
         iosIcon: calendarOutline,
         mdIcon: calendarSharp
     },

@@ -21,7 +21,7 @@ const api = {
     graphql: async (query, type) => {
         if(type === undefined) type = 'query'
 
-        const response = await fetch("http://localhost/MAD/api/index.php/graphql", { // :TODO: Url should be API_BASE_URL + "graphql"
+        const response = await fetch(API_BASE_URL + "graphql", { // If going touble, try "http://localhost/MAD/api/index.php/graphql"
             method: "POST",
             headers: {
                 Accept: "application/json",

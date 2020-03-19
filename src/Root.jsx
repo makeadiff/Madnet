@@ -1,25 +1,24 @@
-import React, { useState } from 'react';
-import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route, useLocation } from 'react-router-dom';
+import React from 'react'
+import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading } from '@ionic/react'
+import { IonReactRouter } from '@ionic/react-router'
+import { Redirect, Route, useLocation } from 'react-router-dom'
 import { createBrowserHistory } from "history"
-import { authContext } from "./contexts/AuthContext";
-import { appContext } from "./contexts/AppContext";
+import { authContext } from "./contexts/AuthContext"
+import { appContext } from "./contexts/AppContext"
 import { volunteerPages, fellowPages } from "./utils/Menu"
 
-import Menu from './components/Menu';
-import Page from './pages/Page';
-import Login from "./pages/Login";
-import Dashboard from './pages/Dashboard';
-import Shelters from './pages/Shelters';
-import ManageShelter from './pages/ManageShelter';
+import Menu from './components/Menu'
+import Page from './pages/Page'
+import Login from "./pages/Login"
+import Dashboard from './pages/Dashboard'
+import Shelters from './pages/Shelters'
+import ManageShelter from './pages/ManageShelter'
+import EventIndex from './pages/Events/Index'
 
 const history = createBrowserHistory()
 
 const Root = () => {
     const { loading, setLoading } = React.useContext(appContext);
-
-    const allPages = volunteerPages.concat(fellowPages);
 
     return (
         <IonReactRouter history={history}>
@@ -49,6 +48,10 @@ const Root = () => {
 
                         <PrivateRoute path="/shelters">
                             <Shelters />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/events">
+                            <EventIndex />
                         </PrivateRoute>
 
                         <PrivateRoute path="/classes">

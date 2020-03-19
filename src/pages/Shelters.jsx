@@ -34,11 +34,9 @@ const Shelters = () => {
                 <IonList>
                     {shelters.map((shelter, index) => {
                         return (
-                            <IonMenuToggle key={index} autoHide={false}>
-                                <IonItem routerLink={ "/page/Shelters/" + shelter.id } routerDirection="none" >
-                                    <IonLabel>{shelter.name}</IonLabel>
-                                </IonItem>
-                            </IonMenuToggle>
+                            <IonItem key={index} routerLink={ "/shelters/" + shelter.id } routerDirection="none" >
+                                <IonLabel>{shelter.name}</IonLabel>
+                            </IonItem>
                         );
                     })}
                 </IonList>
