@@ -1,0 +1,44 @@
+.date-number {
+    font-size: xx-large;
+    text-align: center;
+}
+.month-name {
+    color: var(--ion-color-danger);
+    text-align: center;
+}
+
+.event-name {
+    font-size: x-large;
+    padding-bottom: 7px;
+}
+.event-type {
+    font-size: large;
+    color: var(--ion-color-step-500);
+}
+.actions ion-title {
+    font-size: medium;
+}
+.actions ion-icon {
+    font-size: xx-large;
+}
+ion-row {
+    margin-bottom:16px;
+}
+
+.going {
+    color: var(--ion-color-success);
+}
+
+.cant_go {
+    color: var(--ion-color-danger);
+}
+
+.maybe {
+    color: var(--ion-color-warning);
+}
+.selected {
+    background-color: var(--ion-color-step-300);
+}
+.icon-medium {
+    font-size: large;
+}

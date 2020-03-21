@@ -5,8 +5,10 @@ import { API_AUTH, API_REST_URL, API_BASE_URL } from "./Constants";
 const api = {
     rest: async (url, method, params) => {
         const response = await fetch(API_REST_URL + url, {
-            method,
-            headers: {
+            method: method,
+            headers: { 
+                "Accept": "application/json",
+                "Content-Type": "application/json",
                 "Authorization": `Basic ${API_AUTH.base64}`
             },
             body: params ? JSON.stringify(params) : undefined
@@ -24,7 +26,7 @@ const api = {
         const response = await fetch(API_BASE_URL + "graphql", { // If going touble, try "http://localhost/MAD/api/index.php/graphql"
             method: "POST",
             headers: {
-                Accept: "application/json",
+                "Accept": "application/json",
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({"query": query})
