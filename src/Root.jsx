@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard'
 import Shelters from './pages/Shelters'
 import ManageShelter from './pages/ManageShelter'
 import EventIndex from './pages/Events/Index'
+import EventRSVP from './pages/Events/RSVP'
 
 const history = createBrowserHistory()
 
@@ -44,11 +45,13 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id">
                             <ManageShelter />
                         </PrivateRoute>
-
                         <PrivateRoute path="/shelters">
                             <Shelters />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/events/:eventId/rsvp">
+                            <EventRSVP />
+                        </PrivateRoute>
                         <PrivateRoute path="/events">
                             <EventIndex />
                         </PrivateRoute>

@@ -36,7 +36,7 @@ const EventList = ({ segment }) => {
         <IonList>
             {events.map((event, index) => {
                 return (
-                    <IonItem key={index} routerLink={ "/events/" + event.id } routerDirection="none" >
+                    <IonItem key={index} routerLink={ `/events/${event.id}/rsvp` } routerDirection="none" >
                         <IonLabel>
                             <h4>{event.name}</h4>
                             <p>{ moment(event.starts_on).format("MMM Do") } </p>
