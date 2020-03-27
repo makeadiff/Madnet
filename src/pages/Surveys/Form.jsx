@@ -13,7 +13,7 @@ var responses = {}
 const setQuestionResponse = (question_id, value) => {
     responses[question_id] = value
 
-    // console.log(responses)
+    console.log(question_id, value, responses)
 }
 
 const SurveyForm = () => {
@@ -116,10 +116,10 @@ const Response = ({question_id, response_type, choices}) => {
 			label = this.getOption(q, 'label_5');
 			if(label) html += `<span class="rating-label rating-label-end">${label}</span>`;
          */
-        render = (<StarRating min="0" max="5" value="3" onChange={e => setQuestionResponse(question_id, e.target.value)} />)
+    render = (<StarRating min="0" max="5" value="3" onChange={value => {console.log("Value", value); /* setQuestionResponse(question_id, value) */}} />)
     
     } else if(response_type === "1-10") {
-        render = (<StarRating min="0" max="10" value="3" onChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        render = (<StarRating min="0" max="10" value="3" onChange={value => setQuestionResponse(question_id, value)} />)
     
     } else if(response_type === "date") {
         render = (<IonInput type="date" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)

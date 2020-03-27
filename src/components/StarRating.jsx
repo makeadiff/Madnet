@@ -8,12 +8,17 @@ const StarRating = ({ min,max,value,onChange,style }) => {
     const [ rating, setRating ] = React.useState(value)
     let stars = []
     for(let i=0; i<max; i++) stars.push(i+1)
-    console.log(rating, value)
+    
+    React.useEffect(() => {
+        if(onChange !== undefined) { // :TODO: Make sure this is a function.
+            onChange(rating)
+        }
+    }, [rating])
 
     return stars.map((number) => {
         let filled = false
         if(rating >= number) filled = true
-        return <Star value={number} filled={filled} style={style} onClick={ e => { setRating(e.target.value); }} />
+        return <Star value={number} filled={filled} style={style} onClick={ e => setRating(e.target.value) } />
     })
 };
 
