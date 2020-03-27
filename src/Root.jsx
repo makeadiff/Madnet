@@ -14,6 +14,7 @@ import Shelters from './pages/Shelters'
 import ManageShelter from './pages/ManageShelter'
 import EventIndex from './pages/Events/Index'
 import EventRSVP from './pages/Events/RSVP'
+import SurveyForm from './pages/Surveys/Form'
 
 const history = createBrowserHistory()
 
@@ -47,6 +48,10 @@ const Root = () => {
                         </PrivateRoute>
                         <PrivateRoute path="/shelters">
                             <Shelters />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/surveys/:surveyId">
+                            <SurveyForm />
                         </PrivateRoute>
 
                         <PrivateRoute path="/events/:eventId/rsvp">

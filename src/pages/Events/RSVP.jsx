@@ -12,6 +12,7 @@ import api from "../../utils/API";
 import './RSVP.css'
 
 // :TODO: Show reason input text area when selecting 'Can't Go'
+
 const EventRSVP = () => {
     const { eventId } = useParams()
     const [event, setEvent] = React.useState({})
@@ -80,10 +81,7 @@ const EventRSVP = () => {
                             <IonLabel>I'm Going</IonLabel>
                         </IonCol>
                         <IonCol className={`ion-text-center cant_go ${rsvp === 'cant_go' ? 'selected' : null }`}
-                                onClick={e => {
-                                    console.log("Can't go")
-                                    saveRsvp('cant_go')
-                                }} size-xs="4" size-md="2" size-lg="1">
+                                onClick={e => { saveRsvp('cant_go') }} size-xs="4" size-md="2" size-lg="1">
                             <IonIcon icon={ closeOutline } /><br />
                             <IonLabel>I can't go</IonLabel>
                         </IonCol>

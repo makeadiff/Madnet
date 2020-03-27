@@ -1,0 +1,10 @@
+.question-text {
+    font-size: large;
+}
+
+.question-description {
+    font-size: small;
+    color: var(--ion-color-step-600);
+    padding:0;
+    margin:0;
+}
