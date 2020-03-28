@@ -23,7 +23,7 @@ const api = {
     graphql: async (query, type) => {
         if(type === undefined) type = 'query'
 
-        const response = await fetch(API_BASE_URL + "graphql", { // If going touble, try "http://localhost/MAD/api/index.php/graphql"
+        const response = await fetch(API_BASE_URL + "graphql", { // If getting touble, try "http://localhost/MAD/api/index.php/graphql"
             method: "POST",
             headers: {
                 "Accept": "application/json",

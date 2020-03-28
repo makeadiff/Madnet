@@ -15,10 +15,10 @@ const StarRating = ({ min,max,value,onChange,style }) => {
         }
     }, [rating])
 
-    return stars.map((number) => {
+    return stars.map((number, index) => {
         let filled = false
         if(rating >= number) filled = true
-        return <Star value={number} filled={filled} style={style} onClick={ e => setRating(e.target.value) } />
+        return <Star key={index} value={number} filled={filled} style={style} onClick={ e => setRating(e.target.value) } />
     })
 };
 

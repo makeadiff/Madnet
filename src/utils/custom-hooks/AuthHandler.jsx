@@ -1,6 +1,4 @@
 import * as React from "react";
-
-/** Utils */
 import { DEFAULT_USER_AUTH } from "../Constants";
 
 const useAuthHandler = (initialState) => {

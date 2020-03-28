@@ -24,17 +24,20 @@ import './App.css';
 
 import AuthContextProvider from "./contexts/AuthContext";
 import AppContextProvider from "./contexts/AppContext";
+import DataContextProvider from "./contexts/DataContext";
 
 const App = () => {
-  return (
-    <IonApp>
-      <AppContextProvider>
-	    <AuthContextProvider>
-	      <Root />
-	    </AuthContextProvider>
-	  </AppContextProvider>
-    </IonApp>
-  );
+    return (
+        <IonApp>
+            <AppContextProvider>
+                <AuthContextProvider>
+                    <DataContextProvider>
+                        <Root />
+                    </DataContextProvider>
+                </AuthContextProvider>
+            </AppContextProvider>
+        </IonApp>
+    );
 };
 
 export default App;

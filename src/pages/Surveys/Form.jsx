@@ -1,11 +1,9 @@
-import { IonPage,IonContent,IonLabel, IonRadio, IonList, IonRadioGroup, IonItem, IonInput, IonTextarea, IonCheckbox } from '@ionic/react';
+import { IonPage,IonContent,IonLabel, IonRadio, IonList, IonRadioGroup, IonItem, IonInput, IonTextarea, IonCheckbox, IonButton } from '@ionic/react';
 import React from 'react'
 import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
-import { authContext } from "../../contexts/AuthContext"
-import { appContext } from "../../contexts/AppContext"
-import api from "../../utils/API"
+import { dataContext } from "../../contexts/DataContext"
 import StarRating from "../../components/StarRating"
 import './Form.css'
 
@@ -19,41 +17,41 @@ const setQuestionResponse = (question_id, value) => {
 const SurveyForm = () => {
     const { surveyId } = useParams()
     const [survey, setSurvey] = React.useState({})
-    const { setLoading } = React.useContext(appContext)
-    const { user } = React.useContext(authContext)
+    const { getSurveyForm } = React.useContext(dataContext)
 
     React.useEffect(() => {
         async function fetchSurvey() {
-            setLoading(true)
-            const survey_response = await api.rest(`surveys/${surveyId}`)
-
-            if(survey_response.surveys !== undefined) {
-                let survey = survey_response.surveys
-                setSurvey(survey)
-                const questions_response = await api.rest(`survey_templates/${survey.survey_template_id}/categorized_questions`)
-
-                if(questions_response.questions !== undefined) {
-                    survey['questions'] = questions_response.questions
-                    setSurvey(survey)
-                } else {
-                    console.error("survey questions fetch call failed.")
-                }
-
-            } else {
-                console.error("survey fetch call failed.")
+            let survey_data = await getSurveyForm(surveyId)
+            if(survey_data) setSurvey(survey_data)
+            else {
+                console.log("Error fetting survey form")
             }
-            setLoading(false)
         }
         fetchSurvey();
     }, [surveyId])
+
+    const validateSurvey = () => {
+        // :TODO: Impliment this.
+        return true
+    }
+
+    const saveResponses = (e) => {
+        e.preventDefault();
+        if(validateSurvey()) {
+            // :TODO: Save the from using API
+        }
+    }
 
     return (
         <IonPage>
             <Title name={ survey.template_name + ( survey.name ? " : " + survey.name : "" ) } />
 
             <IonContent>
+                <form onSubmit={e => saveResponses(e)}>
                 <QuestionsOrCategory questions={survey.questions} />
 
+                <IonButton color="success" type="submit">Save</IonButton>
+                </form>
             </IonContent>
         </IonPage>
     );
@@ -65,10 +63,10 @@ const QuestionsOrCategory = ({ questions }) => {
     return questions.map((ques, index ) => {
         if(ques.type === 'category') {
             return (
-                <>
-                <IonItem className="category" key={index}><h3>{ ques.name }</h3></IonItem>
+                <div className="category" key={index}>
+                <IonItem className="category-name"><h3>{ ques.name }</h3></IonItem>
                 <QuestionsOrCategory questions={ques.questions} />
-                </>
+                </div>
             )
         } else {
             return (<IonItem key={index}><Question {...ques} /></IonItem>)
