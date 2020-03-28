@@ -10,14 +10,12 @@ import './Form.css'
 var responses = {}
 const setQuestionResponse = (question_id, value) => {
     responses[question_id] = value
-
-    console.log(question_id, value, responses)
 }
 
 const SurveyForm = () => {
     const { surveyId } = useParams()
     const [survey, setSurvey] = React.useState({})
-    const { getSurveyForm } = React.useContext(dataContext)
+    const { getSurveyForm,setSurveyResponses } = React.useContext(dataContext)
 
     React.useEffect(() => {
         async function fetchSurvey() {
@@ -38,7 +36,7 @@ const SurveyForm = () => {
     const saveResponses = (e) => {
         e.preventDefault();
         if(validateSurvey()) {
-            // :TODO: Save the from using API
+            setSurveyResponses(survey.id, false, responses)
         }
     }
 
@@ -89,6 +87,17 @@ const Question = ({ id, question, description, response_type, choices, options }
 const Response = ({question_id, response_type, choices}) => {
     let render = null
 
+    // :DEBUG: Prefill data
+    responses = {
+        9: "Matrix",
+        10: "1997",
+        11: 9,
+        14: 5,
+        15: "13/04/2000",
+        12: true,
+        13: 4
+    }
+
     if(response_type === "choice") {
         // :TODO: Implement options.field_type == 'select'
         render = (<IonList><IonRadioGroup onIonChange={e => setQuestionResponse(question_id, e.detail.value)}>
@@ -102,31 +111,25 @@ const Response = ({question_id, response_type, choices}) => {
             }</IonRadioGroup></IonList>)
 
     } else if(response_type === "longtext") {
-        render = (<IonTextarea onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        render = (<IonTextarea value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
 
     } else if(response_type === "text") {
-        render = (<IonInput type="text" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        render = (<IonInput type="text" value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     } else if(response_type === "1-5") {
-        /**
-         * if(label) html += `<span class="rating-label rating-label-begin">${label}</span>`;
-			html += `<input ${attributes} class="response rating rating-loading" data-min="0" data-max="5" data-stars="5" data-step="1" />`;
-			label = this.getOption(q, 'label_5');
-			if(label) html += `<span class="rating-label rating-label-end">${label}</span>`;
-         */
-    render = (<StarRating min="0" max="5" value="3" onChange={value => {console.log("Value", value); /* setQuestionResponse(question_id, value) */}} />)
+        render = (<StarRating value={responses[question_id]} min="0" max="5" onChange={value => setQuestionResponse(question_id, value) } />)
     
     } else if(response_type === "1-10") {
-        render = (<StarRating min="0" max="10" value="3" onChange={value => setQuestionResponse(question_id, value)} />)
+        render = (<StarRating value={responses[question_id]} min="0" max="10" onChange={value => setQuestionResponse(question_id, value)} />)
     
     } else if(response_type === "date") {
-        render = (<IonInput type="date" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        render = (<IonInput type="date" value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     } else if(response_type === "yes-no") {
-        render = (<IonCheckbox onIonChange={e => setQuestionResponse(question_id, e.target.checked)} />)
+        render = (<IonCheckbox value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.checked)} />)
     
     } else if(response_type === "number") {
-        render = (<IonInput type="number" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        render = (<IonInput type="number" value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     }
 

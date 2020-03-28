@@ -1,20 +1,22 @@
 import * as React from "react";
 import { appContext } from "./AppContext"
+import { authContext } from "./AuthContext";
 import api from "../utils/API"
 
 // This is the global store. Just didn't want to call it a store because I'm not sure if this is how to implement it.
 
 export const dataContext = React.createContext({
-    getSurveyForm: () => { }
+    getSurveyForm: () => {},
+    setSurveyResponses: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { getSurveyForm } = useHandler();
+    const { getSurveyForm,setSurveyResponses } = useHandler();
 
     return (
-        <Provider value={{ getSurveyForm }}>
+        <Provider value={{ getSurveyForm,setSurveyResponses }}>
             {children}
         </Provider>
     );
@@ -23,6 +25,7 @@ const DataProvider = ({ children }) => {
 const useHandler = () => {
     const { setLoading } = React.useContext(appContext)
     const [error, setError] = React.useState([]);
+    const { user } = React.useContext(authContext);
 
     const getSurveyForm = async (surveyId) => {
         setLoading(true)
@@ -56,9 +59,31 @@ const useHandler = () => {
         return false
     }
 
+    const setSurveyResponses = async (surveyId, responderId, responses) => {
+        if(!responderId) responderId = user.id
+        setLoading(true)
+
+        let survey_response = []
+        console.log(responses)
+
+        // :TODO: Choices not working, check date as well.
+        for(let question_id in responses) {
+            survey_response.push({
+                responder_id: responderId,
+                survey_question_id: question_id,
+                response: responses[question_id]
+            })
+        }
+        const call_response = await api.rest(`surveys/${surveyId}/responses`, 'post', survey_response)
+        setLoading(false)
+
+        if(call_response) return true
+        return false
+    }
+
 
     return {
-        getSurveyForm
+        getSurveyForm, setSurveyResponses
     };
 };
 
