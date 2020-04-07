@@ -4,24 +4,67 @@ import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
+import { authContext } from "../../contexts/AuthContext";
 import StarRating from "../../components/StarRating"
 import './Form.css'
 
 var responses = {}
+var survey_response = {}
+var survey_data = {}
+var survey_questions = {}
+var responder_id = 0
+
+// :TODO: Check if survey filled already. If yes, show that data.
+
 const setQuestionResponse = (question_id, value) => {
-    responses[question_id] = value
+    // :TODO: Response validaiton.
+    let question = survey_questions[question_id]
+    
+    survey_response[question_id] = {
+        responder_id: responder_id,
+        survey_question_id: question_id,
+        response: value
+    }
+
+    // If its a choice question, response is different.
+    if(question.response_type === "choice") {
+        survey_response[question_id].survey_choice_id = value
+        survey_response[question_id].response = ""
+    }
+
+    console.log(survey_response[question_id])
 }
 
 const SurveyForm = () => {
     const { surveyId } = useParams()
     const [survey, setSurvey] = React.useState({})
     const { getSurveyForm,setSurveyResponses } = React.useContext(dataContext)
+    const { user } = React.useContext(authContext)
 
     React.useEffect(() => {
         async function fetchSurvey() {
-            let survey_data = await getSurveyForm(surveyId)
-            if(survey_data) setSurvey(survey_data)
-            else {
+            survey_data = await getSurveyForm(surveyId)
+            if(survey_data) {
+                setSurvey(survey_data)
+
+                survey_data.questions.forEach(function flatten(q, i) {
+                    if(q.type !== undefined && q.type === "category") { // If there are more questions inside a category...
+                        q.questions.forEach(flatten) // add those recursivly
+                    } else {
+                        survey_questions[q.id] = q // Save all questions to a global array.
+                    }
+                })
+                
+                // Set responder id according to survey(student, volunteer, self, etc.)
+                if(survey_data.responder === "User") {
+                    const options = JSON.parse(survey_data.options)
+                    if(options.responder_list === "self") {
+                        responder_id = user.id // Current user is the responder.
+                    }
+                    // :TODO: Filling survey for other volunteers.
+                }
+                // :TODO: Student responder.
+            } else {
                 console.log("Error fetting survey form")
             }
         }
@@ -29,14 +72,15 @@ const SurveyForm = () => {
     }, [surveyId])
 
     const validateSurvey = () => {
-        // :TODO: Impliment this.
+        // :TODO: Impliment survey response validaiton.
         return true
     }
 
     const saveResponses = (e) => {
         e.preventDefault();
         if(validateSurvey()) {
-            setSurveyResponses(survey.id, false, responses)
+            setSurveyResponses(survey.id, survey_response)
+            // :TODO: If data exists already, overwrite.
         }
     }
 
@@ -74,7 +118,7 @@ const QuestionsOrCategory = ({ questions }) => {
 
 const Question = ({ id, question, description, response_type, choices, options }) => {
     return (<div className="question-area" id={ "question-" + id }>
-        <IonItem className="question">
+        <IonItem className="question" lines="none">
             <div>
             <div className="question-text">{ question }</div>
             { description ? <p className="question-description">{ description }</p> : null }

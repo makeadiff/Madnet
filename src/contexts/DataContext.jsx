@@ -27,9 +27,9 @@ const useHandler = () => {
     const [error, setError] = React.useState([]);
     const { user } = React.useContext(authContext);
 
-    const getSurveyForm = async (surveyId) => {
+    const getSurveyForm = async (survey_id) => {
         setLoading(true)
-        const survey_response = await api.rest(`surveys/${surveyId}`)
+        const survey_response = await api.rest(`surveys/${survey_id}`)
 
         if (survey_response.surveys !== undefined) {
             let survey = survey_response.surveys
@@ -52,29 +52,16 @@ const useHandler = () => {
             setError({
                 "status": "error",
                 "message": "Survey fetch call failed",
-                "endpoint": `surveys/${surveyId}`
+                "endpoint": `surveys/${survey_id}`
             })
         }
         setLoading(false)
         return false
     }
 
-    const setSurveyResponses = async (surveyId, responderId, responses) => {
-        if(!responderId) responderId = user.id
+    const setSurveyResponses = async (survey_id, survey_responses) => {
         setLoading(true)
-
-        let survey_response = []
-        console.log(responses)
-
-        // :TODO: Choices not working, check date as well.
-        for(let question_id in responses) {
-            survey_response.push({
-                responder_id: responderId,
-                survey_question_id: question_id,
-                response: responses[question_id]
-            })
-        }
-        const call_response = await api.rest(`surveys/${surveyId}/responses`, 'post', survey_response)
+        const call_response = await api.rest(`surveys/${survey_id}/responses`, 'post', survey_responses)
         setLoading(false)
 
         if(call_response) return true
