@@ -27,12 +27,7 @@ const Root = () => {
             <IonSplitPane contentId="main">
                 <Menu />
                 <IonPage id="main">
-                    <IonLoading
-                        isOpen={loading}
-                        onDidDismiss={() => setLoading(false)}
-                        message={'Loading...'}
-                        duration={3000}
-                    />
+                    <IonLoading isOpen={loading} onDidDismiss={() => setLoading(false)} message={'Loading...'} duration={3000} />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">
@@ -63,6 +58,10 @@ const Root = () => {
 
                         <PrivateRoute path="/classes">
                             <Page page={{name: "My Classes"}} />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/profile">
+                            <Page page={{name: "Profile"}} />
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />

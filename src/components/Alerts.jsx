@@ -1,28 +1,51 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+
+import { requestPermission,onMessage } from "../init-fcm";
 import { authContext } from "../contexts/AuthContext"
-import { appContext } from "../contexts/AppContext"
-import api from "../utils/API"
+import { dataContext } from "../contexts/DataContext"
 import './Alerts.css'
 
 const Alerts = () => {
     const { auth } = React.useContext(authContext)
-    const { setLoading } = React.useContext(appContext)
-    const [alerts, setAlerts] = useState([])
-    const [ userId ] = useState(auth.id); // if we don't do this, infinite loading.
+    const { getAlerts } = React.useContext(dataContext)
+    const [alerts, setAlerts] = React.useState([])
+    const [ user_id ] = React.useState(auth.id); // if we don't do this, infinite loading.
+    const [initilized, setInitilized] = React.useState(false)
+    const alertsRef = React.useRef()
 
-    useEffect(() => {
+    React.useEffect(() => {
+        if(initilized === false) {
+            requestPermission()
+            onMessage((payload) => {
+                const notification = payload.data.firebaseMessaging.payload.notification
+                const title = notification.title
+                const body = notification.body
+                const icon = notification.icon
+                // const link = fcmOptions.link
+
+                // Put the new alert the top.
+                setAlerts([{
+                    name: title,
+                    description: body,
+                    url: "", // link,
+                    image: icon
+                }].concat(alertsRef.current))
+
+            })
+            setInitilized(true)
+        }
+    }, [initilized])
+
+    React.useEffect(() => {
         async function fetchAlerts() {
-            setLoading(true)
-            const alerts_data = await api.rest("users/" + userId + "/alerts", "get")
+            const alerts_data = await getAlerts()
             if(alerts_data) {
+                alertsRef.current = alerts_data.alerts
                 setAlerts(alerts_data.alerts)
-            } else {
-                console.log("Shelters fetch call failed.")
             }
-            setLoading(false)
         }
         fetchAlerts();
-    }, [userId])
+    }, [user_id])
 
     return (
         <div className="card-area">

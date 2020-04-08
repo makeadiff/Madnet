@@ -1,0 +1,6 @@
+ 
+DB structure and firebase basics...
+https://medium.com/@zainmanji/how-to-structure-firebase-push-notifications-in-your-react-native-app-6847712d1c31
+
+React Implimentation
+https://codeburst.io/how-to-add-push-notifications-on-firebase-cloud-messaging-to-react-web-app-de7c6f04c920

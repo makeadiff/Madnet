@@ -12,7 +12,7 @@ const Menu = () => {
 
     if(auth.id) {
         render = (
-            <IonMenu contentId="main" type="overlay">
+            <IonMenu menuId="side" contentId="main" type="overlay">
                 <IonContent>
                     <IonList id="inbox-list">
                         <IonListHeader>MADNet</IonListHeader>
@@ -30,7 +30,7 @@ const Menu = () => {
 
     } else {
         render = (
-            <IonMenu contentId="main" type="overlay">
+            <IonMenu menuId="side" contentId="main" type="overlay">
                 <IonContent>
                     <IonList id="inbox-list">
                         <IonListHeader>MADNet</IonListHeader>

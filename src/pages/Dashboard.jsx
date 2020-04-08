@@ -17,43 +17,12 @@ const Dashboard = () => {
 
             <IonContent>
                 <h3>Volunteer Pages</h3>
-                <IonGrid>
-                    <IonRow class="ion-justify-content-start">
-                        {volunteerPages.map((appPage, index) => {
-                            if(appPage.title === "Dashboard") return null
-                            return (
-                                <IonCol key={index} size-xs="6" size-md="3">
-                                    <Link to={appPage.url}>
-                                        <div className="box">
-                                            <IonIcon slot="start" icon={appPage.iosIcon} size="large" /><br />
-                                            <IonText>{appPage.title}</IonText>
-                                        </div>
-                                    </Link>
-                                </IonCol>
-                            );
-                        })}
-                    </IonRow>
-                </IonGrid>
+                <AppGrid apps={volunteerPages} />
 
                 { isFellow() ? (
                     <div>
                         <h3>Fellow Pages</h3>
-                        <IonGrid>
-                            <IonRow class="ion-justify-content-start">
-                                {fellowPages.map((appPage, index) => {
-                                    return (
-                                        <IonCol key={index} size-xs="6" size-md="3">
-                                            <Link to={appPage.url}>
-                                                <div className="box">
-                                                    <IonIcon slot="start" icon={appPage.iosIcon} size="large" /><br />
-                                                    <IonText>{appPage.title}</IonText>
-                                                </div>
-                                            </Link>
-                                        </IonCol>
-                                    );
-                                })}
-                            </IonRow>
-                        </IonGrid>
+                        <AppGrid apps={fellowPages} />
                     </div>
                 ) : null }
 
@@ -64,5 +33,27 @@ const Dashboard = () => {
         </IonPage>
     );
 };
+
+const AppGrid = ({ apps }) => {
+    return (
+        <IonGrid>
+            <IonRow class="ion-justify-content-start">
+                {apps.map((app, index) => {
+                    if(app.title === "Dashboard") return null
+                    return (
+                        <IonCol key={index} size-xs="6" size-md="3">
+                            <Link to={app.url}>
+                                <div className="box">
+                                    <IonIcon slot="start" icon={app.iosIcon} size="large" /><br />
+                                    <IonText>{app.title}</IonText>
+                                </div>
+                            </Link>
+                        </IonCol>
+                    );
+                })}
+            </IonRow>
+        </IonGrid>
+    )
+}
 
 export default Dashboard;

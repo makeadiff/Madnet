@@ -1,20 +1,14 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
 import ExploreContainer from '../components/ExploreContainer';
 
 import './Page.css';
+import Title from '../components/Title';
 
 const Page = ({ page }) => {
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton />
-                    </IonButtons>
-                    <IonTitle>{page.name}</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <Title name={page.name} />
 
             <IonContent>
                 <IonHeader collapse="condense">

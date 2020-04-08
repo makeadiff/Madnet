@@ -7,16 +7,17 @@ import api from "../utils/API"
 
 export const dataContext = React.createContext({
     getSurveyForm: () => {},
-    setSurveyResponses: () => {}
+    setSurveyResponses: () => {},
+    getAlerts: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { getSurveyForm,setSurveyResponses } = useHandler();
+    const { getSurveyForm,setSurveyResponses,getAlerts } = useHandler();
 
     return (
-        <Provider value={{ getSurveyForm,setSurveyResponses }}>
+        <Provider value={{ getSurveyForm,setSurveyResponses,getAlerts }}>
             {children}
         </Provider>
     );
@@ -68,9 +69,17 @@ const useHandler = () => {
         return false
     }
 
+    const getAlerts = async () => {
+        setLoading(true)
+        const alerts_response = await api.rest(`users/${user.id}/alerts`, "get")
+        setLoading(false)
+
+        if(alerts_response) return alerts_response
+        return false
+    }
 
     return {
-        getSurveyForm, setSurveyResponses
+        getSurveyForm, setSurveyResponses, getAlerts
     };
 };
 
