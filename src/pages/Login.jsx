@@ -1,7 +1,7 @@
 import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent } from '@ionic/react';
 import React from 'react';
 import * as validator from "validator";
-import { createBrowserHistory } from "history"
+import { useHistory } from 'react-router-dom';
 
 import useErrorHandler from "../utils/custom-hooks/ErrorHandler";
 import ErrorMessage from "../components/ErrorMessage";
@@ -10,7 +10,9 @@ import { authContext } from "../contexts/AuthContext";
 import api from "../utils/API";
 import Title from '../components/Title';
 
-const history = createBrowserHistory()
+
+// import { createBrowserHistory } from "history"
+// const history = createBrowserHistory()
 
 /*
 :TODO:
@@ -21,21 +23,22 @@ const history = createBrowserHistory()
 - Key Check on return.
 */
 
-function Login({ history }) {
+function Login() {
     const [userEmail, setUserEmail] = React.useState("");
     const [userPassword, setUserPassword] = React.useState("");
     const [loading, setLoading] = React.useState(false);
-    const auth = React.useContext(authContext);
-
     const { error, showError } = useErrorHandler(null);
-    const authHandler = async ( history ) => {
+    const auth = React.useContext(authContext);
+    const history = useHistory()
+
+    const authHandler = async () => {
         try {
             setLoading(true);
             const user_data = await api.rest(`users/login?email=${userEmail}&password=${userPassword}`, "get"); //, { email: userEmail, password: userPassword });
             if(user_data) {
                 let user = user_data.users;
                 auth.setCurrentUser(user);
-                history.push("/page/Dashboard")
+                history.push("/dashboard")
             } else {
                 showError("Invalid email/password provided")
             }
@@ -78,26 +81,12 @@ function Login({ history }) {
                         }
                     }} >
                     <IonItem lines="none">
-                        <IonInput type="email"
-                            name="email"
-                            id="email"
-                            autofocus="true"
-                            required="true"
-                            value={userEmail}
-                            placeholder="Email/Phone..."
-                            onIonChange={(e) => setUserEmail(e.target.value) }
-                        />
+                        <IonInput type="email" name="email" id="email" autofocus="true" required="true" value={userEmail}
+                            placeholder="Email/Phone..." onIonChange={(e) => setUserEmail(e.target.value) } />
                     </IonItem>
                     <IonItem lines="none">
-                        <IonInput
-                            type="password"
-                            id="password"
-                            name="password"
-                            requried="true"
-                            value={userPassword}
-                            placeholder="Password..."
-                            onIonChange={e => setUserPassword(e.target.value)}
-                        />
+                        <IonInput type="password" id="password" name="password" requried="true" value={userPassword}
+                            placeholder="Password..." onIonChange={e => setUserPassword(e.target.value)} />
                     </IonItem>
                     <IonItem lines="none">
                         <IonButton type="submit" disabled={loading} block={true} size="default">
