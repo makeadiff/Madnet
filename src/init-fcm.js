@@ -14,11 +14,16 @@ var firebaseConfig = {
 }
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
-const messaging = firebase.messaging()
-
-messaging.usePublicVapidKey('BA9qJfeWPrqYdKAoQNsFaEGsyStR5YfPp99wWa-py6nmKKnU-6A0oGjHC4LDzwoAiAyps_LzkYnIyWXY8Hzm04k')
+let messaging = false
+try {
+    messaging = firebase.messaging()
+    messaging.usePublicVapidKey('BA9qJfeWPrqYdKAoQNsFaEGsyStR5YfPp99wWa-py6nmKKnU-6A0oGjHC4LDzwoAiAyps_LzkYnIyWXY8Hzm04k')
+} catch (error) {
+    console.error("Can't use Firebase SDK: " + error)
+}
 
 const requestPermission = async () => {
+    if(!messaging) return
     messaging.requestPermission()
         .then(async function() {
             const token = await messaging.getToken();
@@ -30,6 +35,7 @@ const requestPermission = async () => {
 }
 
 const onMessage = (callback) => {
+    if(!messaging) return
     navigator.serviceWorker.addEventListener("message", callback)
 }
 

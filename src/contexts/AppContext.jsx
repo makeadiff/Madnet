@@ -1,27 +1,27 @@
 import * as React from "react";
 
-/** Custom Hooks */
 import useGlobalHandler from "../utils/custom-hooks/AppHandler";
 
 export const appContext = React.createContext({
-  message: ["", false],
+    message: ["", false],
 	showMessage: () => {},
 	loading: false,
 	setLoading: () => {},
 	data: {},
-	setData: () => {}
+    setData: () => {},
+    notifications: []
 });
 
 const { Provider } = appContext;
 
 const AppProvider = ({ children }) => {
-  const { message,showMessage,loading,setLoading,data,setData } = useGlobalHandler();
+    const { message,showMessage,loading,setLoading,data,setData,notifications } = useGlobalHandler();
 
-  return (
-    <Provider value={{ message,showMessage,loading,setLoading,data,setData }}>
-      {children}
-    </Provider>
-  );
+    return (
+        <Provider value={{ message,showMessage,loading,setLoading,data,setData,notifications }}>
+            {children}
+        </Provider>
+    );
 };
 
 export default AppProvider;

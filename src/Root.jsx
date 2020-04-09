@@ -26,6 +26,7 @@ const Root = () => {
             <SetPage />
             <IonSplitPane contentId="main">
                 <Menu />
+                
                 <IonPage id="main">
                     <IonLoading isOpen={loading} onDidDismiss={() => setLoading(false)} message={'Loading...'} duration={3000} />
 
@@ -66,7 +67,8 @@ const Root = () => {
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>
-              </IonPage>
+                </IonPage>
+
             </IonSplitPane>
         </IonReactRouter>
     );

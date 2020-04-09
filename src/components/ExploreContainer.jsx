@@ -5,7 +5,8 @@ const ExploreContainer = ({ name }) => {
     return (
         <div className="container">
             <strong>{name}</strong>
-            <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+
+            <p>This Page is UNDER CONSTRUCTION. This is just a placeholder page.</p>
         </div>
     );
 };

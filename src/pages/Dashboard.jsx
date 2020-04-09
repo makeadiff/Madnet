@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import Title from '../components/Title'
 import { authContext } from "../contexts/AuthContext";
-import { volunteerPages, fellowPages } from "../utils/Menu"
+import { volunteer_pages, fellow_pages } from "../utils/Menu"
 import './Dashboard.css';
 const Alerts = lazy(() => import('../components/Alerts'))
 
@@ -17,12 +17,12 @@ const Dashboard = () => {
 
             <IonContent>
                 <h3>Volunteer Pages</h3>
-                <AppGrid apps={volunteerPages} />
+                <AppGrid apps={volunteer_pages} />
 
                 { isFellow() ? (
                     <div>
                         <h3>Fellow Pages</h3>
-                        <AppGrid apps={fellowPages} />
+                        <AppGrid apps={fellow_pages} />
                     </div>
                 ) : null }
 

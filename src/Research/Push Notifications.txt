@@ -4,3 +4,6 @@ https://medium.com/@zainmanji/how-to-structure-firebase-push-notifications-in-yo
 
 React Implimentation
 https://codeburst.io/how-to-add-push-notifications-on-firebase-cloud-messaging-to-react-web-app-de7c6f04c920
+
+Test Sending message
+https://console.firebase.google.com/u/1/project/madnet-28ca4/notification/compose

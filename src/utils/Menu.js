@@ -2,7 +2,7 @@ import { appsOutline, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp,
     personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp } from 'ionicons/icons';
 import { SITE_URL } from './Constants';
 
-export const volunteerPages = [
+export const volunteer_pages = [
     {
         title: 'Dashboard',
         url: '/dashboard',
@@ -35,7 +35,7 @@ export const volunteerPages = [
     }
 ];
 
-export const fellowPages = [
+export const fellow_pages = [
     {
         title: 'Volunteers',
         url: '/volunteers',
