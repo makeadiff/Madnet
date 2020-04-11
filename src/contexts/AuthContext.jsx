@@ -4,7 +4,7 @@ import * as React from "react";
 import useAuthHandler from "../utils/custom-hooks/AuthHandler";
 /** Utils */
 import { DEFAULT_USER_AUTH } from "../utils/Constants";
-import { getStoredUserAuth } from "../utils/Helpers";
+import { getStoredUser } from "../utils/Helpers";
 
 export const authContext = React.createContext({
   auth: DEFAULT_USER_AUTH,
@@ -18,7 +18,7 @@ export const authContext = React.createContext({
 const { Provider } = authContext;
 
 const AuthProvider = ({ children }) => {
-  const { auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission } = useAuthHandler( getStoredUserAuth() );
+  const { auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission } = useAuthHandler( getStoredUser() );
 
   return (
     <Provider value={{ auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission }}>

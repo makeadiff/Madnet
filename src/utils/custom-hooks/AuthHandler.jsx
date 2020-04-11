@@ -1,49 +1,50 @@
 import * as React from "react";
 import { DEFAULT_USER_AUTH } from "../Constants";
+import api from "../API";
+import { getStoredUser, setStoredUser } from "../Helpers"
 
 const useAuthHandler = (initialState) => {
-  const [auth, setAuth] = React.useState(initialState);
-  const [user, setUser] = React.useState(initialState);
+    const [user, setUser] = React.useState(initialState);
 
-  const setCurrentUser = (user_data) => {
-    window.localStorage.setItem("user", JSON.stringify(user_data));
-    setAuth(user_data);
-    setUser(user_data);
-  };
+    const setCurrentUser = (user_data) => {
+        setStoredUser(user_data)
+        setUser(user_data);
+    };
 
-  const unsetCurrentUser = () => {
-    window.localStorage.clear();
-    setAuth(DEFAULT_USER_AUTH);
-    setUser(DEFAULT_USER_AUTH);
-  };
+    const unsetCurrentUser = async () => {
+        const user_data = getStoredUser()
+        const device_response = await api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete") // Some wierd issue happening when calling unsetDeviceToken
 
-  const isFellow = (or_higher = true) => {
-    if(!user.id) return false;
+        window.localStorage.clear();
+        setUser(DEFAULT_USER_AUTH);
+    };
 
-    for(let i in user.groups) {
-      let grp  = user.groups[i]
-      
-      if(grp.type === "fellow") return true
-      if(or_higher && (grp.type === "strat" || grp.type === "national" || grp.type === "executive")) return true
+    const isFellow = (or_higher = true) => {
+        if (!user.id) return false;
+
+        for (let i in user.groups) {
+            let grp = user.groups[i]
+
+            if (grp.type === "fellow") return true
+            if (or_higher && (grp.type === "strat" || grp.type === "national" || grp.type === "executive")) return true
+        }
+
+        return false
     }
 
-    return false
-  }
+    const hasPermission = (permission) => {
+        if (!user.id || user.permissions === undefined) return false;
 
-  const hasPermission = (permission) => {
-    if(!user.id || user.permissions === undefined) return false;
+        return user.permissions.includes(permission)
+    }
 
-    return user.permissions.includes(permission)
-  }
-
-  return {
-    auth,
-    user,
-    setCurrentUser,
-    unsetCurrentUser,
-    isFellow,
-    hasPermission
-  };
+    return {
+        user,
+        setCurrentUser,
+        unsetCurrentUser,
+        isFellow,
+        hasPermission
+    };
 };
 
 export default useAuthHandler;

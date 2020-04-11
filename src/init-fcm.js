@@ -1,5 +1,7 @@
 import * as firebase from "firebase/app"
 import "firebase/messaging"
+import api from "./utils/API"
+import { getStoredUser,setStoredUser } from "./utils/Helpers";
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -24,13 +26,22 @@ try {
 
 const requestPermission = async () => {
     if(!messaging) return
+
     messaging.requestPermission()
-        .then(async function() {
-            const token = await messaging.getToken();
-            // :TODO: Save token to Server against curret user.
+        .then(async () => {
+            const token = await messaging.getToken()
+            // Save token to Server against curret user. 
+            // Using this raw format(rather than using DataContext or Auth context) because this file is not a React component - hence will not let us use contexts within in.
+            const user = getStoredUser()
+            console.log(user, token)
+            if(user && user.id && user.token !== token) {
+                api.rest(`users/${user.id}/devices/${token}`, "post")
+                user['token'] = token
+                setStoredUser(user)
+            }
         })
         .catch(function(err) {
-            console.log("Unable to get permission to notify.", err);
+            console.log("Unable to get permission to notify.", err)
         });
 }
 

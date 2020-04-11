@@ -1,27 +1,43 @@
-import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote } from '@ionic/react';
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote } from '@ionic/react'
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+
 import './Menu.css';
-import { authContext } from "../contexts/AuthContext";
-import { appContext } from "../contexts/AppContext";
+import { authContext } from "../contexts/AuthContext"
+import { appContext } from "../contexts/AppContext"
 import { volunteer_pages, fellow_pages } from "../utils/Menu"
+import { personOutline, logOutOutline } from 'ionicons/icons'
 
 const Menu = () => {
-    const { auth } = React.useContext(authContext);
-    let render;
+    const { user, unsetCurrentUser } = React.useContext(authContext)
+    const { data } = React.useContext(appContext)
+    let render
 
-    if(auth.id) {
+    if(user.id) {
         render = (
             <>
-            <IonList id="inbox-list">
+            <IonList id="volunteer-list" className="sections">
                 <IonListHeader>MADNet</IonListHeader>
-                <IonNote>{ auth.name }</IonNote>
+                <IonNote>{ user.name }</IonNote>
                 <MenuSection pages={volunteer_pages} />
             </IonList>
 
-            <IonList id="labels-list">
+            <IonList id="admin-list" className="sections">
                 <IonListHeader>Admin Section</IonListHeader>
                 <MenuSection pages={fellow_pages} />
+            </IonList>
+
+            <IonList id="user-list" className="sections">
+                <IonListHeader>User Section</IonListHeader>
+                <IonItem routerLink="/profile" className={data.path.includes("/profile") ? 'selected' : ''}>
+                    <IonIcon slot="start" icon={ personOutline } />
+                    <IonLabel>Profile</IonLabel>
+                </IonItem>
+
+                <IonItem onClick={ unsetCurrentUser }>
+                    <IonIcon slot="start" icon={ logOutOutline } />
+                    <IonLabel>Logout</IonLabel>
+                </IonItem>
             </IonList>
             </>
         );
@@ -51,16 +67,18 @@ const MenuSection = ({ pages }) => {
     const { data } = React.useContext(appContext);
 
     return ( 
-        pages.map((appPage, index) => {
+        pages.map((app, index) => {
+            if(app.title === "Profile") return null
+
             let attr = {}
             // External links go out.
-            if(appPage.url.includes("http")) attr['href'] = appPage.url
-            else attr['routerLink'] = appPage.url
+            if(app.url.includes("http")) attr['href'] = app.url
+            else attr['routerLink'] = app.url
 
             return (
-                <IonItem key={index} className={data.path.includes(appPage.url) ? 'selected' : ''} { ...attr }>
-                    <IonIcon slot="start" icon={appPage.iosIcon} />
-                    <IonLabel>{appPage.title}</IonLabel>
+                <IonItem key={index} className={data.path.includes(app.url) ? 'selected' : ''} { ...attr }>
+                    <IonIcon slot="start" icon={app.iosIcon} />
+                    <IonLabel>{app.title}</IonLabel>
                 </IonItem>
             );
         }) 

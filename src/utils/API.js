@@ -13,9 +13,16 @@ const api = {
             },
             body: params ? JSON.stringify(params) : undefined
         });
-
-        let data = await response.json();
-        if(data && data.status === "success") return data.data
+        if(response.ok) {
+            // If its a delete call, it might have no return. 
+            let response_text = await response.text()
+            if(response_text) {
+                let data = JSON.parse(response_text)
+                if(data && data.status === "success") return data.data
+            } else {
+                if(method === "delete") return true
+            }
+        }
 
         return false;
     },

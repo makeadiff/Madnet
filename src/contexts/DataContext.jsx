@@ -1,6 +1,6 @@
-import * as React from "react";
+import * as React from "react"
 import { appContext } from "./AppContext"
-import { authContext } from "./AuthContext";
+import { authContext } from "./AuthContext"
 import api from "../utils/API"
 
 // This is the global store. Just didn't want to call it a store because I'm not sure if this is how to implement it.
@@ -8,16 +8,18 @@ import api from "../utils/API"
 export const dataContext = React.createContext({
     getSurveyForm: () => {},
     setSurveyResponses: () => {},
-    getAlerts: () => {}
+    getAlerts: () => {},
+    setDeviceToken: () => {},
+    unsetDeviceToken: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { getSurveyForm,setSurveyResponses,getAlerts } = useHandler();
+    const { getSurveyForm,setSurveyResponses,getAlerts,setDeviceToken,unsetDeviceToken } = useHandler();
 
     return (
-        <Provider value={{ getSurveyForm,setSurveyResponses,getAlerts }}>
+        <Provider value={{ getSurveyForm,setSurveyResponses,getAlerts,setDeviceToken,unsetDeviceToken }}>
             {children}
         </Provider>
     );
@@ -78,8 +80,27 @@ const useHandler = () => {
         return false
     }
 
+    const setDeviceToken = async (token, user_id) => {
+        if(user_id === undefined) user_id = user.id
+        setLoading(true)
+        const device_response = await api.rest(`users/${user_id}/devices/${token}`, "post")
+        setLoading(false)
+
+        if(device_response) return device_response
+        return false
+    }
+
+    const unsetDeviceToken = async (token, user_id) => {
+        if(user_id === undefined) user_id = user.id
+        const device_response = await api.rest(`users/${user_id}/devices/${token}`, "delete")
+        console.log(`Return of users/${user_id}/devices/${token}`, device_response)
+
+        if(device_response) return device_response
+        return false
+    }
+
     return {
-        getSurveyForm, setSurveyResponses, getAlerts
+        getSurveyForm, setSurveyResponses, getAlerts, setDeviceToken, unsetDeviceToken
     };
 };
 

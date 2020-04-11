@@ -76,12 +76,12 @@ const Root = () => {
 
 // A wrapper for <Route> that redirects to the login screen if you're not yet authenticated.
 function PrivateRoute({ children, ...rest }) {
-    const { auth } = React.useContext(authContext);
+    const { user } = React.useContext(authContext);
 
     return (
         <Route {...rest}
             render={() =>
-                auth.id ? ( children ) : ( <Redirect to={{ pathname: "/login" }} /> )
+                user.id ? ( children ) : ( <Redirect to={{ pathname: "/login" }} /> )
             } />
     );
 }

@@ -8,11 +8,11 @@ import './Alerts.css'
 // Send test Push Notification using https://console.firebase.google.com/u/1/project/madnet-28ca4/notification/compose
 
 const Alerts = () => {
-    const { auth } = React.useContext(authContext)
+    const { user } = React.useContext(authContext)
     const { getAlerts } = React.useContext(dataContext)
     const { notifications } = React.useContext(appContext)
     const [alerts, setAlerts] = React.useState([])
-    const [ user_id ] = React.useState(auth.id); // if we don't do this, infinite loading.
+    const [ user_id ] = React.useState(user.id); // if we don't do this, infinite loading.
 
     React.useEffect(() => {
         setAlerts(notifications.concat(alerts))

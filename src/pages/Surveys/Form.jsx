@@ -31,8 +31,6 @@ const setQuestionResponse = (question_id, value) => {
         survey_response[question_id].survey_choice_id = value
         survey_response[question_id].response = ""
     }
-
-    console.log(survey_response[question_id])
 }
 
 const SurveyForm = () => {

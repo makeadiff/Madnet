@@ -5,14 +5,12 @@ import { useHistory } from 'react-router-dom';
 
 import useErrorHandler from "../utils/custom-hooks/ErrorHandler";
 import ErrorMessage from "../components/ErrorMessage";
+import { requestPermission } from "../init-fcm";
 
 import { authContext } from "../contexts/AuthContext";
 import api from "../utils/API";
 import Title from '../components/Title';
 
-
-// import { createBrowserHistory } from "history"
-// const history = createBrowserHistory()
 
 /*
 :TODO:
@@ -25,10 +23,10 @@ import Title from '../components/Title';
 
 function Login() {
     const [userEmail, setUserEmail] = React.useState("");
-    const [userPassword, setUserPassword] = React.useState("");
-    const [loading, setLoading] = React.useState(false);
-    const { error, showError } = useErrorHandler(null);
-    const auth = React.useContext(authContext);
+    const [userPassword, setUserPassword] = React.useState("")
+    const [loading, setLoading] = React.useState(false)
+    const { error, showError } = useErrorHandler(null)
+    const { setCurrentUser } = React.useContext(authContext)
     const history = useHistory()
 
     const authHandler = async () => {
@@ -37,7 +35,8 @@ function Login() {
             const user_data = await api.rest(`users/login?email=${userEmail}&password=${userPassword}`, "get"); //, { email: userEmail, password: userPassword });
             if(user_data) {
                 let user = user_data.users;
-                auth.setCurrentUser(user);
+                setCurrentUser(user);
+                requestPermission()
                 history.push("/dashboard")
             } else {
                 showError("Invalid email/password provided")
