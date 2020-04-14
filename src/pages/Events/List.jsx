@@ -8,7 +8,7 @@ import { appContext } from "../../contexts/AppContext";
 import api from "../../utils/API";
 
 const EventList = ({ segment }) => {
-    const { auth } = React.useContext(authContext);
+    const { user } = React.useContext(authContext);
     const { setLoading } = React.useContext(appContext);
     const [events, setEvents] = useState([]);
 
@@ -18,9 +18,9 @@ const EventList = ({ segment }) => {
             let events_data = []
 
             if(segment === "invitations") {
-                events_data = await api.rest(`events?invited_user_id=${auth.id}&from_date=today`, "get");
+                events_data = await api.rest(`events?invited_user_id=${user.id}&from_date=today`, "get");
             } else if(segment === "in-city") {
-                 events_data = await api.rest(`events?city_id=${auth.city_id}&from_date=today`, "get");
+                 events_data = await api.rest(`events?city_id=${user.city_id}&from_date=today`, "get");
             }
             if(events_data) {
                 setEvents(events_data.events)

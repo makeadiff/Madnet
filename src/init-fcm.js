@@ -1,5 +1,6 @@
 import * as firebase from "firebase/app"
 import "firebase/messaging"
+import 'firebase/auth'
 import api from "./utils/API"
 import { getStoredUser,setStoredUser } from "./utils/Helpers";
 
@@ -62,4 +63,4 @@ const onMessage = (callback) => {
 //     });
 //   });
 
-export { messaging, requestPermission, onMessage };
+export { firebase, messaging, requestPermission, onMessage };

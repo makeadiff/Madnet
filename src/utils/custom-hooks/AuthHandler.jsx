@@ -8,15 +8,15 @@ const useAuthHandler = (initialState) => {
 
     const setCurrentUser = (user_data) => {
         setStoredUser(user_data)
-        setUser(user_data);
+        setUser(user_data)
     };
 
-    const unsetCurrentUser = async () => {
+    const unsetCurrentUser = () => {
         const user_data = getStoredUser()
-        const device_response = await api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete") // Some wierd issue happening when calling unsetDeviceToken
-
-        window.localStorage.clear();
-        setUser(DEFAULT_USER_AUTH);
+        window.localStorage.clear()
+        api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete") // Some wierd issue happening when calling unsetDeviceToken
+        
+        setUser(DEFAULT_USER_AUTH)
     };
 
     const isFellow = (or_higher = true) => {
