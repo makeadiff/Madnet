@@ -1,14 +1,15 @@
 import React from 'react'
-import { IonButton, IonInput, IonPage, IonContent } from '@ionic/react'
+import { IonItem, IonInput, IonPage, IonContent,IonIcon, IonList, IonButton } from '@ionic/react'
+import { arrowForwardOutline } from 'ionicons/icons'
 import { useHistory } from 'react-router-dom'
 
 import { appContext } from "../../contexts/AppContext"
 import Title from '../../components/Title'
-import { arrowForwardOutline } from 'ionicons/icons'
+import { setStoredUser } from '../../utils/Helpers'
 
 const InductionProfile = () => {
     const [init, setInit] = React.useState(false)
-    const [ profile, setProfile ] = React.useState({})
+    const [ profile, setProfile ] = React.useState({"user":{"name": ""}})
     const { setLoading, showMessage } = React.useContext(appContext)
     const history = useHistory()
 
@@ -29,6 +30,7 @@ const InductionProfile = () => {
         // :TODO: API call to check OTP.
 
         if(otp === "1234") {
+            setStoredUser(profile.user)
             history.push('/induction/setup')
         }
     }
@@ -37,11 +39,13 @@ const InductionProfile = () => {
         <IonPage>
             <Title name={"Hello, " + profile.user.name} />
             <IonContent>
-                <p>We have sent an OTP to your { profile.type === "email" ? "email address" : "phone number" }. Please enter the OTP to continue...</p>
+                <IonList>
+                <IonItem lines="none"><p>We have sent an OTP to your { profile.type === "email" ? "email address" : "phone number" }. Please enter the OTP to continue...</p></IonItem>
 
-                <IonInput name="otp" id="otp" placeholder="OTP" />
-                <IonButton name="action" type="submit" onClick={checkOtp}>Next Step 
-                    <IonIcon icon={ arrowForwardOutline }></IonIcon></IonButton>
+                <IonItem lines="none"><IonInput name="otp" id="otp" placeholder="OTP" /></IonItem>
+                <IonItem lines="none"><IonButton type="submit" name="action" onClick={checkOtp}>Next Step 
+                    <IonIcon icon={ arrowForwardOutline }></IonIcon></IonButton></IonItem>
+                </IonList>
             </IonContent>
         </IonPage>
     )

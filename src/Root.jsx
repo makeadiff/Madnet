@@ -15,6 +15,8 @@ import EventIndex from './pages/Events/Index'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
+import InductionProfile from './pages/Induction/Profile'
+import InductionSetup from './pages/Induction/Setup'
 
 const Root = () => {
     const { loading, setLoading } = React.useContext(appContext)
@@ -33,11 +35,14 @@ const Root = () => {
                             <Login />
                         </Route>
 
-                        <Route path="/induction">
-                            <InductionIndex />
-                        </Route>
                         <Route path="/induction/profile">
                             <InductionProfile />
+                        </Route>
+                        <Route path="/induction/setup">
+                            <InductionSetup />
+                        </Route>
+                        <Route path="/induction/join">
+                            <InductionIndex />
                         </Route>
 
                         <PrivateRoute path="/dashboard">

@@ -1,21 +1,21 @@
 import React from 'react'
-import { IonButton, IonInput, IonPage, IonContent, IonIcon } from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonContent, IonIcon, IonList,IonItem } from '@ionic/react'
 import { arrowForwardOutline } from 'ionicons/icons'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
 
-import { firebase } from "../init-fcm"
+import { firebase } from "../../init-fcm"
 import { appContext } from "../../contexts/AppContext"
-import api from "../utils/API"
-import { assets } from "../utils/Helpers"
+import api from "../../utils/API"
+import { assets, setStoredUser } from "../../utils/Helpers"
 import Title from '../../components/Title'
 
 const InductionIndex = () => {
     const [init, setInit] = React.useState(false)
-    const [identifier, setIdentifier] = React.useState("")
+    // const [identifier, setIdentifier] = React.useState("")
     const { setLoading, message, showMessage } = React.useContext(appContext)
     const history = useHistory()
-    const no_user_err_message = (<div>
+    const no_user_err_message = (<>
         Can't find any user with the given details. This can be because of either of these 2 reasons...
         <ul>
             <li>You have not given the email or phone number you gave when registering. 
@@ -23,7 +23,7 @@ const InductionIndex = () => {
             <li>We haven't updated your profile to mark you as a volunteer yet. 
                 If you think this is the case, reach out to one of the orginizers of the induction and get it fixed right now. 
                 You'll need this to be done to get to the next stage.</li>
-        </ul></div>)
+        </ul></>)
 
 
     React.useEffect(() => { // Run on load - just once.
@@ -37,11 +37,7 @@ const InductionIndex = () => {
             api.rest(`users?email=${user.email}`, "get").then((data) => {
                 setLoading(false)
                 if(data.users.length) {
-                    localStorage.setItem("induction_profile", JSON.stringify({
-                        "identifier": identifier,
-                        "type": type,
-                        "user": data.users[0]
-                    }))
+                    setStoredUser(data.users[0])
                     history.push('/induction/setup')
                 } else {
                     showMessage(no_user_err_message, "error")
@@ -54,6 +50,8 @@ const InductionIndex = () => {
     }, [init])
 
     const stepOne = function() {
+        let identifier = document.getElementById("identifier").value
+
         if(!identifier) {
             showMessage("Please provide your Email or Phone number", "error")
             return false
@@ -98,19 +96,22 @@ const InductionIndex = () => {
         <IonPage>
             <Title name="Welcome to MADNet" />
             <IonContent>
-                <p>Welcome to Make A Difference.</p>
-                <p>We'll be setting up your profile in our database now. 
-                    To continue, please enter the email OR phone number you provided when registering for MAD.</p>
+                <IonList>
+                <IonItem><strong>Welcome to Make A Difference.</strong></IonItem>
                 
-                <IonInput name="identifier" placeholder="Email OR Phone Number" onChange={ e => setIdentifier(e.target.value) } />
+                <IonItem>We'll be setting up your profile in our database now. 
+                    To continue, please <strong>enter the email OR phone number you provided when registering for MAD</strong>.</IonItem>
+                
+                <IonItem><IonInput name="identifier" id="identifier" placeholder="Email OR Phone Number" /></IonItem>
 
-                <IonButton name="action" onClick={ stepOne }>Next <IonIcon icon={arrowForwardOutline}></IonIcon></IonButton>
+                <IonItem><IonButton name="action" onClick={ stepOne }>Next <IonIcon icon={arrowForwardOutline}></IonIcon></IonButton></IonItem>
 
-                <p>OR</p>
+                <IonItem>OR</IonItem>
 
-                <IonItem lines="none"><img width="200" src={ assets('glogin.png') } alt="Login With Google"  onClick={ signInWithGoogle } /></IonItem>
+                <IonItem><img width="200" src={ assets('glogin.png') } alt="Login With Google" onClick={ signInWithGoogle } /></IonItem>
 
-                <p>{message.length && <div className={message[1] + "-message"}>{ message[0] }</div>}</p>
+                <IonItem>{message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}</IonItem>
+                </IonList>
             </IonContent>
         </IonPage>
     )
