@@ -2,7 +2,6 @@ import React from 'react'
 import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import { Redirect, Route, useLocation } from 'react-router-dom'
-import { createBrowserHistory } from "history"
 import { authContext } from "./contexts/AuthContext"
 import { appContext } from "./contexts/AppContext"
 
@@ -15,14 +14,13 @@ import ManageShelter from './pages/ManageShelter'
 import EventIndex from './pages/Events/Index'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
-
-const history = createBrowserHistory()
+import Induction from './pages/Induction'
 
 const Root = () => {
     const { loading, setLoading } = React.useContext(appContext)
 
     return (
-        <IonReactRouter history={history}>
+        <IonReactRouter>
             <SetPage />
             <IonSplitPane contentId="main">
                 <Menu />
@@ -33,6 +31,10 @@ const Root = () => {
                     <IonRouterOutlet id="main">
                         <Route path="/login">
                             <Login />
+                        </Route>
+
+                        <Route path="/join">
+                            <Induction />
                         </Route>
 
                         <PrivateRoute path="/dashboard">

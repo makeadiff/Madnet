@@ -3,7 +3,7 @@ import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
 
-import { requestPermission, authProvider, firebase } from "../init-fcm"
+import { requestPermission, firebase } from "../init-fcm"
 import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import api from "../utils/API"
