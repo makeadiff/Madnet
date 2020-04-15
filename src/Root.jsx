@@ -14,7 +14,7 @@ import ManageShelter from './pages/ManageShelter'
 import EventIndex from './pages/Events/Index'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
-import Induction from './pages/Induction'
+import InductionIndex from './pages/Induction/Index'
 
 const Root = () => {
     const { loading, setLoading } = React.useContext(appContext)
@@ -33,8 +33,11 @@ const Root = () => {
                             <Login />
                         </Route>
 
-                        <Route path="/join">
-                            <Induction />
+                        <Route path="/induction">
+                            <InductionIndex />
+                        </Route>
+                        <Route path="/induction/profile">
+                            <InductionProfile />
                         </Route>
 
                         <PrivateRoute path="/dashboard">
