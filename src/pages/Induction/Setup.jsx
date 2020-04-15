@@ -1,12 +1,13 @@
 import React from 'react'
-import { IonButton, IonInput, IonPage, IonContent, IonItem } from '@ionic/react'
+import { IonButton, IonPage, IonContent, IonItem } from '@ionic/react'
 
 import { requestPermission } from "../../init-fcm"
-import { appContext } from '../../contexts/AppContext'
+// import { appContext } from '../../contexts/AppContext'
 import Title from '../../components/Title'
 
 const InductionSetup = () => {
-    const { setLoading, showMessage } = React.useContext(appContext)
+    // const { setLoading, showMessage } = React.useContext(appContext)
+    const browser = "firefox"
 
     const notificationPermission = () => {
         requestPermission()
@@ -30,8 +31,14 @@ const InductionSetup = () => {
                 </IonItem>
 
                 <IonItem lines="none">
-                    <p>First, you'll have to add this app to your homepage. </p>
+                    <p>First, you'll have to add this app to your homepage...</p>
                 </IonItem>
+
+                <IonItem>{
+                    browser === "firefox" 
+                        ? "Click on the [IMG] at the top of the browser in firefox and then click on '+ Add to Home Screen'" 
+                        : "Click on the 'Add MADNet to Home Screen' at the bottom of the browser in Chrome"
+                }</IonItem>
 
                 <IonItem lines="none">
                     <p>Once that is done, we'll need permission to send you notification. To let us do that, click on the button below and press Allow.</p>

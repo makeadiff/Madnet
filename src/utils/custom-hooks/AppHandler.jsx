@@ -7,27 +7,6 @@ const useGlobalHandler = () => {
     const [message, setMessage] = React.useState(["", false]);
     const [data] = React.useState([]);
     const [notifications, setNotifications] = React.useState([]);
-    const [initilized, setInitilized] = React.useState(false)
-
-    React.useEffect(() => {
-        if(initilized === false) {
-            requestPermission()
-            onMessage((payload) => {
-                const notification = payload.data.firebaseMessaging.payload.notification
-                const new_notification = {
-                    name : notification.title,
-                    description : notification.body,
-                    image : notification.icon,
-                //  url : fcmOptions.link
-                }
-
-                // Put the new alert the top.
-                addNotification(new_notification)
-            })
-            setInitilized(true)
-        }
-    }, [initilized])
-
 
     const showMessage = (message, type) => {
         setMessage([message, type]);
@@ -48,7 +27,8 @@ const useGlobalHandler = () => {
         setLoading,
         data,
         setData,
-        notifications
+        notifications,
+        addNotification
     };
 };
 

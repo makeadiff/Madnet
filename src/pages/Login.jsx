@@ -3,7 +3,7 @@ import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
 
-import { requestPermission, firebase } from "../init-fcm"
+import { requestPermission, firebase, onMessage,convertNotificationPayload } from "../init-fcm"
 import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import api from "../utils/API"
@@ -23,7 +23,7 @@ function Login() {
     const [init, setInit] = React.useState(false)
     const [userEmail, setUserEmail] = React.useState("")
     const [userPassword, setUserPassword] = React.useState("")
-    const { loading, setLoading, message, showMessage } = React.useContext(appContext)
+    const { loading, setLoading, message, showMessage, addNotification } = React.useContext(appContext)
     const { setCurrentUser } = React.useContext(authContext)
     const history = useHistory()
     
@@ -52,8 +52,11 @@ function Login() {
         }
 
         if(user) {
-            setCurrentUser(user);
+            setCurrentUser(user)
             requestPermission()
+            onMessage((payload) => {
+                addNotification(convertNotificationPayload(payload))
+            })
             history.push("/dashboard")
         } else {
             if(method === "google") {

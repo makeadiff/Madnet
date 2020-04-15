@@ -1,7 +1,7 @@
 import { DEFAULT_USER_AUTH } from "./Constants"
 
 export const assets = (file) => {
-    return `/assets/${file}`
+    return `${process.env.PUBLIC_URL}/assets/${file}`
 }
 
 /** Return user auth from local storage value */

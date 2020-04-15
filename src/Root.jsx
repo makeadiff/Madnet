@@ -1,6 +1,6 @@
 import React from 'react'
 import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading } from '@ionic/react'
-import { IonReactRouter } from '@ionic/react-router'
+import { IonReactHashRouter } from '@ionic/react-router'
 import { Redirect, Route, useLocation } from 'react-router-dom'
 import { authContext } from "./contexts/AuthContext"
 import { appContext } from "./contexts/AppContext"
@@ -22,7 +22,7 @@ const Root = () => {
     const { loading, setLoading } = React.useContext(appContext)
 
     return (
-        <IonReactRouter>
+        <IonReactHashRouter>
             <SetPage />
             <IonSplitPane contentId="main">
                 <Menu />
@@ -80,7 +80,7 @@ const Root = () => {
                 </IonPage>
 
             </IonSplitPane>
-        </IonReactRouter>
+        </IonReactHashRouter>
     );
 }
 

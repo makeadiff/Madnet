@@ -2,7 +2,7 @@ import * as firebase from "firebase/app"
 import "firebase/messaging"
 import 'firebase/auth'
 import api from "./utils/API"
-import { getStoredUser,setStoredUser } from "./utils/Helpers";
+import { getStoredUser,setStoredUser } from "./utils/Helpers"
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -34,7 +34,7 @@ const requestPermission = async () => {
             // Save token to Server against curret user. 
             // Using this raw format(rather than using DataContext or Auth context) because this file is not a React component - hence will not let us use contexts within in.
             const user = getStoredUser()
-            console.log(user, token)
+            
             if(user && user.id && user.token !== token) {
                 api.rest(`users/${user.id}/devices/${token}`, "post")
                 user['token'] = token
@@ -51,6 +51,18 @@ const onMessage = (callback) => {
     navigator.serviceWorker.addEventListener("message", callback)
 }
 
+const convertNotificationPayload = (payload) => {
+    const notification = payload.data.firebaseMessaging.payload.notification
+    const new_notification = {
+        name : notification.title,
+        description : notification.body,
+        image : notification.icon,
+    //  url : fcmOptions.link
+    }
+
+    return new_notification
+}
+
 // // Callback fired if Instance ID token is updated.
 // messaging.onTokenRefresh(() => {
 //     messaging.getToken().then((refreshedToken) => {
@@ -63,4 +75,4 @@ const onMessage = (callback) => {
 //     });
 //   });
 
-export { firebase, messaging, requestPermission, onMessage };
+export { firebase, messaging, requestPermission, onMessage, convertNotificationPayload };

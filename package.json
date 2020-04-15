@@ -1,7 +1,8 @@
 {
-  "name": "allocate",
+  "name": "madnet",
   "version": "0.0.1",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@capacitor/core": "1.5.1",
     "@ionic/pwa-elements": "^1.5.1",
@@ -54,5 +55,5 @@
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.19.0"
   },
-  "description": "An Ionic project"
+  "description": "Make A Differenc(MAD) Internal App"
 }

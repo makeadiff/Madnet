@@ -44,7 +44,7 @@ const Menu = () => {
 
     } else {
         render = (
-            <IonList id="inbox-list">
+            <IonList id="volunteer-list">
                 <IonListHeader>MADNet</IonListHeader>
                 <IonNote>Please Login to use this app</IonNote>
             </IonList>

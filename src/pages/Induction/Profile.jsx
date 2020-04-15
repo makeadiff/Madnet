@@ -9,8 +9,8 @@ import { setStoredUser } from '../../utils/Helpers'
 
 const InductionProfile = () => {
     const [init, setInit] = React.useState(false)
-    const [ profile, setProfile ] = React.useState({"user":{"name": ""}})
-    const { setLoading, showMessage } = React.useContext(appContext)
+    const [ profile, setProfile ] = React.useState({})
+    // const { setLoading, showMessage } = React.useContext(appContext)
     const history = useHistory()
 
     React.useEffect(() => {
@@ -37,7 +37,7 @@ const InductionProfile = () => {
 
     return (
         <IonPage>
-            <Title name={"Hello, " + profile.user.name} />
+            <Title name={profile ? "Hello, " + profile.user.name : ""} />
             <IonContent>
                 <IonList>
                 <IonItem lines="none"><p>We have sent an OTP to your { profile.type === "email" ? "email address" : "phone number" }. Please enter the OTP to continue...</p></IonItem>

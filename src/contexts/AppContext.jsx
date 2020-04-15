@@ -9,16 +9,17 @@ export const appContext = React.createContext({
 	setLoading: () => {},
 	data: {},
     setData: () => {},
-    notifications: []
+    notifications: [],
+    addNotification: () => {}
 });
 
 const { Provider } = appContext;
 
 const AppProvider = ({ children }) => {
-    const { message,showMessage,loading,setLoading,data,setData,notifications } = useGlobalHandler();
+    const { message,showMessage,loading,setLoading,data,setData,notifications,addNotification } = useGlobalHandler();
 
     return (
-        <Provider value={{ message,showMessage,loading,setLoading,data,setData,notifications }}>
+        <Provider value={{ message,showMessage,loading,setLoading,data,setData,notifications,addNotification }}>
             {children}
         </Provider>
     );
