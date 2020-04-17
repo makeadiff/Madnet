@@ -28,7 +28,7 @@ const Root = () => {
                 <Menu />
                 
                 <IonPage id="main">
-                    <IonLoading isOpen={loading} onDidDismiss={() => setLoading(false)} message={'Loading...'} duration={3000} />
+                    <IonLoading isOpen={loading} onDidDismiss={() => setLoading(false)} message={'Loading...'} duration={10000} />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">

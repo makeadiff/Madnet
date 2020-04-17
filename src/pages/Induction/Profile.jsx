@@ -3,15 +3,18 @@ import { IonItem, IonInput, IonPage, IonContent,IonIcon, IonList, IonButton } fr
 import { arrowForwardOutline } from 'ionicons/icons'
 import { useHistory } from 'react-router-dom'
 
-import { appContext } from "../../contexts/AppContext"
 import Title from '../../components/Title'
-import { setStoredUser } from '../../utils/Helpers'
+import { appContext } from '../../contexts/AppContext'
+import api from '../../utils/API'
+
+// :TODO: Add a check to make sure their name, email, phone and city are correct here.
+// :TODO: Send OTP Again button.
 
 const InductionProfile = () => {
-    const [init, setInit] = React.useState(false)
-    const [ profile, setProfile ] = React.useState({})
-    // const { setLoading, showMessage } = React.useContext(appContext)
+    const [ init, setInit ] = React.useState(false)
+    const [ profile, setProfile ] = React.useState({user:{name:""}})
     const history = useHistory()
+    const { setLoading, showMessage } = React.useContext(appContext)
 
     React.useEffect(() => {
         const profile_str = localStorage.getItem("induction_profile")
@@ -19,21 +22,25 @@ const InductionProfile = () => {
             setProfile(JSON.parse(profile_str))
 
         } else { // Can't find any induction information.
-            history.push('/induction')
+            history.push('/induction/join')
         }
         setInit(true)
     }, [init])
 
     const checkOtp = () => {
         let otp = document.getElementById("otp").value
-        console.log(otp)
-        // :TODO: API call to check OTP.
-
-        if(otp === "1234") {
-            setStoredUser(profile.user)
-            history.push('/induction/setup')
-        }
-    }
+        
+        // API call to check OTP.
+        setLoading(true)
+        api.graphql(`{verifyOtp(${profile.type}: "${profile.identifier}", otp: "${otp}")}`).then((data) => {
+            setLoading(false)
+            if(data.verifyOtp) {
+                history.push('/induction/setup')
+            } else { // Can't find the user.
+                showMessage("Incorrect OTP provided.", "error")
+            }
+        }).catch(e => showMessage(e.message, "error"))
+   }
 
     return (
         <IonPage>

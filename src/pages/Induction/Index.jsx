@@ -18,7 +18,7 @@ const InductionIndex = () => {
     const no_user_err_message = (<>
         Can't find any user with the given details. This can be because of either of these 2 reasons...
         <ul>
-            <li>You have not given the email or phone number you gave when registering. 
+            <li>You have not given the email you gave when registering. 
                 Try using another email/phone if you have a alternative one.</li>
             <li>We haven't updated your profile to mark you as a volunteer yet. 
                 If you think this is the case, reach out to one of the orginizers of the induction and get it fixed right now. 
@@ -53,7 +53,7 @@ const InductionIndex = () => {
         let identifier = document.getElementById("identifier").value
 
         if(!identifier) {
-            showMessage("Please provide your Email or Phone number", "error")
+            showMessage("Please provide your Email", "error")
             return false
         }
 
@@ -62,21 +62,20 @@ const InductionIndex = () => {
         else if(validator.isMobilePhone(identifier)) type = "phone"
 
         if (!type) {
-            showMessage("Please make sure that you have provided a valid email or phone number", "error")
+            showMessage("Please make sure that you have provided a valid email", "error")
             return false
         }
 
         setLoading(true)
         // :TODO: We'll need another call for this - check if its their first time, etc. Or its a big security issue. People can just use this page to login to anyone who's email id/phone they know.
-        // :TODO: If email, sent OTP
         // :TODO: If phone, sent whatsapp OTP / SMS OTP
-        api.rest(`users?identifier=${identifier}`, "get").then((data) => {
+        api.graphql(`{sendOtp(${type}: "${identifier}") { id name email phone }}`).then((data) => {
             setLoading(false)
-            if(data.users.length) {
+            if(data.sendOtp) {
                 localStorage.setItem("induction_profile", JSON.stringify({
                     "identifier": identifier,
                     "type": type,
-                    "user": data.users[0]
+                    "user": data.sendOtp
                 }))
                 history.push('/induction/profile')
 
@@ -97,20 +96,20 @@ const InductionIndex = () => {
             <Title name="Welcome to MADNet" />
             <IonContent>
                 <IonList>
-                <IonItem><strong>Welcome to Make A Difference.</strong></IonItem>
+                <IonItem lines="none"><strong>Welcome to Make A Difference.</strong></IonItem>
                 
-                <IonItem>We'll be setting up your profile in our database now. 
-                    To continue, please <strong>enter the email OR phone number you provided when registering for MAD</strong>.</IonItem>
+                <IonItem lines="none"><span>We'll be setting up your profile in our database now. 
+                    To continue, please <strong>enter the email you provided when registering for MAD</strong>.</span></IonItem>
                 
-                <IonItem><IonInput name="identifier" id="identifier" placeholder="Email OR Phone Number" /></IonItem>
+                <IonItem lines="none"><IonInput name="identifier" id="identifier" placeholder="Email" /></IonItem>
 
                 <IonItem><IonButton name="action" onClick={ stepOne }>Next <IonIcon icon={arrowForwardOutline}></IonIcon></IonButton></IonItem>
 
-                <IonItem>OR</IonItem>
+                <IonItem lines="none">OR</IonItem>
 
-                <IonItem><img width="200" src={ assets('glogin.png') } alt="Login With Google" onClick={ signInWithGoogle } /></IonItem>
+                <IonItem lines="none"><img width="200" src={ assets('glogin.png') } alt="Login With Google" onClick={ signInWithGoogle } /></IonItem>
 
-                <IonItem>{message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}</IonItem>
+                <IonItem lines="none">{message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}</IonItem>
                 </IonList>
             </IonContent>
         </IonPage>
