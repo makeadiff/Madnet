@@ -4,6 +4,7 @@ import { API_AUTH, API_REST_URL, API_BASE_URL } from "./Constants";
 
 const api = {
     rest: async (url, method, params) => {
+        url = url.replace('//', '/') // Sometimes the argument url might have a '/' at the start. Causes an error.
         const response = await fetch(API_REST_URL + url, {
             method: method,
             headers: { 

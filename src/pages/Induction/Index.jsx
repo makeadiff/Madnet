@@ -12,7 +12,6 @@ import Title from '../../components/Title'
 
 const InductionIndex = () => {
     const [init, setInit] = React.useState(false)
-    // const [identifier, setIdentifier] = React.useState("")
     const { setLoading, message, showMessage } = React.useContext(appContext)
     const history = useHistory()
     const no_user_err_message = (<>
@@ -67,7 +66,6 @@ const InductionIndex = () => {
         }
 
         setLoading(true)
-        // :TODO: We'll need another call for this - check if its their first time, etc. Or its a big security issue. People can just use this page to login to anyone who's email id/phone they know.
         // :TODO: If phone, sent whatsapp OTP / SMS OTP
         api.graphql(`{sendOtp(${type}: "${identifier}") { id name email phone }}`).then((data) => {
             setLoading(false)

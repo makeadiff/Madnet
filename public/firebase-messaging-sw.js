@@ -1,6 +1,8 @@
 importScripts("https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/7.13.2/firebase-messaging.js");
 
+// NOTE: This is called from the root of the domain (makeadiff.in/firebase-messaing-sw.js) and redirected to this file using htaccess rewrite.
+
 // Your web app's Firebase configuration
 var firebaseConfig = {
     apiKey: "AIzaSyBMADdvkn0Avmq2_loScmoXdTf7m7LgNXk",

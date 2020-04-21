@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 
 import Title from '../../components/Title'
 import { appContext } from '../../contexts/AppContext'
+import { authContext } from '../../contexts/AuthContext'
 import api from '../../utils/API'
 
 // :TODO: Add a check to make sure their name, email, phone and city are correct here.
@@ -15,6 +16,7 @@ const InductionProfile = () => {
     const [ profile, setProfile ] = React.useState({user:{name:""}})
     const history = useHistory()
     const { setLoading, showMessage } = React.useContext(appContext)
+    const { setCurrentUser } = React.useContext(authContext)
 
     React.useEffect(() => {
         const profile_str = localStorage.getItem("induction_profile")
@@ -35,6 +37,8 @@ const InductionProfile = () => {
         api.graphql(`{verifyOtp(${profile.type}: "${profile.identifier}", otp: "${otp}")}`).then((data) => {
             setLoading(false)
             if(data.verifyOtp) {
+                // Email confirmed - so we can set that person as the current user... 
+                setCurrentUser(profile.user)
                 history.push('/induction/setup')
             } else { // Can't find the user.
                 showMessage("Incorrect OTP provided.", "error")
