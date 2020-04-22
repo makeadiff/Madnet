@@ -7,6 +7,9 @@ const useGlobalHandler = () => {
     const [notifications, setNotifications] = React.useState([])
 
     const showMessage = (message, type) => {
+        if(type === undefined) type = "info"
+
+        console.log(type + " : " + message)
         setMessage([message, type])
     }
 
@@ -21,6 +24,7 @@ const useGlobalHandler = () => {
     return {
         message,
         showMessage,
+        setMessage,
         loading,
         setLoading,
         data,

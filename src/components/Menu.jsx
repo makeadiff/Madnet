@@ -9,7 +9,7 @@ import { volunteer_pages, fellow_pages } from "../utils/Menu"
 import { personOutline, logOutOutline } from 'ionicons/icons'
 
 const Menu = () => {
-    const { user, unsetCurrentUser } = React.useContext(authContext)
+    const { user, unsetCurrentUser, isFellow } = React.useContext(authContext)
     const { data } = React.useContext(appContext)
     let render
 
@@ -22,10 +22,12 @@ const Menu = () => {
                 <MenuSection pages={volunteer_pages} />
             </IonList>
 
-            <IonList id="admin-list" className="sections">
-                <IonListHeader>Admin Section</IonListHeader>
-                <MenuSection pages={fellow_pages} />
-            </IonList>
+            { isFellow() ? (
+                <IonList id="admin-list" className="sections">
+                    <IonListHeader>Admin Section</IonListHeader>
+                    <MenuSection pages={fellow_pages} />
+                </IonList>
+            ) : null }
 
             <IonList id="user-list" className="sections">
                 <IonListHeader>User Section</IonListHeader>

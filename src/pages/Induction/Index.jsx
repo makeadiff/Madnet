@@ -65,7 +65,7 @@ const InductionIndex = () => {
             return false
         }
 
-        setLoading(true)
+        setLoading("Sending the OTP to your email address...")
         // :TODO: If phone, sent whatsapp OTP / SMS OTP
         api.graphql(`{sendOtp(${type}: "${identifier}") { id name email phone }}`).then((data) => {
             setLoading(false)
