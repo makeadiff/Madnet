@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import Title from '../components/Title'
 import { authContext } from "../contexts/AuthContext";
 import { volunteer_pages, fellow_pages } from "../utils/Menu"
+import './All.css';
 import './Dashboard.css';
 const Alerts = lazy(() => import('../components/Alerts'))
 

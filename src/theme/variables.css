@@ -1,6 +1,14 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500&display=swap');
+
+body,html,*{
+  --ion-default-font: 'Rubik', sans-serif;
+  --ion-font-family: 'Rubik', sans-serif;
+	font-family: var(--ion-default-font);
+}
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
@@ -192,13 +200,13 @@ http://ionicframework.com/docs/theming/ */
    */
 
   .md body {
-    --ion-background-color: #121212;
+    --ion-background-color: #DFE3E8;
     --ion-background-color-rgb: 18,18,18;
 
-    --ion-text-color: #ffffff;
+    --ion-text-color: ##242537;    
     --ion-text-color-rgb: 255,255,255;
 
-    --ion-border-color: #222222;
+    --ion-border-color: transparent;
 
     --ion-color-step-50: #1e1e1e;
     --ion-color-step-100: #2a2a2a;
@@ -230,7 +238,7 @@ http://ionicframework.com/docs/theming/ */
 
 
 body {
-    --ion-background-color: #212121;
+    --ion-background-color: #DFE3E8;
     --ion-background-color-rgb: 18,18,18;
 
     /* --ion-background-color: #00695c;

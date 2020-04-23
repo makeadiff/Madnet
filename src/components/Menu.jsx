@@ -1,4 +1,4 @@
-import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote } from '@ionic/react'
+import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote,IonThumbnail,IonImg,IonAvatar} from '@ionic/react'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 
@@ -17,26 +17,29 @@ const Menu = () => {
         render = (
             <>
             <IonList id="volunteer-list" className="sections">
-                <IonListHeader>MADNet</IonListHeader>
-                <IonNote>{ user.name }</IonNote>
-                <MenuSection pages={volunteer_pages} />
-            </IonList>
+                <IonListHeader>MADNet</IonListHeader>                  
+            </IonList>           
 
+            <IonList id="user-list" className="sections">
+                <IonListHeader>User Section</IonListHeader>                
+                <MenuSection pages={volunteer_pages} />                                                                                          
+
+                <IonItem onClick={ unsetCurrentUser }>
+                    <IonIcon slot="start" icon={ logOutOutline } />
+                    <IonLabel>Logout</IonLabel>
+                </IonItem>
+            </IonList>
             <IonList id="admin-list" className="sections">
                 <IonListHeader>Admin Section</IonListHeader>
                 <MenuSection pages={fellow_pages} />
             </IonList>
 
-            <IonList id="user-list" className="sections">
-                <IonListHeader>User Section</IonListHeader>
-                <IonItem routerLink="/profile" className={data.path.includes("/profile") ? 'selected' : ''}>
-                    <IonIcon slot="start" icon={ personOutline } />
-                    <IonLabel>Profile</IonLabel>
-                </IonItem>
-
-                <IonItem onClick={ unsetCurrentUser }>
-                    <IonIcon slot="start" icon={ logOutOutline } />
-                    <IonLabel>Logout</IonLabel>
+            <IonList className="sections">
+                <IonItem className="noHover">
+                    <IonAvatar slot="start">
+                    <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
+                    </IonAvatar>
+                    <IonLabel>{user.name}<br/>#{user.id}</IonLabel>
                 </IonItem>
             </IonList>
             </>
@@ -46,7 +49,7 @@ const Menu = () => {
         render = (
             <IonList id="volunteer-list">
                 <IonListHeader>MADNet</IonListHeader>
-                <IonNote>Please Login to use this app</IonNote>
+                {/* <IonNote>Please Login to use this app</IonNote> */}
             </IonList>
         )
     }

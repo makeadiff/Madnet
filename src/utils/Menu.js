@@ -4,31 +4,31 @@ import { SITE_URL } from './Constants';
 
 export const volunteer_pages = [
     {
-        title: 'Dashboard',
+        title: 'DASHBOARD',
         url: '/dashboard',
         iosIcon: appsOutline,
         mdIcon: appsSharp
     },
     {
-        title: 'My Classes',
+        title: 'MY CLASSES',
         url: '/classes',
         iosIcon: bookOutline,
         mdIcon: bookSharp
     },
     {
-        title: 'Donations',
+        title: 'DONATIONS',
         url: SITE_URL + 'donut',
         iosIcon: cashOutline,
         mdIcon: cashSharp
     },
     {
-        title: 'Events',
+        title: 'EVENTS',
         url: '/events/invitations',
         iosIcon: calendarOutline,
         mdIcon: calendarSharp
     },
     {
-        title: 'Profile',
+        title: 'PROFILE',
         url: '/profile',
         iosIcon: personOutline,
         mdIcon: personSharp

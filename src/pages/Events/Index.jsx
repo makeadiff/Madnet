@@ -15,12 +15,14 @@ const EventIndex = () => {
             <Title name="Events" />
 
             <IonContent>
-                {/* This is working code { hasPermission('event_add') ? 
-                    (<IonFab vertical="bottom" horizontal="end" slot="fixed">
+                {/* This is working code  */}
+                {/* { hasPermission('event_add') ? ( */}
+                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
                         <IonFabButton>
                             <IonIcon icon={add} />
                         </IonFabButton>
-                    </IonFab>) : null } */}
+                    </IonFab> 
+                {/* ) : null }  */}
 
                 <IonSegment value={segment} onIonChange={e => setSegment(e.detail.value)}>
                     <IonSegmentButton value="invitations">
@@ -30,6 +32,7 @@ const EventIndex = () => {
                         <IonLabel>Events in City</IonLabel>
                     </IonSegmentButton>
                 </IonSegment>
+                
 
                 <EventList segment={segment} />
 

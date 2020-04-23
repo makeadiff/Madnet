@@ -1,6 +1,6 @@
 export const SITE_URL = "https://makeadiff.in/";
 
-export const API_BASE_URL = "http://localhost/MAD/api/index.php/";
+export const API_BASE_URL = "http://localhost/makeadiff/api/index.php/";
 // export const API_BASE_URL = SITE_URL + "api/";
 export const API_REST_URL = API_BASE_URL + "v1/";
 export const API_AUTH = {"username" : "data.simulation@makeadiff.in", "password" : "pass", "base64": "ZGF0YS5zaW11bGF0aW9uQG1ha2VhZGlmZi5pbjpwYXNz" };

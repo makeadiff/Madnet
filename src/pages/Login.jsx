@@ -124,7 +124,7 @@ function Login() {
             <IonList>
                 <form onSubmit={ handleSubmit } >
                     <IonItem lines="none">
-                        <IonInput type="email" name="email" id="email" autofocus="true" required="true" value={userEmail}
+                        <IonInput type="email" name="email" id="email" required="true" value={userEmail}
                             placeholder="Email/Phone..." onIonChange={e => setUserEmail(e.target.value) } />
                     </IonItem>
                     <IonItem lines="none">
