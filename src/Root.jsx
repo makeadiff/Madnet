@@ -17,6 +17,8 @@ import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
+import UserIndex from './pages/Users/Index'
+import UserView from './pages/Users/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -65,6 +67,13 @@ const Root = () => {
                         </PrivateRoute>
                         <PrivateRoute path="/shelters">
                             <Shelters />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/users/:user_id/view">
+                            <UserView />
+                        </PrivateRoute>
+                        <PrivateRoute path="/users">
+                            <UserIndex />
                         </PrivateRoute>
 
                         <PrivateRoute path="/surveys/:surveyId">

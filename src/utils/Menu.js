@@ -38,7 +38,7 @@ export const volunteer_pages = [
 export const fellow_pages = [
     {
         title: 'Volunteers',
-        url: '/volunteers',
+        url: '/users',
         iosIcon: peopleOutline,
         mdIcon: peopleSharp
     },
