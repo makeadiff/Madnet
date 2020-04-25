@@ -19,6 +19,7 @@ import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
 import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
+import UserForm from './pages/Users/Form'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -71,6 +72,9 @@ const Root = () => {
 
                         <PrivateRoute path="/users/:user_id/view">
                             <UserView />
+                        </PrivateRoute>
+                        <PrivateRoute path="/users/:user_id/edit">
+                            <UserForm />
                         </PrivateRoute>
                         <PrivateRoute path="/users">
                             <UserIndex />

@@ -43,7 +43,7 @@ const UserView = () => {
             <IonContent>
                 { hasPermission('user_edit') ? 
                     (<IonFab vertical="bottom" horizontal="end" slot="fixed">
-                        <IonFabButton>
+                        <IonFabButton routerLink={ `/users/${user.id}/edit` }>
                             <IonIcon icon={ createOutline } />
                         </IonFabButton>
                     </IonFab>) : null }

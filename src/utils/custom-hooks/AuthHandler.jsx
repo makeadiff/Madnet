@@ -1,10 +1,11 @@
-import * as React from "react";
-import { DEFAULT_USER_AUTH } from "../Constants";
+import * as React from "react"
+
+import { DEFAULT_USER_AUTH } from "../Constants"
 import api from "../API";
 import { getStoredUser, setStoredUser } from "../Helpers"
 
 const useAuthHandler = (initialState) => {
-    const [user, setUser] = React.useState(initialState);
+    const [user, setUser] = React.useState(initialState)
 
     const setCurrentUser = (user_data) => {
         setStoredUser(user_data)
@@ -32,10 +33,11 @@ const useAuthHandler = (initialState) => {
         return false
     }
 
-    const hasPermission = (permission) => {
+    const hasPermission = (permission, redirect) => {
         if (!user.id || user.permissions === undefined) return false;
+        const valid = user.permissions.includes(permission)
 
-        return user.permissions.includes(permission)
+        return valid
     }
 
     return {
