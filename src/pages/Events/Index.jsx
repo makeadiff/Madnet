@@ -8,7 +8,7 @@ import { authContext } from "../../contexts/AuthContext";
 
 const EventIndex = () => {
     const [segment, setSegment] = React.useState('invitations')
-    const { hasPermission } = React.useContext(authContext);
+    const { hasPermission } = React.useContext(authContext)
 
     return (
         <IonPage>

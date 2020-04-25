@@ -1,16 +1,15 @@
-import { IonList,IonItem,IonLabel } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import { IonList,IonItem,IonLabel } from '@ionic/react'
+import React, { useState, useEffect } from 'react'
 
-import { authContext } from "../../contexts/AuthContext";
-import { appContext } from "../../contexts/AppContext";
-import { dataContext } from "../../contexts/DataContext";
-import api from "../../utils/API";
+import { authContext } from "../../contexts/AuthContext"
+import { appContext } from "../../contexts/AppContext"
+import { dataContext } from "../../contexts/DataContext"
 
 const UserList = ({ segment }) => {
-    const { user } = React.useContext(authContext);
-    const { setLoading, showMessage } = React.useContext(appContext);
-    const { getUsers } = React.useContext(dataContext);
-    const [users, setUsers] = useState([]);
+    const { user } = React.useContext(authContext)
+    const { setLoading, showMessage } = React.useContext(appContext)
+    const { getUsers } = React.useContext(dataContext)
+    const [users, setUsers] = useState([])
 
     useEffect(() => {
         async function fetchUserList() {

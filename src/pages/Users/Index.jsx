@@ -1,8 +1,9 @@
-import { IonPage, IonLabel,IonContent, IonSegment,IonSegmentButton } from '@ionic/react';
-import React from 'react';
+import { IonPage, IonLabel,IonContent, IonSegment,IonSegmentButton } from '@ionic/react'
+import React from 'react'
 
 import Title from "../../components/Title"
 import VolunteerList from "./List"
+
 
 const UserIndex = () => {
     const [segment, setSegment] = React.useState('all')

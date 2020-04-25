@@ -6,7 +6,7 @@ import api from "../utils/API"
 // This is the global store. Just didn't want to call it a store because I'm not sure if this is how to implement it.
 
 export const dataContext = React.createContext({
-    apiWrapper: () => {},
+    callApi: () => {},
     getSurveyForm: () => {},
     setSurveyResponses: () => {},
     getUsers: () => {},
@@ -18,17 +18,17 @@ export const dataContext = React.createContext({
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { apiWrapper,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken } = useHandler();
+    const { callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken } = useHandler();
 
     return (
-        <Provider value={{ apiWrapper,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken }}>
+        <Provider value={{ callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken }}>
             {children}
         </Provider>
     );
 };
 
 const useHandler = () => {
-    const { setLoading, showError } = React.useContext(appContext)
+    const { setLoading, showMessage } = React.useContext(appContext)
     const [error, setError] = React.useState([])
     const { user } = React.useContext(authContext)
 
@@ -62,16 +62,17 @@ const useHandler = () => {
     }
 
     /// An API wrapper to make th calls.
-    const apiWrapper = async(user_args) => {
+    const callApi = async(user_args) => {
         const default_args = {
             url: "",
             type: "rest",
             method: "get",
             params: false,
             graphql: "",
+            graphql_type: "query",
             name: user_args.url.split(/[\/\?\(]/)[0],
             key: user_args.url.split(/[\/\?\()]/)[0],
-            cache: true
+            cache: true,
         }
         let call_response
         const args = { ...default_args, ...user_args} // Merge both array - so that we have default values
@@ -86,16 +87,19 @@ const useHandler = () => {
         try {
             if(args.type === "rest") {
                 call_response = await api.rest(args.url, args.method, args.params)
-            }
+            } else if(args.type === "graphql") {
+                call_response = await api.graphql(args.graphql, args.graphql_type)
+
+            } else console.log("Dev Error: Unsupported type given in callApi({args.type})")
         } catch(e) {
-            showError(`${args.name} ${args.method} call failed: ${e.message}`, "error")
+            showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")
         }
         setLoading(false)
 
-        let data = false 
-        if(call_response[args.key] !== undefined) {
+        let data = false
+        if(call_response !== undefined && call_response[args.key] !== undefined) {
             data = call_response[args.key]
-        } else if(Object.keys(call_response).length === 1) {
+        } else if(call_response !== undefined && Object.keys(call_response).length === 1) {
             data = call_response[Object.keys(call_response)[0]]
 
         } else {
@@ -104,10 +108,11 @@ const useHandler = () => {
                 "message": args.name + " call failed",
                 "endpoint": args.url
             })
+            showMessage(args.name + " call failed", "error")
             return false
         }
 
-        // Save fetched data to cache.
+        // Save fetched data to cache. :TODO: Support GraphQL caching.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
             setLocalCache(args.url, data)
         }
@@ -160,16 +165,17 @@ const useHandler = () => {
         for(let param in params) {
             query_parts.push(`${param}=${params[param]}`)
         }
-        return await apiWrapper({url:`users?${query_parts.join("&")}`})
+        return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
-    const getAlerts = async () => {
-        return await apiWrapper({url:`users/${user.id}/alerts`})
+    const getAlerts = async (user_id) => {
+        if(user_id === undefined) user_id = user.id
+        return await callApi({url:`users/${user_id}/alerts`})
     }
 
     const setDeviceToken = async (token, user_id) => {
         if(user_id === undefined) user_id = user.id
-        return await apiWrapper({url:`users/${user_id}/devices/${token}`, "method": "post"})
+        return await callApi({url:`users/${user_id}/devices/${token}`, "method": "post"})
     }
 
     const unsetDeviceToken = async (token, user_id) => {
@@ -181,7 +187,7 @@ const useHandler = () => {
     }
 
     return {
-        apiWrapper,getSurveyForm, setSurveyResponses, getUsers, getAlerts, setDeviceToken, unsetDeviceToken
+        callApi,getSurveyForm, setSurveyResponses, getUsers, getAlerts, setDeviceToken, unsetDeviceToken
     };
 };
 
