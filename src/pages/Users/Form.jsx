@@ -35,7 +35,7 @@ const UserForm = () => {
     }, [user_id])
 
     const saveUser = (e) => {
-
+        // :TODO: Implement this.
     }
 
     return (
@@ -71,6 +71,8 @@ const UserForm = () => {
                         </IonItem>)
                     })}
                     </div>
+
+                    <IonItem><IonButton type="submit">Save</IonButton></IonItem>
                     </IonList>
                 </form>
             </IonContent>
