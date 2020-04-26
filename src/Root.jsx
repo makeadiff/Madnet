@@ -17,6 +17,7 @@ import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
+import Profile from './pages/Profile'
 
 const Root = () => {
     const { loading, setLoading } = React.useContext(appContext)
@@ -72,7 +73,7 @@ const Root = () => {
                         </PrivateRoute>
 
                         <PrivateRoute path="/profile">
-                            <Page page={{name: "Profile"}} />
+                            <Profile />
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />

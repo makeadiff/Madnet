@@ -1,4 +1,4 @@
-import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent } from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent} from '@ionic/react'
 import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
@@ -9,6 +9,8 @@ import { appContext } from "../contexts/AppContext"
 import api from "../utils/API"
 import { assets } from "../utils/Helpers"
 import Title from '../components/Title'
+
+import './Login.css'
 
 /*
 :TODO:
@@ -119,27 +121,35 @@ function Login() {
 
     return (
         <IonPage>
-            <Title name="Login" />
-            <IonContent>
-            <IonList>
-                <form onSubmit={ handleSubmit } >
-                    <IonItem lines="none">
-                        <IonInput type="email" name="email" id="email" required="true" value={userEmail}
-                            placeholder="Email/Phone..." onIonChange={e => setUserEmail(e.target.value) } />
-                    </IonItem>
-                    <IonItem lines="none">
-                        <IonInput type="password" id="password" name="password" requried="true" value={userPassword}
-                            placeholder="Password..." onIonChange={e => setUserPassword(e.target.value)} />
-                    </IonItem>
-                    <IonItem>
-                        <IonButton type="submit" disabled={loading} block={true} size="default">
-                            {loading ? "Loading..." : "Sign In"}
-                        </IonButton>
-                    </IonItem>
-                    <IonItem lines="none"><img width="200" src={assets('glogin.png')} alt="Login With Google"  onClick={ signInWithGoogle } /></IonItem>
-                    <IonItem lines="none">{message.length && <div className={message[1] + "-message"}>{ message[0] }</div>}</IonItem>
-                </form>
-            </IonList>
+            {/* <Title name="Login" /> */}
+            <IonContent className="ion-justify-content-center">
+                <IonCard className="loginCard">
+                    {/* <IonCardHeader>                        
+                        <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
+                        <IonCardTitle>Card Title</IonCardTitle>
+                    </IonCardHeader> */}
+                    <IonCardContent>
+                        <IonList>
+                            <form onSubmit={ handleSubmit } >
+                                <IonItem lines="none">
+                                    <IonInput className="input_field" type="email" name="email" id="email" required="true" value={userEmail}
+                                        placeholder="Email/Phone..." onIonChange={e => setUserEmail(e.target.value) } />
+                                </IonItem>
+                                <IonItem lines="none">
+                                    <IonInput className="input_field" type="password" id="password" name="password" requried="true" value={userPassword}
+                                        placeholder="Password..." onIonChange={e => setUserPassword(e.target.value)} />
+                                </IonItem>
+                                <IonItem>
+                                    <IonButton type="submit" disabled={loading} block={true} size="default">
+                                        {loading ? "Loading..." : "Sign In"}
+                                    </IonButton>
+                                </IonItem>
+                                <IonItem lines="none"><img width="200" src={assets('glogin.png')} alt="Login With Google"  onClick={ signInWithGoogle } /></IonItem>
+                                <IonItem lines="none">{message.length && <div className={message[1] + "-message"}>{ message[0] }</div>}</IonItem>
+                            </form>
+                        </IonList>
+                    </IonCardContent>
+                </IonCard>
             </IonContent>
         </IonPage>
     );

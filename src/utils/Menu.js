@@ -1,12 +1,12 @@
-import { appsOutline, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp, calendarOutline, calendarSharp, 
-    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp } from 'ionicons/icons';
+import { apps, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp, calendarOutline, calendarSharp, 
+    personCircle, personSharp, people, peopleSharp, businessOutline, businessSharp } from 'ionicons/icons';
 import { SITE_URL } from './Constants';
 
 export const volunteer_pages = [
     {
         title: 'DASHBOARD',
         url: '/dashboard',
-        iosIcon: appsOutline,
+        iosIcon: apps,
         mdIcon: appsSharp
     },
     {
@@ -30,7 +30,7 @@ export const volunteer_pages = [
     {
         title: 'PROFILE',
         url: '/profile',
-        iosIcon: personOutline,
+        iosIcon: personCircle,
         mdIcon: personSharp
     }
 ];
@@ -39,7 +39,7 @@ export const fellow_pages = [
     {
         title: 'Volunteers',
         url: '/volunteers',
-        iosIcon: peopleOutline,
+        iosIcon: people,
         mdIcon: peopleSharp
     },
     {
