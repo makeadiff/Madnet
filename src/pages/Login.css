@@ -26,10 +26,15 @@ ion-content{
   transform: translateY(-50%);    
 }
 
+.loginCard ion-item{
+  margin-bottom: 20px;
+}
+
 @media (max-width:500px){
   .loginCard{
-    width: 100%;
-    position: inherit;
-    top: 0%;    
+    width: 90%;    
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);  
   } 
 }

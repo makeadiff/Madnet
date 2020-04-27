@@ -15,13 +15,19 @@ const Profile = () => {
 	const { user } = React.useContext(authContext)	
 	let breakcondition = false;
 	const [ disable, setDisable ] = React.useState(true);
-	const sex = {
+	const sexArray = {
 		"m": "Male",
 		"f": "Female",
 		"o": "Not Specified"
 	}
-	console.log(user,disable);  
 
+	const [ name, setName ] = React.useState(user.name);
+	const [ email, setEmail ] = React.useState(user.email);
+	const [ phone, setPhone ] = React.useState(user.phone);
+	const [ sex, setSex ] = React.useState(user.sex);
+	const [ birthday, setBirthday ] = React.useState(user.birthday);
+	const [ address, setAddress ] = React.useState(user.address);
+	
 	const openEdit = () => {
 		setDisable(false);	  
 	}
@@ -57,47 +63,47 @@ const Profile = () => {
 									</IonItem>
 									<IonItem>
 										<IonLabel position="stacked">Name</IonLabel>
-										<IonInput required type="text" value={user.name} disabled={disable}></IonInput>
+										<IonInput required type="text" value={user.name} onIonChange={e => setName(e.target.value)} disabled={disable}></IonInput>
 									</IonItem>
 									<IonItem>
 										<IonLabel position="stacked">Email</IonLabel>
-										<IonInput required type="email" value={user.email} disabled={disable}></IonInput>
+										<IonInput required type="email" value={user.email} disabled={disable} onIonChange={e => setEmail(e.target.value)}></IonInput>
 									</IonItem>
 									<IonItem>			
 										<IonLabel position="stacked">Phone</IonLabel>
-										<IonInput required type="text" value={user.phone} disabled={disable}></IonInput>
+										<IonInput required type="text" value={user.phone} disabled={disable} onIonChange={e => setPhone(e.target.value)}></IonInput>
 									</IonItem>
 									<IonItem className={ !disable ? "hidden": null }>
 										<IonLabel position="stacked">Sex</IonLabel>
-										<IonInput required type="text" value={sex[user.sex]} disabled></IonInput>
+										<IonInput required type="text" value={sexArray[user.sex]} disabled></IonInput>
 									</IonItem>
-									<IonRadioGroup className={ disable ? "hidden": null } value={user.sex}>
+									<IonRadioGroup className={ disable ? "hidden": null } value={user.sex} onIonChange={e => setSex(e.target.value)}>
 										<IonListHeader>
 											<IonLabel>Sex</IonLabel>
 										</IonListHeader>
 
 										<IonItem>
 										<IonLabel>Male</IonLabel>
-										<IonRadio mode="ios" slot="start" value="m" />
+										<IonRadio mode="ios" name="sex" slot="start" value="m" />
 										</IonItem>
 
 										<IonItem>
 										<IonLabel>Female</IonLabel>
-										<IonRadio mode="ios" slot="start" value="f" />
+										<IonRadio mode="ios" name="sex" slot="start" value="f" />
 										</IonItem>
 
 										<IonItem>
 										<IonLabel>Other</IonLabel>
-										<IonRadio mode="ios" slot="start" value="o"/>
+										<IonRadio mode="ios" name="sex" slot="start" value="o"/>
 										</IonItem>
 									</IonRadioGroup>
 									<IonItem>	
 										<IonLabel position="stacked">Birthday</IonLabel>
-										<IonInput required type="date" value={user.birthday} disabled={disable}></IonInput>
+										<IonInput required type="date" value={user.birthday} disabled={disable} onIonChange={e => setBirthday(e.target.value)}></IonInput>
 									</IonItem>
 									<IonItem>			
 										<IonLabel position="stacked">Address</IonLabel>
-										<IonTextarea required value={user.address} disabled={disable}></IonTextarea>
+										<IonTextarea required value={user.address} disabled={disable} onIonChange={e => setAddress(e.target.value)}></IonTextarea>
 									</IonItem>
 									<IonItem className={ disable? "hidden": null}>
 										<IonButton expand="full" size="default" color="primary" type="submit">Save</IonButton>
