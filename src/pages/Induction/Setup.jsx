@@ -1,19 +1,53 @@
 import React from 'react'
-import { IonButton, IonPage, IonContent, IonItem, IonIcon } from '@ionic/react'
+import { IonButton, IonPage, IonContent, IonItem, IonIcon, IonInput } from '@ionic/react'
 import { useHistory } from 'react-router-dom'
 
+import { authContext } from '../../contexts/AuthContext'
+import { appContext } from '../../contexts/AppContext'
 import { requestPermission } from "../../init-fcm"
 import Title from '../../components/Title'
 import { homeOutline } from 'ionicons/icons'
+import api from '../../utils/API'
 
 const InductionSetup = () => {
-    const [ step, setStep ] = React.useState("home-page")
+    const [ step, setStep ] = React.useState("set-password")
     const history = useHistory()
+    const { user } = React.useContext(authContext)
+    const { setLoading, showMessage } = React.useContext(appContext)
+    const all_steps = ["init", "set-password", "home-page", "notification-permission", "done"]
 
-    // Browser Detection
+    React.useEffect(() => {
+        if(step === "set-password") {
+            if(!user.id) { // User didn't come thru the normal route.
+                history.push("/induction/join")
+            }
+        }
+    }, [step])
+
+    // Browser Detection - needed to tell the user how to add the app to phone.
     let browser = "other"
     if(typeof InstallTrigger !== 'undefined') browser = "firefox"
     else if(!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) browser = "chrome"
+
+    const setPassword = () => {
+        const password = document.getElementById("new-password").value
+        const confirmation = document.getElementById("confirm-password").value
+
+        if(password !== confirmation) {
+            showMessage("Password does not match the confirmation", "error")
+        } else {
+            setLoading("Setting your password...")
+            api.rest(`users/${user.id}`, "post", {"password": password})
+            .then(() => {
+                setLoading(false)
+                setStep("home-page")
+            
+            }).catch(e => {
+                setLoading(false)
+                showMessage("There was an error changing your password. Try again after some time.", "error")
+            })
+        }
+    }
 
     const notificationPermission = () => {
         requestPermission()
@@ -34,12 +68,28 @@ const InductionSetup = () => {
                 </ul></IonItem>
             
                 <IonItem>
-                    <p>To do all, this we'll need a few App level permissions from your side. </p>
+                    <p>To do all, this we'll need to setup a few things...</p>
                 </IonItem>
+
+                <IonItem>
+                    <h3>Step { all_steps.indexOf(step) } / 4</h3>
+                </IonItem>
+
+                { (step === "set-password") ? 
+                    (<>
+                        <IonItem lines="none">First, setup a password for your account. You can login using your email and this password. Alternatively, you can use Google login to login as well.</IonItem>
+
+                        <IonItem lines="none"><IonInput id="new-password" type="password" placeholder="Password" /></IonItem>
+
+                        <IonItem lines="none"><IonInput id="confirm-password" type="password" placeholder="Confirm Password" /></IonItem>
+
+                        <IonItem lines="none"><IonButton onClick={ setPassword }>Next Step</IonButton></IonItem>
+                    </>)
+                    : null }
 
                 { (step === "home-page") ? 
                     (<>
-                        <IonItem lines="none">First, you'll have to add this app to your phone...</IonItem>
+                        <IonItem lines="none">First, you'll have to add this app to your phone. Hopefully you'll be using this from your phone - if you are NOT using this on your phone, skip to the next step.</IonItem>
 
                         <IonItem lines="none">{
                             browser === "firefox" 
@@ -68,7 +118,7 @@ const InductionSetup = () => {
                 { (step === "done") ? 
                     (<>
                         <IonItem lines="none">
-                            You are done! Now, you can go to your dashboard...
+                            There is no step 4! Setup is done! Now, you can go to your dashboard...
                         </IonItem>
 
                         <IonItem lines="none">

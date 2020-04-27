@@ -10,3 +10,16 @@ h3 {
 .box ion-text {
 	text-decoration: none;
 }
+
+ion-col.menu-item div{
+	height: 110px;
+	padding: 30px 0 30px 0;
+	background: var(--blue-grey-light);
+	border-radius: 5px;
+}
+
+ion-col.menu-item div:hover{
+	height: 105px;
+	padding-top: 25px;
+	border-top: 5px solid var(--red-bright);
+}

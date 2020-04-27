@@ -1,9 +1,9 @@
 import { API_AUTH, API_REST_URL, API_BASE_URL } from "./Constants";
 
-// :TODO: Catch errors, show error message if call fails.
-
 const api = {
+
     rest: async (url, method, params) => {
+        if(url[0] === '/') url = url.substring(1) // Sometimes the argument url might have a '/' at the start. Causes an error.
         const response = await fetch(API_REST_URL + url, {
             method: method,
             headers: { 
@@ -22,6 +22,8 @@ const api = {
             } else {
                 if(method === "delete") return true
             }
+        } else {
+            throw response
         }
 
         return false;

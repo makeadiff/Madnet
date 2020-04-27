@@ -22,7 +22,9 @@ const Alerts = () => {
         async function fetchAlerts() {
             const alerts_data = await getAlerts()
             if(alerts_data) {
-                setAlerts(notifications.concat(alerts_data.alerts))
+                setAlerts(notifications.concat(alerts_data))
+            } else {
+                console.log(" No Alert Data")
             }
         }
         fetchAlerts();

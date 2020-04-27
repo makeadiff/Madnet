@@ -11,8 +11,29 @@ body,html,*{
 
 /** Ionic CSS Variables **/
 :root {
+
+  --theme-text-color-dark: #14151E;
+  --theme-color-blue-grey: #8D99AE;
+  --theme-color-light-grey: #8D99AE;
+  
+  --grey-light: #DFE3E8;
+  --grey-medium: #CBCFD3;
+  --grey-dark: #B7BABE;
+  
+  --black: #14151E;
+
+  --blue-grey-light: #2B2D42;
+  --blue-grey-medium: #242547;  
+
+
+  --red-bright: #EF233C;
+  --red-medium: #DA2037;
+  --red-dark: #C41032;
+
+  --ion-input-highlight-focused: #EF233C;
+
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: #EF233C;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -91,7 +112,7 @@ body,html,*{
    */
 
   body {
-    --ion-color-primary: #428cff;
+    --ion-color-primary: #EF233C;
     --ion-color-primary-rgb: 66,140,255;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255,255,255;
@@ -161,10 +182,10 @@ body,html,*{
    */
 
   .ios body {
-    --ion-background-color: #000000;
+    --ion-background-color: #DFE3E8;
     --ion-background-color-rgb: 0,0,0;
 
-    --ion-text-color: #ffffff;
+    --ion-text-color: #ffffff;    
     --ion-text-color-rgb: 255,255,255;
 
     --ion-color-step-50: #0d0d0d;
@@ -187,9 +208,10 @@ body,html,*{
     --ion-color-step-900: #e6e6e6;
     --ion-color-step-950: #f2f2f2;
 
-    --ion-toolbar-background: #0d0d0d;
+    --ion-toolbar-background: #2B2D42;
 
-    --ion-item-background: #1c1c1c;
+    /* --ion-item-background: #1c1c1c; */
+    --ion-item-background: transparent;
     --ion-item-background-activated: #313131;
   }
 
@@ -228,7 +250,7 @@ body,html,*{
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
 
-    --ion-item-background: #1A1B1E;
+    --ion-item-background: transparent;
   }
 
   ion-title.title-large {
@@ -248,7 +270,7 @@ body {
     --ion-toolbar-color: #fff;
     --ion-text-color-rgb: 255,255,255;
 
-    --ion-border-color: #222222;
+    --ion-border-color: transparent;
 
     --ion-color-step-50: #1e1e1e;
     --ion-color-step-100: #2a2a2a;
@@ -270,5 +292,5 @@ body {
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
 
-    --ion-item-background: #1A1B1E;
+    --ion-item-background: transparent
 }

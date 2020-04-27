@@ -1,0 +1,13 @@
+.groups-area {
+    height: 200px;
+    overflow-y: scroll;
+}
+.group-selectors {
+    height: 32px;
+    padding: 0;
+    margin: 0;
+}
+.group-selectors * {
+    padding: 0;
+    margin: 0;
+}

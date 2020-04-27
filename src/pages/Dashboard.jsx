@@ -1,4 +1,4 @@
-import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText } from '@ionic/react';
+import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonItem } from '@ionic/react';
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom'
 
@@ -16,7 +16,7 @@ const Dashboard = () => {
         <IonPage>
             <Title name="Dashboard" />
 
-            <IonContent>
+            <IonContent class="dark">
                 <h3>Volunteer Pages</h3>
                 <AppGrid apps={volunteer_pages} />
 
@@ -40,9 +40,9 @@ const AppGrid = ({ apps }) => {
         <IonGrid>
             <IonRow class="ion-justify-content-start">
                 {apps.map((app, index) => {
-                    if(app.title === "Dashboard") return null
+                    if(app.title === "DASHBOARD") return null
                     return (
-                        <IonCol key={index} size-xs="6" size-md="3">
+                        <IonCol className="menu-item" key={index} size-xs="6" size-md="3">                            
                             <Link to={app.url}>
                                 <div className="box">
                                     <IonIcon slot="start" icon={app.iosIcon} size="large" /><br />

@@ -23,8 +23,7 @@ ion-content{
   margin: auto;
   position: relative;
   top: 50%;
-  transform: translateY(-50%);  
-  background: #B7BABE;
+  transform: translateY(-50%);    
 }
 
 @media (max-width:500px){

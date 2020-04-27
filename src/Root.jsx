@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading } from '@ionic/react'
+import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading, IonToast } from '@ionic/react'
 import { IonReactHashRouter } from '@ionic/react-router'
 import { Redirect, Route, useLocation } from 'react-router-dom'
 import { authContext } from "./contexts/AuthContext"
@@ -18,9 +18,12 @@ import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
 import Profile from './pages/Profile'
+import UserIndex from './pages/Users/Index'
+import UserView from './pages/Users/View'
+import UserForm from './pages/Users/Form'
 
 const Root = () => {
-    const { loading, setLoading } = React.useContext(appContext)
+    const { loading, setLoading, message, setMessage } = React.useContext(appContext)
 
     return (
         <IonReactHashRouter>
@@ -29,7 +32,18 @@ const Root = () => {
                 <Menu />
                 
                 <IonPage id="main">
-                    <IonLoading isOpen={loading} onDidDismiss={() => setLoading(false)} message={'Loading...'} duration={10000} />
+                    <IonLoading 
+                        isOpen={ (typeof loading === "string") ? true : loading } 
+                        onDidDismiss={ () => setLoading(false) }
+                        message={ (typeof loading === "string") ? loading : 'Loading...' }
+                        duration={10000} />
+                    <IonToast
+                        isOpen={ (message[0]) ? true : false }
+                        onDidDismiss={ () => setMessage(["", false]) }
+                        message={ message[0] }
+                        className={ (message[1]) ? message[1] + "-toast" : "" }
+                        duration={2000}
+                    />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">
@@ -55,6 +69,16 @@ const Root = () => {
                         </PrivateRoute>
                         <PrivateRoute path="/shelters">
                             <Shelters />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/users/:user_id/view">
+                            <UserView />
+                        </PrivateRoute>
+                        <PrivateRoute path="/users/:user_id/edit">
+                            <UserForm />
+                        </PrivateRoute>
+                        <PrivateRoute path="/users">
+                            <UserIndex />
                         </PrivateRoute>
 
                         <PrivateRoute path="/surveys/:surveyId">

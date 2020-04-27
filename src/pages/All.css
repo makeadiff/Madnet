@@ -1,3 +1,7 @@
 ion-toolbar.md {
   --background: #242537
 }
+
+ion-content.dark{
+  --background: var(--black)
+}

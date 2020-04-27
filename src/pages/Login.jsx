@@ -1,4 +1,4 @@
-import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent} from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonLabel} from '@ionic/react'
 import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
@@ -8,7 +8,7 @@ import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import api from "../utils/API"
 import { assets } from "../utils/Helpers"
-import Title from '../components/Title'
+// import Title from '../components/Title'
 
 import './Login.css'
 
@@ -122,22 +122,24 @@ function Login() {
     return (
         <IonPage>
             {/* <Title name="Login" /> */}
-            <IonContent className="ion-justify-content-center">
-                <IonCard className="loginCard">
-                    {/* <IonCardHeader>                        
-                        <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                        <IonCardTitle>Card Title</IonCardTitle>
-                    </IonCardHeader> */}
+            <IonContent className="ion-justify-content-center dark">
+                <IonCard className="dark loginCard">
+                    <IonCardHeader>                                                
+                        <IonCardTitle>Login to MADNet</IonCardTitle>
+                        {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
+                    </IonCardHeader>
                     <IonCardContent>
                         <IonList>
                             <form onSubmit={ handleSubmit } >
-                                <IonItem lines="none">
-                                    <IonInput className="input_field" type="email" name="email" id="email" required="true" value={userEmail}
-                                        placeholder="Email/Phone..." onIonChange={e => setUserEmail(e.target.value) } />
+                                <IonItem>
+                                    <IonLabel position="stacked">Email/Phone</IonLabel>
+                                    <IonInput type="email" name="email" id="email" required="true" value={userEmail} placeholder="Enter your registered email or phone"
+                                        onIonChange={e => setUserEmail(e.target.value) } />
                                 </IonItem>
-                                <IonItem lines="none">
-                                    <IonInput className="input_field" type="password" id="password" name="password" requried="true" value={userPassword}
-                                        placeholder="Password..." onIonChange={e => setUserPassword(e.target.value)} />
+                                <IonItem>
+                                    <IonLabel position="stacked">Password</IonLabel>
+                                    <IonInput type="password" id="password" name="password" requried="true" value={userPassword}
+                                        placeholder="*****" onIonChange={e => setUserPassword(e.target.value)} />
                                 </IonItem>
                                 <IonItem>
                                     <IonButton type="submit" disabled={loading} block={true} size="default">

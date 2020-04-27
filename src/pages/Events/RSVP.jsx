@@ -1,14 +1,14 @@
-import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonLabel } from '@ionic/react';
-import React from 'react';
+import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonLabel } from '@ionic/react'
+import React from 'react'
 import { useParams } from "react-router-dom"
-import { checkmarkOutline,helpOutline,closeOutline,locationOutline,timeOutline } from 'ionicons/icons';
+import { checkmarkOutline,helpOutline,closeOutline,locationOutline,timeOutline } from 'ionicons/icons'
 
-import * as moment from 'moment';
+import * as moment from 'moment'
 
 import Title from "../../components/Title"
-import { authContext } from "../../contexts/AuthContext";
-import { appContext } from "../../contexts/AppContext";
-import api from "../../utils/API";
+import { authContext } from "../../contexts/AuthContext"
+import { appContext } from "../../contexts/AppContext"
+import api from "../../utils/API"
 import './RSVP.css'
 
 // :TODO: Show reason input text area when selecting 'Can't Go'
