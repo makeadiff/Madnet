@@ -168,6 +168,10 @@ const useHandler = () => {
         return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
+    const updateUser = async (user_id, params) => {
+        return await callApi({url:`users/${user_id}/`,"method": "post", params})
+    }
+
     const getAlerts = async (user_id) => {
         if(user_id === undefined) user_id = user.id
         return await callApi({url:`users/${user_id}/alerts`})
@@ -187,7 +191,7 @@ const useHandler = () => {
     }
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, getAlerts, setDeviceToken, unsetDeviceToken
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken
     };
 };
 

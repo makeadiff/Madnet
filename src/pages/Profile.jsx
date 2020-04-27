@@ -9,10 +9,15 @@ import './All.css';
 
 import Title from '../components/Title';
 import { authContext } from "../contexts/AuthContext"
+import { appContext } from "../contexts/AppContext"
+import { dataContext } from "../contexts/DataContext"
 
 const Profile = () => {
 
 	const { user } = React.useContext(authContext)	
+	const { setLoading, showMessage } = React.useContext(appContext)
+	const { updateUser } = React.useContext(dataContext)
+	
 	let breakcondition = false;
 	const [ disable, setDisable ] = React.useState(true);
 	const sexArray = {
@@ -21,12 +26,21 @@ const Profile = () => {
 		"o": "Not Specified"
 	}
 
-	const [ name, setName ] = React.useState(user.name);
-	const [ email, setEmail ] = React.useState(user.email);
-	const [ phone, setPhone ] = React.useState(user.phone);
-	const [ sex, setSex ] = React.useState(user.sex);
-	const [ birthday, setBirthday ] = React.useState(user.birthday);
-	const [ address, setAddress ] = React.useState(user.address);
+	const [ userData, setUserData ] = React.useState({
+		name: user.name,
+		email: user.email,
+		phone: user.phone,
+		sex: user.sex,
+		birthday: user.birthday,
+		address: user.address
+	});
+
+	const updateField = e => {
+		setUserData({
+			...userData,
+			[e.target.name]: e.target.value
+		});		
+	}
 	
 	const openEdit = () => {
 		setDisable(false);	  
@@ -36,6 +50,10 @@ const Profile = () => {
 		setDisable(true);
 	}
 
+	async function updateUserData() {
+		setLoading(true);	
+		console.log(userData);
+	}
 
 	return (
     <IonPage>
@@ -63,21 +81,21 @@ const Profile = () => {
 									</IonItem>
 									<IonItem>
 										<IonLabel position="stacked">Name</IonLabel>
-										<IonInput required type="text" value={user.name} onIonChange={e => setName(e.target.value)} disabled={disable}></IonInput>
+										<IonInput required type="text" name="name" value={user.name} onIonChange={updateField} disabled={disable}></IonInput>
 									</IonItem>
 									<IonItem>
 										<IonLabel position="stacked">Email</IonLabel>
-										<IonInput required type="email" value={user.email} disabled={disable} onIonChange={e => setEmail(e.target.value)}></IonInput>
+										<IonInput required type="email" name="email" value={user.email} disabled={disable} onIonChange={updateField}></IonInput>
 									</IonItem>
 									<IonItem>			
 										<IonLabel position="stacked">Phone</IonLabel>
-										<IonInput required type="text" value={user.phone} disabled={disable} onIonChange={e => setPhone(e.target.value)}></IonInput>
+										<IonInput required type="text" value={user.phone} name="phone" disabled={disable} onIonChange={updateField}></IonInput>
 									</IonItem>
 									<IonItem className={ !disable ? "hidden": null }>
 										<IonLabel position="stacked">Sex</IonLabel>
 										<IonInput required type="text" value={sexArray[user.sex]} disabled></IonInput>
 									</IonItem>
-									<IonRadioGroup className={ disable ? "hidden": null } value={user.sex} onIonChange={e => setSex(e.target.value)}>
+									<IonRadioGroup name="sex" className={ disable ? "hidden": null } value={user.sex} onIonChange={updateField}>
 										<IonListHeader>
 											<IonLabel>Sex</IonLabel>
 										</IonListHeader>
@@ -99,14 +117,14 @@ const Profile = () => {
 									</IonRadioGroup>
 									<IonItem>	
 										<IonLabel position="stacked">Birthday</IonLabel>
-										<IonInput required type="date" value={user.birthday} disabled={disable} onIonChange={e => setBirthday(e.target.value)}></IonInput>
+										<IonInput required type="date" name="birthday" value={user.birthday} disabled={disable} onIonChange={updateField}></IonInput>
 									</IonItem>
 									<IonItem>			
 										<IonLabel position="stacked">Address</IonLabel>
-										<IonTextarea required value={user.address} disabled={disable} onIonChange={e => setAddress(e.target.value)}></IonTextarea>
+										<IonTextarea required value={user.address} disabled={disable} name="address" onIonChange={updateField}></IonTextarea>
 									</IonItem>
 									<IonItem className={ disable? "hidden": null}>
-										<IonButton expand="full" size="default" color="primary" type="submit">Save</IonButton>
+										<IonButton expand="full" size="default" color="primary" type="submit" onClick={updateUserData} >Save</IonButton>
 									</IonItem>														
 								</IonCardContent>
 							</IonCard>							
