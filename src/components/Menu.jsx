@@ -18,8 +18,7 @@ const Menu = () => {
             <>
             <IonList id="volunteer-list" className="sections">
                 <IonListHeader>
-                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet
-                    
+                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet                    
                 </IonListHeader>                  
             </IonList>                               
 
@@ -52,8 +51,10 @@ const Menu = () => {
 
     } else {
         render = (
-            <IonList id="volunteer-list">
-                <IonListHeader>MADNet</IonListHeader>
+            <IonList id="volunteer-list">                
+                <IonListHeader>
+                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet
+                </IonListHeader>
                 {/* <IonNote>Please Login to use this app</IonNote> */}
             </IonList>
         )

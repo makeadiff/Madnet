@@ -5,6 +5,8 @@ import { authContext } from "../../contexts/AuthContext"
 import { appContext } from "../../contexts/AppContext"
 import { dataContext } from "../../contexts/DataContext"
 
+import './Users.css'
+
 const UserList = ({ segment }) => {
     const { user } = React.useContext(authContext)
     const { setLoading, showMessage } = React.useContext(appContext)
@@ -37,7 +39,7 @@ const UserList = ({ segment }) => {
                 return (
                     <IonItem key={index} routerLink={ `/users/${user.id}/view` } routerDirection="none" >
                         <IonLabel>
-                            <h4>{user.name}</h4>
+                            <h3>{user.name}</h3>
                             <p>Phone: { user.phone }</p>
                             <p>Email: { user.email }</p>
                             <p>Credit : { user.credit } </p>

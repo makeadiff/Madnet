@@ -1,4 +1,4 @@
-import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonLabel, IonIcon, IonText} from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonLabel, IonIcon, IonText, IonImg} from '@ionic/react'
 import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
@@ -125,7 +125,10 @@ function Login() {
             {/* <Title name="Login" /> */}
             <IonContent className="ion-justify-content-center dark">
                 <IonCard className="dark loginCard">
-                    <IonCardHeader>                                                
+                    <IonItem className="logoHolder">
+                        <IonImg src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-100.png'}></IonImg>
+                    </IonItem>                    
+                    <IonCardHeader>                                                                 
                         <IonCardTitle>Login to MADNet</IonCardTitle>
                         {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
                     </IonCardHeader>

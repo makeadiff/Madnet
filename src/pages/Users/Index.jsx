@@ -12,7 +12,7 @@ const UserIndex = () => {
         <IonPage>
             <Title name="Volunteers" />
 
-            <IonContent>
+            <IonContent className="dark">
                 <IonSegment value={segment} onIonChange={e => setSegment(e.detail.value)}>
                     <IonSegmentButton value="all">
                         <IonLabel>All Volunteers</IonLabel>

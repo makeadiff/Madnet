@@ -8,6 +8,17 @@ ion-content, .list-md{
   --padding-start: 20px;
 }
 
+ion-item.logoHolder{
+  width: 100%;
+  text-align: center;  
+}
+
+ion-item.logoHolder ion-img{
+  padding-top: 20px;
+  width: 80px;
+  margin: auto;  
+}
+
 .list-md{
   padding: 0px;
 }
