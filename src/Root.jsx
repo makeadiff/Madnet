@@ -9,8 +9,10 @@ import Menu from './components/Menu'
 import Page from './pages/Page'
 import Login from "./pages/Login"
 import Dashboard from './pages/Dashboard'
-import Shelters from './pages/Shelters'
-import ManageShelter from './pages/ManageShelter'
+import ShelterView from './pages/Shelters/View'
+import ShelterIndex from './pages/Shelters/Index'
+import BatchView from './pages/Batches/View'
+import BatchIndex from './pages/Batches/Index'
 import EventIndex from './pages/Events/Index'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
@@ -62,11 +64,17 @@ const Root = () => {
                             <Dashboard />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/shelters/:shelter_id/batches/:batch_id">
+                            <BatchView />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/batches">
+                            <BatchIndex />
+                        </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id">
-                            <ManageShelter />
+                            <ShelterView />
                         </PrivateRoute>
                         <PrivateRoute path="/shelters">
-                            <Shelters />
+                            <ShelterIndex />
                         </PrivateRoute>
 
                         <PrivateRoute path="/users/:user_id/view">

@@ -70,10 +70,19 @@ const useHandler = () => {
             params: false,
             graphql: "",
             graphql_type: "query",
-            name: user_args.url.split(/[\/\?\(]/)[0],
-            key: user_args.url.split(/[\/\?\()]/)[0],
             cache: true,
+            name: "",
+            key: ""
         }
+        if(user_args.url !== undefined) {
+            default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
+            default_args["key"] = default_args["name"]
+        } else if(user_args.graphql !== undefined) {
+            default_args["type"] = "graphql"
+            default_args["name"] = user_args.graphql.split(/\s*\{\s*([^(]+)/)[0].trim()
+            default_args["key"] = default_args["name"]
+        }
+
         let call_response
         const args = { ...default_args, ...user_args} // Merge both array - so that we have default values
 
