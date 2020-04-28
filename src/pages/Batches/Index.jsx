@@ -30,7 +30,7 @@ const BatchIndex = () => {
                 <IonList>
                     {batches.map((batch, index) => {
                         return (
-                            <IonItem key={index} routerLink={ "/batches/" + batch.id } routerDirection="none" >
+                            <IonItem key={index} routerLink={ `/shelters/${shelter.id}/batches/${batch.id}` } routerDirection="none" >
                                 <IonLabel>{batch.batch_name}</IonLabel>
                             </IonItem>
                         );

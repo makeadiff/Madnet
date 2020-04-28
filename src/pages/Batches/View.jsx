@@ -1,56 +1,54 @@
-import { IonPage, IonList,IonMenuToggle,IonItem,IonLabel,IonContent } from '@ionic/react';
-import React, { useState, useEffect } from 'react'
+import { IonPage, IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButton,IonInput } from '@ionic/react';
+import { pencil, close } from 'ionicons/icons';
+import React from 'react'
 import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
 
 const BatchView = () => {
-    const { shelter_id } = useParams()
-    const [shelter, setShelter] = useState({name: ""})
-    const [shelterId] = useState(shelter_id)
+    const { shelter_id, batch_id } = useParams()
+    const [batch, setBatch] = React.useState({batch_name: ""})
+	const [ disable, setDisable ] = React.useState( true )
     const { callApi } = React.useContext(dataContext);
 
-    useEffect(() => {
-        async function fetchShelter() {
-            const shelter_data = await callApi({graphql: `{ center(id: ${shelterId}) { 
-                id name
-                batches { id batch_name }
-                levels { id level_name }
+    React.useEffect(() => {
+        async function fetchBatch() {
+            const batch_data = await callApi({graphql: `{ batch(id: ${batch_id}) { 
+                id batch_name day
             }}`});
 
-            setShelter(shelter_data)
+            setBatch(batch_data)
         }
-        fetchShelter();
-    }, [shelterId])
+        fetchBatch();
+    }, [batch_id])
+
+    const updateField = (e) => {
+        setBatch({ ...batch, [e.target.name]: e.target.value })
+    }
 
     return (
         <IonPage>
-            <Title name={ `Manage ${shelter.name} Shelter` } />
+            <Title name={ `Batch: ${batch.batch_name}` } />
 
             <IonContent>
                 <IonList>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/batches` } routerDirection="none" >
-                            <IonLabel>{ (shelter.batches !== undefined) ? shelter.batches.length : "" } Batch(es)</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/levels` } routerDirection="none" >
-                            <IonLabel>{ (shelter.levels !== undefined) ? shelter.levels.length : "" } Level(s)</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/assign-teachers` } routerDirection="none" >
-                            <IonLabel>Assign Teachers</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
-                            <IonLabel>Edit { shelter.name } Details</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
+                    <IonItem>
+                        <IonLabel position="stacked">Name</IonLabel>
+                        <IonInput required type="text" name="batch_name" value={batch.batch_name} onIonChange={updateField} disabled={disable}></IonInput>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel position="stacked">Day</IonLabel>
+                        <IonInput required type="text" name="day" value={batch.day} onIonChange={updateField} disabled={disable}></IonInput>
+                    </IonItem>
                 </IonList>
+
+                <IonFab onClick={() => { setDisable(false)}} vertical="bottom" horizontal="end" slot="fixed" className={ disable ? "hidden" : null }>
+                    <IonFabButton><IonIcon icon={pencil}/></IonFabButton>
+                </IonFab>
+                <IonFab onClick={() => { setDisable(true)}} vertical="bottom" horizontal="end" slot="fixed" className={ !disable ? "hidden": null }>
+                    <IonFabButton><IonIcon icon={close}/></IonFabButton>
+                </IonFab>
             </IonContent>
         </IonPage>
     );

@@ -30,26 +30,23 @@ const ShelterView = () => {
 
             <IonContent>
                 <IonList>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/batches` } routerDirection="none" >
-                            <IonLabel>{ (shelter.batches !== undefined) ? shelter.batches.length : "" } Batch(es)</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/levels` } routerDirection="none" >
-                            <IonLabel>{ (shelter.levels !== undefined) ? shelter.levels.length : "" } Level(s)</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/assign-teachers` } routerDirection="none" >
-                            <IonLabel>Assign Teachers</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
-                    <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
-                            <IonLabel>Edit { shelter.name } Details</IonLabel>
-                        </IonItem>
-                    </IonMenuToggle>
+               
+                    <IonItem routerLink={ `/shelters/${shelter.id}/batches` } routerDirection="none" >
+                        <IonLabel>{ (shelter.batches !== undefined) ? shelter.batches.length : "" } Batch(es)</IonLabel>
+                    </IonItem>
+                
+                    <IonItem routerLink={ `/shelters/${shelter.id}/levels` } routerDirection="none" >
+                        <IonLabel>{ (shelter.levels !== undefined) ? shelter.levels.length : "" } Level(s)</IonLabel>
+                    </IonItem>
+                
+                    <IonItem routerLink={ `/shelters/${shelter.id}/assign-teachers` } routerDirection="none" >
+                        <IonLabel>Assign Teachers</IonLabel>
+                    </IonItem>
+                
+                    <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
+                        <IonLabel>Edit { shelter.name } Details</IonLabel>
+                    </IonItem>
+                
                 </IonList>
             </IonContent>
         </IonPage>
