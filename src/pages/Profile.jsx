@@ -39,7 +39,7 @@ const Profile = () => {
 		setUserData({
 			...userData,
 			[e.target.name]: e.target.value
-		});		
+		})
 	}
 	
 	const openEdit = () => {
@@ -51,7 +51,7 @@ const Profile = () => {
 	}
 
 	async function updateUserData() {
-		setLoading(true);	
+		// setLoading(true);	
 		console.log(userData);
 	}
 
@@ -77,25 +77,25 @@ const Profile = () => {
 									</IonItem>
 
 									<IonItem className="centerAlign">
-										<IonLabel>{user.name}<br/>#{user.id}</IonLabel>
+										<IonLabel>{userData.name}<br/>#{user.id}</IonLabel>
 									</IonItem>
 									<IonItem>
 										<IonLabel position="stacked">Name</IonLabel>
-										<IonInput required type="text" name="name" value={user.name} onIonChange={updateField} disabled={disable}></IonInput>
+										<IonInput required type="text" name="name" value={userData.name} onIonChange={updateField} disabled={disable}></IonInput>
 									</IonItem>
 									<IonItem>
 										<IonLabel position="stacked">Email</IonLabel>
-										<IonInput required type="email" name="email" value={user.email} disabled={disable} onIonChange={updateField}></IonInput>
+										<IonInput required type="email" name="email" value={userData.email} disabled={disable} onIonChange={updateField}></IonInput>
 									</IonItem>
 									<IonItem>			
 										<IonLabel position="stacked">Phone</IonLabel>
-										<IonInput required type="text" value={user.phone} name="phone" disabled={disable} onIonChange={updateField}></IonInput>
+										<IonInput required type="text" value={userData.phone} name="phone" disabled={disable} onIonChange={updateField}></IonInput>
 									</IonItem>
 									<IonItem className={ !disable ? "hidden": null }>
 										<IonLabel position="stacked">Sex</IonLabel>
-										<IonInput required type="text" value={sexArray[user.sex]} disabled></IonInput>
+										<IonInput required type="text" value={sexArray[userData.sex]} disabled></IonInput>
 									</IonItem>
-									<IonRadioGroup name="sex" className={ disable ? "hidden": null } value={user.sex} onIonChange={updateField}>
+									<IonRadioGroup name="sex" className={ disable ? "hidden": null } value={userData.sex} onIonChange={updateField}>
 										<IonListHeader>
 											<IonLabel>Sex</IonLabel>
 										</IonListHeader>
@@ -117,11 +117,11 @@ const Profile = () => {
 									</IonRadioGroup>
 									<IonItem>	
 										<IonLabel position="stacked">Birthday</IonLabel>
-										<IonInput required type="date" name="birthday" value={user.birthday} disabled={disable} onIonChange={updateField}></IonInput>
+										<IonInput required type="date" name="birthday" value={userData.birthday} disabled={disable} onIonChange={updateField}></IonInput>
 									</IonItem>
 									<IonItem>			
 										<IonLabel position="stacked">Address</IonLabel>
-										<IonTextarea required value={user.address} disabled={disable} name="address" onIonChange={updateField}></IonTextarea>
+										<IonTextarea required value={userData.address} disabled={disable} name="address" onIonChange={updateField}></IonTextarea>
 									</IonItem>
 									<IonItem className={ disable? "hidden": null}>
 										<IonButton expand="full" size="default" color="primary" type="submit" onClick={updateUserData} >Save</IonButton>
