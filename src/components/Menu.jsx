@@ -17,7 +17,10 @@ const Menu = () => {
         render = (
             <>
             <IonList id="volunteer-list" className="sections">
-                <IonListHeader>MADNet</IonListHeader>                  
+                <IonListHeader>
+                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet
+                    
+                </IonListHeader>                  
             </IonList>                               
 
             <IonList id="user-list" className="sections">
@@ -83,7 +86,7 @@ const MenuSection = ({ pages }) => {
             return (
                 <IonItem key={index} className={data.path.includes(app.url) ? 'selected' : ''} { ...attr }>
                     <IonIcon slot="start" icon={app.iosIcon} />
-                    <IonLabel>{app.title}</IonLabel>
+                    <IonLabel className="uppercase">{app.title}</IonLabel>
                 </IonItem>
             );
         }) 

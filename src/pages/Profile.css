@@ -25,7 +25,7 @@ ion-card.userDetails{
 }
 
 ion-chip.roles{
-  --background: var(--theme-color-red-bright);  
+  --background: var(--red-bright);  
 }
 
 ul.roleList{

@@ -9,6 +9,18 @@ body,html,*{
 	font-family: var(--ion-default-font) !important;
 }
 
+ion-item.padded{
+  padding-top: 10px;
+}
+
+ion-button button.button-native{
+  border-radius: 0px;
+}
+
+ion-loading{
+  --spinner-color: var(--red-bright);
+}
+
 /** Ionic CSS Variables **/
 :root {
 

@@ -130,3 +130,13 @@ ion-note {
   color: #FFFFFF;
   text-align: center;
 }
+
+
+ion-label.uppercase{
+  text-transform: uppercase;
+}
+
+ion-img.logoIcon{
+  padding: 0 10px 0 0;
+  width: 40px;  
+}

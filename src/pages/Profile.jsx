@@ -51,7 +51,7 @@ const Profile = () => {
 	}
 
 	async function updateUserData() {
-		// setLoading(true);	
+		setLoading(true);
 		console.log(userData);
 	}
 
@@ -62,7 +62,7 @@ const Profile = () => {
         <IonContent className="dark">           
         	<IonGrid>
         		<IonRow>
-                	<IonCol size-md="6">
+                	<IonCol size-md="6" size-xs="12">
 						<IonList>
 							<IonCard className="dark no-shadow">								
 								<IonCardHeader>
@@ -130,7 +130,7 @@ const Profile = () => {
 							</IonCard>							
 						</IonList>
 					</IonCol>
-					<IonCol size-md="6">						
+					<IonCol size-md="6" size-xs="12">						
 						<IonList>
 							<IonCard className="light no-shadow">								
 								<IonCardHeader>
