@@ -8,13 +8,16 @@ import "./Form.css"
 const UserSearch = ({ segment }) => {
     const { user } = React.useContext(authContext)
     const [groups, setGroups] = React.useState([])
+    const [showMore, setShowMore] = React.useState(false)
     const { getUsers, callApi } = React.useContext(dataContext)
     const [users, setUsers] = React.useState( null )
     const [search, setSearch] = React.useState({
         city_id: user.city_id,
         id: "",
         phone: "",
-        any_email: ""
+        any_email: "",
+        group_in: "",
+        user_type: "volunteer"
     })
 
     React.useEffect(() => {
@@ -27,16 +30,33 @@ const UserSearch = ({ segment }) => {
     }, [segment])
 
     const setSearchValue = (key, value) => {
-        const ele = {}
-        ele[key] = value
-        const new_search = {...search, ...ele}
+        const new_search = {...search, [key]: value}
         setSearch(new_search)
+    }
+
+    // This converts the selected checkboxes into a coma seperated list of ids.
+    const setGroupSearch = (e) => {
+        let groups = []
+        if(search.group_in) groups = search.group_in.split(",")
+        const value = e.target.value
+        if(e.target.checked) {
+            groups.push(value)
+        } else {
+            groups = groups.filter((ele) => { return ele !== value })
+        }
+        setSearch({...search, group_in: groups.join(",")})
     }
 
     const searchUser = async (e) => {
         e.preventDefault()
-        const user_data = await getUsers(search)
-        console.log(user_data)
+        let user_search = {}
+        for(let key in search) {
+            if(search[key]) {
+                user_search[key] = search[key]
+            }
+        }
+        const user_data = await getUsers(user_search)
+        // console.log(user_data)
         setUsers(user_data)
     }
 
@@ -48,25 +68,30 @@ const UserSearch = ({ segment }) => {
             <InputRow label="Email" id="any_email" type="text" value={search.any_email} onIonInput={e => setSearchValue("any_email", e.target.value)} />
             <InputRow label="Phone" id="phone" type="text" value={search.phone} onIonInput={e => setSearchValue("phone", e.target.value)} />
 
-            <IonItem><IonLabel>Groups</IonLabel></IonItem>
-            <div className="groups-area">
-            { groups.map((grp, index) => {
-                return (<IonItem key={ index } lines="none" className="group-selectors">
-                    <IonCheckbox value={ grp.id } checked={ false } /><IonLabel> &nbsp; { grp.name }</IonLabel>
-                </IonItem>)
-            })}
-            </div>
+            { showMore ?
+                (<div className="more-options">
+                    <IonItem><IonLabel>Groups</IonLabel></IonItem>
+                    <div className="groups-area">
+                    { groups.map((grp, index) => {
+                        return (<IonItem key={ index } lines="none" className="group-selectors">
+                            <IonCheckbox value={ grp.id } onIonChange={ setGroupSearch } />
+                            <IonLabel> &nbsp; { grp.name }</IonLabel>
+                        </IonItem>)
+                    })}
+                    </div>
 
-            <IonItem>
-                <IonLabel>User Type</IonLabel>
-                <IonSelect value="volunteer" placeholder="Select One">
-                    <IonSelectOption value="volunteer" selected={true}>Volunteer</IonSelectOption>
-                    <IonSelectOption value="applicant">Applicant</IonSelectOption>
-                    <IonSelectOption value="alumni">Alumni</IonSelectOption>
-                    <IonSelectOption value="let_go">Let Go</IonSelectOption>
-                    <IonSelectOption value="any">Any</IonSelectOption>
-                </IonSelect>
-            </IonItem>
+                    <IonItem>
+                        <IonLabel>User Type</IonLabel>
+                        <IonSelect value={ search.user_type } placeholder="Select One" onIonChange={ e => setSearchValue("user_type", e.target.value)}>
+                            <IonSelectOption value="volunteer" selected={true}>Volunteer</IonSelectOption>
+                            <IonSelectOption value="applicant">Applicant</IonSelectOption>
+                            <IonSelectOption value="alumni">Alumni</IonSelectOption>
+                            <IonSelectOption value="let_go">Let Go</IonSelectOption>
+                            <IonSelectOption value="any">Any</IonSelectOption>
+                        </IonSelect>
+                    </IonItem>
+                </div>)
+                : <IonItem onClick={() => setShowMore(true) }><a>Show More Options...</a></IonItem> }
 
             <IonItem><IonButton type="submit">Search</IonButton></IonItem>
         </IonList>
@@ -79,7 +104,7 @@ const UserSearch = ({ segment }) => {
 const InputRow = ({ id, label, type, value, onIonInput }) => {
     return (
         <IonItem>
-            <IonLabel>{ label }</IonLabel>
+            <IonLabel position="stacked">{ label }</IonLabel>
             <IonInput type={ type } id={ id } placeholder={ label } value={ value } onIonInput={ onIonInput } />
         </IonItem>
     )

@@ -1,6 +1,6 @@
 import React from 'react'
 import { IonButton, IonInput, IonPage, IonContent,IonLabel,
-        IonItem,IonList,IonSelect,IonSelectOption,IonCheckbox, IonItemDivider } from '@ionic/react'
+        IonItem,IonList,IonCheckbox,IonRadioGroup,IonListHeader,IonRadio, IonItemDivider } from '@ionic/react'
 import { useParams, useHistory } from "react-router-dom"
 
 import { authContext } from '../../contexts/AuthContext'
@@ -50,13 +50,26 @@ const UserForm = () => {
                     <InputRow label="Password" id="password" type="password" value="" />
                     <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
 
-                    <IonItem>
-                        <IonLabel>Sex</IonLabel>
-                        <IonSelect value={ user.sex } placeholder="Select One">
-                            <IonSelectOption value="f" selected={ user.sex === "f" }>Female</IonSelectOption>
-                            <IonSelectOption value="m" selected={ user.sex === "m" }>Male</IonSelectOption>
-                        </IonSelect>
-                    </IonItem>
+                    <IonRadioGroup name="sex" value={ user.sex }>
+                        <IonListHeader>
+                            <IonLabel>Sex</IonLabel>
+                        </IonListHeader>
+
+                        <IonItem>
+                        <IonLabel>Male</IonLabel>
+                        <IonRadio mode="ios" name="sex" slot="start" value="m" />
+                        </IonItem>
+
+                        <IonItem>
+                        <IonLabel>Female</IonLabel>
+                        <IonRadio mode="ios" name="sex" slot="start" value="f" />
+                        </IonItem>
+
+                        <IonItem>
+                        <IonLabel>Other</IonLabel>
+                        <IonRadio mode="ios" name="sex" slot="start" value="o"/>
+                        </IonItem>
+                    </IonRadioGroup>
 
                     <IonItem><IonLabel>Groups</IonLabel></IonItem>
                     <div className="groups-area">
@@ -92,7 +105,7 @@ const UserForm = () => {
 const InputRow = ({ id, label, type, value }) => {
     return (
         <IonItem>
-            <IonLabel>{ label }</IonLabel>
+            <IonLabel position="stacked">{ label }</IonLabel>
             <IonInput type={ type } id={ id } placeholder={ label } value={ value } />
         </IonItem>
     )
