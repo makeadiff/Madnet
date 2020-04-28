@@ -1,6 +1,6 @@
 import React from 'react'
 import { IonButton, IonInput, IonPage, IonContent,IonLabel,
-        IonItem,IonList,IonSelect,IonSelectOption,IonCheckbox } from '@ionic/react'
+        IonItem,IonList,IonSelect,IonSelectOption,IonCheckbox, IonItemDivider } from '@ionic/react'
 import { useParams, useHistory } from "react-router-dom"
 
 import { authContext } from '../../contexts/AuthContext'
@@ -73,6 +73,15 @@ const UserForm = () => {
                     </div>
 
                     <IonItem><IonButton type="submit">Save</IonButton></IonItem>
+
+                    {/* <IonItemDivider><IonLabel>Other Actions</IonLabel></IonItemDivider>
+
+                    <IonItem>
+                        // :TODO:
+                        Let Go of Volunteer
+                        Mark Volunteer as Alumni
+                    </IonItem> */}
+
                     </IonList>
                 </form>
             </IonContent>

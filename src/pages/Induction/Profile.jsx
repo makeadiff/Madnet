@@ -37,7 +37,8 @@ const InductionProfile = () => {
         api.graphql(`{verifyOtp(${profile.type}: "${profile.identifier}", otp: "${otp}")}`).then((data) => {
             setLoading(false)
             if(data.verifyOtp) {
-                // Email confirmed - so we can set that person as the current user... 
+                // Email confirmed - so we can set that person as the current user...
+                // :TODO: Update User.verification_status - maybe in verifyOtp call itself.
                 setCurrentUser(profile.user)
                 history.push('/induction/setup')
             } else { // Can't find the user.

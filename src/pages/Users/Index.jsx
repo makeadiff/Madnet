@@ -2,7 +2,7 @@ import { IonPage, IonLabel,IonContent, IonSegment,IonSegmentButton } from '@ioni
 import React from 'react'
 
 import Title from "../../components/Title"
-import VolunteerList from "./List"
+import UserList from "./List"
 
 
 const UserIndex = () => {
@@ -17,12 +17,15 @@ const UserIndex = () => {
                     <IonSegmentButton value="all">
                         <IonLabel>All Volunteers</IonLabel>
                     </IonSegmentButton>
+                    <IonSegmentButton value="search">
+                        <IonLabel>Search</IonLabel>
+                    </IonSegmentButton>
                     <IonSegmentButton value="needs-attention">
                         <IonLabel>Needs Attention</IonLabel>
                     </IonSegmentButton>
                 </IonSegment>
 
-                <VolunteerList segment={segment} />
+                <UserList segment={segment} />
 
             </IonContent>
         </IonPage>

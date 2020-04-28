@@ -77,6 +77,8 @@ const InductionIndex = () => {
                 }))
                 history.push('/induction/profile')
 
+                // :TODO: Save time to /user/{user_id}/data/induction_started
+
             } else { // Can't find the user.
                 showMessage(no_user_err_message, "error")
             }

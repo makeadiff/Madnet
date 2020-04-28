@@ -91,7 +91,7 @@ function Login() {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         // This to handle browser autofilling data on load.
         setUserEmail(document.querySelector('#email').value)
         setUserPassword(document.querySelector('#password').value) // This doesn't work. Looks like a security issue.

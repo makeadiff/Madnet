@@ -41,8 +41,7 @@ const Root = () => {
                         onDidDismiss={ () => setMessage(["", false]) }
                         message={ message[0] }
                         className={ (message[1]) ? message[1] + "-toast" : "" }
-                        duration={2000}
-                    />
+                        duration={2000} />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">
