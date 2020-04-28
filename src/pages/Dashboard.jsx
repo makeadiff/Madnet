@@ -1,4 +1,4 @@
-import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonItem } from '@ionic/react';
+import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonItem, IonLabel } from '@ionic/react';
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom'
 
@@ -17,7 +17,7 @@ const Dashboard = () => {
             <Title name="Dashboard" />
 
             <IonContent class="dark">
-                <h3>Volunteer Pages</h3>
+                <IonLabel color="primary" className="sectionLabel">Volunteer Section</IonLabel>
                 <AppGrid apps={volunteer_pages} />
 
                 { isFellow() ? (

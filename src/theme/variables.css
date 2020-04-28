@@ -6,7 +6,7 @@ http://ionicframework.com/docs/theming/ */
 body,html,*{
   --ion-default-font: 'Rubik', sans-serif;
   --ion-font-family: 'Rubik', sans-serif;
-	font-family: var(--ion-default-font);
+	font-family: var(--ion-default-font) !important;
 }
 
 /** Ionic CSS Variables **/
