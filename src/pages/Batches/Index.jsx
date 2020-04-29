@@ -1,4 +1,5 @@
-import { IonPage,IonList,IonItem,IonLabel,IonContent } from '@ionic/react'
+import { IonPage,IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButton } from '@ionic/react'
+import { add } from 'ionicons/icons'
 import React from 'react'
 import { useParams } from "react-router-dom"
 
@@ -36,6 +37,10 @@ const BatchIndex = () => {
                         );
                     })}
                 </IonList>
+
+                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                    <IonFabButton routerLink={ `/shelters/${shelter.id}/batches/0` }><IonIcon icon={ add }/></IonFabButton>
+                </IonFab>
             </IonContent>
         </IonPage>
     );

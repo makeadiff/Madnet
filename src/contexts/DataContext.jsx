@@ -32,8 +32,17 @@ const useHandler = () => {
     const [error, setError] = React.useState([])
     const { user } = React.useContext(authContext)
 
-    const getLocalCache = (url) => {
-        const key = "API:" + url
+    const getCacheKey = (type, key_seed) => {
+        let key = "API:" + type + ":"
+        if(type === "rest") key += key_seed // URL is the final part of the key
+        else if(type === "graphql") {
+            key += key_seed.replace(/\s+/g, " ") // Compress the graphql string - and change all whitespace to ' '(space)
+        }
+        return key
+    }
+
+    const getLocalCache = (type, key_seed) => {
+        const key = getCacheKey(type, key_seed)
         const itemStr = localStorage.getItem(key)
 
         if (!itemStr) {
@@ -52,13 +61,13 @@ const useHandler = () => {
         return item.data
     }
 
-    const setLocalCache = (url, data) => {
+    const setLocalCache = (type, key_seed, data) => {
         const now = new Date()
         const item = {
             data: data,
             expiry: now.getTime() + (1000 * 60 * 60 * 24) // Expires in a day
         }
-        window.localStorage.setItem("API:" + url, JSON.stringify(item))
+        window.localStorage.setItem(getCacheKey(type, key_seed), JSON.stringify(item))
     }
 
     /// An API wrapper to make th calls.
@@ -88,10 +97,13 @@ const useHandler = () => {
 
         // See if it exists in Cache first.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
-            let data = getLocalCache(args.url)
+            let data = getLocalCache(args.type, args.url)
+            if(data) return data
+        } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
+            let data = getLocalCache(args.type, args.graphql)
             if(data) return data
         }
-
+        
         setLoading(true)
         try {
             if(args.type === "rest") {
@@ -121,9 +133,11 @@ const useHandler = () => {
             return false
         }
 
-        // Save fetched data to cache. :TODO: Support GraphQL caching.
+        // Save fetched data to cache.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
-            setLocalCache(args.url, data)
+            setLocalCache(args.type, args.url, data)
+        } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
+            setLocalCache(args.type, args.graphql, data)
         }
         return data
     }

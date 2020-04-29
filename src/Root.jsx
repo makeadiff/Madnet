@@ -11,8 +11,10 @@ import Login from "./pages/Login"
 import Dashboard from './pages/Dashboard'
 import ShelterView from './pages/Shelters/View'
 import ShelterIndex from './pages/Shelters/Index'
-import BatchView from './pages/Batches/View'
+import BatchForm from './pages/Batches/Form'
 import BatchIndex from './pages/Batches/Index'
+import LevelForm from './pages/Levels/Form'
+import LevelIndex from './pages/Levels/Index'
 import EventIndex from './pages/Events/Index'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
@@ -65,15 +67,21 @@ const Root = () => {
                         </PrivateRoute>
 
                         <PrivateRoute path="/shelters/:shelter_id/batches/:batch_id">
-                            <BatchView />
+                            <BatchForm />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id/batches">
+                        <PrivateRoute path="/shelters/:shelter_id/batches" exact={true} >
                             <BatchIndex />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id">
+                        <PrivateRoute path="/shelters/:shelter_id/levels/:level_id">
+                            <LevelForm />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/levels" exact={true} >
+                            <LevelIndex />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id" exact={true} >
                             <ShelterView />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters">
+                        <PrivateRoute path="/shelters" exact={true} >
                             <ShelterIndex />
                         </PrivateRoute>
 
@@ -83,7 +91,7 @@ const Root = () => {
                         <PrivateRoute path="/users/:user_id/edit">
                             <UserForm />
                         </PrivateRoute>
-                        <PrivateRoute path="/users">
+                        <PrivateRoute path="/users" exact={true} >
                             <UserIndex />
                         </PrivateRoute>
 
@@ -94,7 +102,7 @@ const Root = () => {
                         <PrivateRoute path="/events/:eventId/rsvp">
                             <EventRSVP />
                         </PrivateRoute>
-                        <PrivateRoute path="/events">
+                        <PrivateRoute path="/events" exact={true} >
                             <EventIndex />
                         </PrivateRoute>
 
