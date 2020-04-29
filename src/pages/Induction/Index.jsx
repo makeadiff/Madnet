@@ -95,7 +95,7 @@ const InductionIndex = () => {
         <IonPage>
             <Title name="Welcome to MADNet" />
             <IonContent className="dark">
-                <IonCard className="dark no-shadow">
+                <IonCard className="dark loginCard">
                     <IonCardHeader>
                         <IonCardTitle>
                             Welcome to Make A Difference.
@@ -108,22 +108,16 @@ const InductionIndex = () => {
                         <IonItem className="padded">
                             <IonLabel position="stacked">Enter your Registered Email</IonLabel>
                             <IonInput name="identifier" id="identifier" placeholder="Email" />
-                        </IonItem>
-                        <IonItem className="padded">
-                            <IonButton name="action" onClick={ stepOne } size="default">
-                                Next <IonIcon icon={arrowForwardOutline}></IonIcon>
-                            </IonButton>
-                        </IonItem>
-                        <IonItem>
-                            <IonText>
-                                <p>--Or--</p>
-                            </IonText>
-                        </IonItem>
-                        <IonItem className="padded">
-                            <IonButton type="button" color="tertiary" block={true} size="default" onClick={signInWithGoogle}>
-                                <IonIcon icon={logoGoogle}/>Login With Google
-                            </IonButton> 
                         </IonItem>                        
+                        <IonButton name="action" expand="full" onClick={ stepOne } size="default">
+                            Next <IonIcon icon={arrowForwardOutline}></IonIcon>
+                        </IonButton>                                                
+                        <IonText className="centerAlign">
+                            <p>--Or--</p>
+                        </IonText>                                            
+                        <IonButton type="button" expand="full" color="tertiary" block={true} size="default" onClick={signInWithGoogle}>
+                            <IonIcon icon={logoGoogle}/>Login With Google
+                        </IonButton>                                                 
                         <IonItem>
                             {message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}
                         </IonItem>                        

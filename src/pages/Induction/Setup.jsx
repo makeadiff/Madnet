@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonButton, IonPage, IonContent, IonItem, IonIcon, IonInput, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonCardSubtitle, IonLabel } from '@ionic/react'
+import { IonButton, IonPage, IonContent, IonItem, IonIcon, IonInput, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonCardSubtitle, IonLabel, IonChip } from '@ionic/react'
 import { useHistory } from 'react-router-dom'
 
 import { authContext } from '../../contexts/AuthContext'
@@ -78,7 +78,7 @@ const InductionSetup = () => {
                     </IonCardHeader>
                     <IonCardContent>                                                                        
                         <IonItem>
-                            <h3>Step { all_steps.indexOf(step) } / 4</h3>
+                            <IonChip>Step { all_steps.indexOf(step) } / 4</IonChip>
                         </IonItem>
 
                         { (step === "set-password") ? 

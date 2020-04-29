@@ -41,6 +41,12 @@ ion-content{
   margin-bottom: 20px;
 }
 
+.cardCaption{
+  padding: 10px;
+  background: var(--blue-grey-light);
+  margin-top: 20px;
+}
+
 @media (max-width:500px){
   .loginCard{
     width: 90%;    
@@ -49,3 +55,4 @@ ion-content{
     transform: translateY(-50%);  
   } 
 }
+

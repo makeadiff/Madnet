@@ -10,7 +10,7 @@ import api from "../utils/API"
 import { assets } from "../utils/Helpers"
 // import Title from '../components/Title'
 
-import { logoGoogle } from 'ionicons/icons';
+import { logoGoogle, arrowForward } from 'ionicons/icons';
 
 import './Login.css'
 
@@ -30,6 +30,8 @@ function Login() {
     const { loading, setLoading, message, showMessage, addNotification } = React.useContext(appContext)
     const { setCurrentUser } = React.useContext(authContext)
     const history = useHistory()
+
+    console.log(message.length, message)
     
     React.useEffect(() => { // Run on load - just once.
         if(init) return
@@ -152,11 +154,18 @@ function Login() {
                                 </IonText>                                                      
                                 <IonButton type="button" color="tertiary" expand="full" disabled={loading} block={true} size="default" onClick={signInWithGoogle}>
                                     <IonIcon icon={logoGoogle}/>{loading ? "Loading..." : "Login With Google"}
-                                </IonButton>                              
-                                
-                                <IonItem lines="none">
-                                    {message.length && <div className={message[1] + "-message"}>{ message[0] }</div>}
-                                </IonItem>
+                                </IonButton>
+                                { message.length && message[0] ? (                                                              
+                                    <IonItem lines="none">
+                                        {message.length && <div className={message[1] + "-message"}>{ message[0] }</div>}
+                                    </IonItem>
+                                ): null }                                
+                                <div className="cardCaption">
+                                    <IonLabel position="stacked">Coming here for the first time?</IonLabel>
+                                    <IonButton routerLink="induction/join" type="button" color="tertiary" expand="full" disabled={loading} block={true} size="default">
+                                        Register<IonIcon icon={arrowForward}/>
+                                    </IonButton>
+                                </div>
                             </form>
                         </IonList>
                     </IonCardContent>
