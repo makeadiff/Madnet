@@ -1,5 +1,5 @@
 import { appsOutline, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp, calendarOutline, calendarSharp, 
-    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp } from 'ionicons/icons';
+    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp, schoolOutline, schoolSharp } from 'ionicons/icons';
 import { SITE_URL } from './Constants';
 
 export const volunteer_pages = [
@@ -47,6 +47,12 @@ export const fellow_pages = [
         url: '/shelters',
         iosIcon: businessOutline,
         mdIcon: businessSharp
+    },
+    {
+        title: 'Children',
+        url: '/children',
+        iosIcon : schoolOutline,
+        mdIcon: schoolSharp
     }
 ];
 
