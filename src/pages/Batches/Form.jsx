@@ -11,7 +11,7 @@ import { dataContext } from "../../contexts/DataContext"
 import { appContext } from "../../contexts/AppContext"
 
 const BatchForm = () => {
-    const { shelter_id, batch_id } = useParams()
+    const { shelter_id, project_id, batch_id } = useParams()
     const [batch, setBatch] = React.useState({batch_name: "", class_time: "16:00:00", day: 0, project_id: 1, center_id: shelter_id})
 	const [ disable, setDisable ] = React.useState( true )
     const { callApi } = React.useContext(dataContext)

@@ -90,6 +90,8 @@ const useHandler = () => {
             default_args["type"] = "graphql"
             default_args["name"] = user_args.graphql.split(/\s*\{\s*([^(]+)/)[0].trim()
             default_args["key"] = default_args["name"]
+        } else {
+            console.log("Dev Error: Unsupported call in callApi() - url or graphql must be given.")
         }
 
         let call_response
@@ -122,7 +124,9 @@ const useHandler = () => {
             data = call_response[args.key]
         } else if(call_response !== undefined && Object.keys(call_response).length === 1) {
             data = call_response[Object.keys(call_response)[0]]
-
+        } else if(call_response !== undefined) {
+            data = call_response
+            
         } else {
             setError({
                 "status": "warning",

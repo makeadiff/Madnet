@@ -66,16 +66,16 @@ const Root = () => {
                             <Dashboard />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/shelters/:shelter_id/batches/:batch_id">
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches/:batch_id">
                             <BatchForm />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id/batches" exact={true} >
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact={true} >
                             <BatchIndex />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id/levels/:level_id">
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id">
                             <LevelForm />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id/levels" exact={true} >
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true} >
                             <LevelIndex />
                         </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id" exact={true} >

@@ -20,7 +20,6 @@ const LevelForm = () => {
             const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
                 id name grade level_name project_id
             }}`})
-            console.log(level_data)
 
             setLevel(level_data)
         }
@@ -42,14 +41,14 @@ const LevelForm = () => {
             callApi({url: `/levels/${level_id}`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
-                    showMessage("level Updated Successfully", "success")
+                    showMessage("Level Updated Successfully", "success")
                 }
             })
         } else { // Create new batcch
             callApi({url: `/levels`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
-                    showMessage("level Created Successfully", "success")
+                    showMessage("Level Created Successfully", "success")
                 }
             })
         }
