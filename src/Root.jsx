@@ -24,6 +24,7 @@ import InductionSetup from './pages/Induction/Setup'
 import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
+import ChildIndex from './pages/Children/index'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -114,6 +115,10 @@ const Root = () => {
                             <Page page={{name: "Profile"}} />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/children">
+                            <ChildIndex/>
+                        </PrivateRoute>
+
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>
                 </IonPage>
@@ -129,8 +134,8 @@ function PrivateRoute({ children, ...rest }) {
 
     return (
         <Route {...rest}
-            render={() =>
-                user.id ? ( children ) : ( <Redirect to={{ pathname: "/login" }} /> )
+            render={() => 
+            user.id ? (children) : ( <Redirect to={{ pathname: "/login" }} /> )
             } />
     );
 }
