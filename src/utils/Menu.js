@@ -49,8 +49,8 @@ export const fellow_pages = [
         mdIcon: businessSharp
     },
     {
-        title: 'Children',
-        url: '/children',
+        title: 'Students',
+        url: '/students',
         iosIcon : schoolOutline,
         mdIcon: schoolSharp
     }

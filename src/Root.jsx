@@ -24,7 +24,7 @@ import InductionSetup from './pages/Induction/Setup'
 import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
-import ChildIndex from './pages/Children/index'
+import StudentIndex from './pages/Students/Index'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -79,6 +79,9 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true} >
                             <LevelIndex />
                         </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/students" exact={true} >
+                            <StudentIndex />
+                        </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id" exact={true} >
                             <ShelterView />
                         </PrivateRoute>
@@ -115,8 +118,8 @@ const Root = () => {
                             <Page page={{name: "Profile"}} />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/children">
-                            <ChildIndex/>
+                        <PrivateRoute path="/students">
+                            <StudentIndex/>
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
