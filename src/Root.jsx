@@ -25,6 +25,7 @@ import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
 import StudentIndex from './pages/Students/Index'
+import StudentForm from './pages/Students/Form'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -118,8 +119,11 @@ const Root = () => {
                             <Page page={{name: "Profile"}} />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/students">
+                        <PrivateRoute path="/students" exact={true}>
                             <StudentIndex/>
+                        </PrivateRoute>
+                        <PrivateRoute path="/students/:student_id" exact={true} >
+                            <StudentForm />
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
