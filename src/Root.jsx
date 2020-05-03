@@ -11,8 +11,10 @@ import Login from "./pages/Login"
 import Dashboard from './pages/Dashboard'
 import ShelterView from './pages/Shelters/View'
 import ShelterIndex from './pages/Shelters/Index'
-import BatchView from './pages/Batches/View'
+import BatchForm from './pages/Batches/Form'
 import BatchIndex from './pages/Batches/Index'
+import LevelForm from './pages/Levels/Form'
+import LevelIndex from './pages/Levels/Index'
 import EventIndex from './pages/Events/Index'
 import EventCreate from './pages/Events/Create'
 import EventRSVP from './pages/Events/RSVP'
@@ -24,6 +26,7 @@ import Profile from './pages/Profile'
 import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
+import ChildIndex from './pages/Children/index'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -66,16 +69,22 @@ const Root = () => {
                             <Dashboard />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/shelters/:shelter_id/batches/:batch_id">
-                            <BatchView />
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches/:batch_id">
+                            <BatchForm />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id/batches">
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact={true} >
                             <BatchIndex />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters/:shelter_id">
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id">
+                            <LevelForm />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true} >
+                            <LevelIndex />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id" exact={true} >
                             <ShelterView />
                         </PrivateRoute>
-                        <PrivateRoute path="/shelters">
+                        <PrivateRoute path="/shelters" exact={true} >
                             <ShelterIndex />
                         </PrivateRoute>
 
@@ -85,7 +94,7 @@ const Root = () => {
                         <PrivateRoute path="/users/:user_id/edit">
                             <UserForm />
                         </PrivateRoute>
-                        <PrivateRoute path="/users">
+                        <PrivateRoute path="/users" exact={true} >
                             <UserIndex />
                         </PrivateRoute>
 
@@ -96,7 +105,7 @@ const Root = () => {
                         <PrivateRoute path="/events/:eventId/rsvp">
                             <EventRSVP />
                         </PrivateRoute>
-                        <PrivateRoute exact path="/events">
+                        <PrivateRoute path="/events" exact={true} >
                             <EventIndex />
                         </PrivateRoute>                    
                         <PrivateRoute exact path="/events/create">
@@ -109,6 +118,10 @@ const Root = () => {
 
                         <PrivateRoute path="/profile">
                             <Profile />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/children">
+                            <ChildIndex/>
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
@@ -126,8 +139,8 @@ function PrivateRoute({ children, ...rest }) {
 
     return (
         <Route {...rest}
-            render={() =>
-                user.id ? ( children ) : ( <Redirect to={{ pathname: "/login" }} /> )
+            render={() => 
+            user.id ? (children) : ( <Redirect to={{ pathname: "/login" }} /> )
             } />
     );
 }

@@ -10,9 +10,9 @@ We want to consolidate all existing volunteer and fellow tools into one mobile a
 
 You'll need install these to work on this project...
 
-[Git](https://git-scm.com/) - Code Version control tool
-[NPM](https://www.npmjs.com/) - Package manager
-[Ionic](https://ionicframework.com/) - UI Framework
+- [Git](https://git-scm.com/) - Code Version control tool
+- [NPM](https://www.npmjs.com/) - Package manager
+- [Ionic](https://ionicframework.com/) - UI Framework
 
 ### Installation
 

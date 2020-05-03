@@ -51,9 +51,9 @@ const Profile = () => {
 	}
 
 	async function updateUserData() {		
-		if(updateUser(user.id, userData)){
-			console.log(true);
-		};
+		console.log(userData);
+		let update = await updateUser(user.id, userData);
+		console.log(update);
 	}
 
 	return (

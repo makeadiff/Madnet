@@ -1,6 +1,6 @@
 import React from 'react'
 import { IonButton, IonInput, IonPage, IonContent,IonLabel,
-        IonItem,IonList,IonCheckbox,IonRadioGroup,IonListHeader,IonRadio, IonItemDivider } from '@ionic/react'
+        IonItem,IonList,IonCheckbox,IonRadioGroup,IonListHeader,IonRadio } from '@ionic/react'
 import { useParams, useHistory } from "react-router-dom"
 
 import { authContext } from '../../contexts/AuthContext'

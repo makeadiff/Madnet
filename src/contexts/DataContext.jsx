@@ -35,8 +35,17 @@ const useHandler = () => {
     const [error, setError] = React.useState([])
     const { user } = React.useContext(authContext)    
 
-    const getLocalCache = (url) => {
-        const key = "API:" + url
+    const getCacheKey = (type, key_seed) => {
+        let key = "API:" + type + ":"
+        if(type === "rest") key += key_seed // URL is the final part of the key
+        else if(type === "graphql") {
+            key += key_seed.replace(/\s+/g, " ") // Compress the graphql string - and change all whitespace to ' '(space)
+        }
+        return key
+    }
+
+    const getLocalCache = (type, key_seed) => {
+        const key = getCacheKey(type, key_seed)
         const itemStr = localStorage.getItem(key)
 
         if (!itemStr) {
@@ -55,13 +64,13 @@ const useHandler = () => {
         return item.data
     }
 
-    const setLocalCache = (url, data) => {
+    const setLocalCache = (type, key_seed, data) => {
         const now = new Date()
         const item = {
             data: data,
             expiry: now.getTime() + (1000 * 60 * 60 * 24) // Expires in a day
         }
-        window.localStorage.setItem("API:" + url, JSON.stringify(item))
+        window.localStorage.setItem(getCacheKey(type, key_seed), JSON.stringify(item))
     }
 
     /// An API wrapper to make th calls.
@@ -77,6 +86,9 @@ const useHandler = () => {
             name: "",
             key: ""
         }
+
+    
+
         if(user_args.url !== undefined) {
             default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
             default_args["key"] = default_args["name"]
@@ -84,27 +96,33 @@ const useHandler = () => {
             default_args["type"] = "graphql"
             default_args["name"] = user_args.graphql.split(/\s*\{\s*([^(]+)/)[0].trim()
             default_args["key"] = default_args["name"]
+        } else {
+            console.log("Dev Error: Unsupported call in callApi() - url or graphql must be given.")
         }
 
         let call_response
         const args = { ...default_args, ...user_args} // Merge both array - so that we have default values
+    
 
         // See if it exists in Cache first.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
-            let data = getLocalCache(args.url)
+            let data = getLocalCache(args.type, args.url)
+            if(data) return data
+        } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
+            let data = getLocalCache(args.type, args.graphql)
             if(data) return data
         }
-
+        
         setLoading(true)
-        try {
-            if(args.type === "rest") {
+        try {            
+            if(args.type === "rest") {                
                 call_response = await api.rest(args.url, args.method, args.params)                
             } else if(args.type === "graphql") {
                 call_response = await api.graphql(args.graphql, args.graphql_type)
 
             } else console.log("Dev Error: Unsupported type given in callApi({args.type})")
         } catch(e) {
-            showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")
+            showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")            
         }
         setLoading(false)
 
@@ -113,7 +131,9 @@ const useHandler = () => {
             data = call_response[args.key]
         } else if(call_response !== undefined && Object.keys(call_response).length === 1) {
             data = call_response[Object.keys(call_response)[0]]
-
+        } else if(call_response !== undefined) {
+            data = call_response
+            
         } else {
             setError({
                 "status": "warning",
@@ -124,9 +144,11 @@ const useHandler = () => {
             return false
         }
 
-        // Save fetched data to cache. :TODO: Support GraphQL caching.
+        // Save fetched data to cache.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
-            setLocalCache(args.url, data)
+            setLocalCache(args.type, args.url, data)
+        } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
+            setLocalCache(args.type, args.graphql, data)
         }
         return data
     }
@@ -180,8 +202,12 @@ const useHandler = () => {
         return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
-    const updateUser = async (user_id, params) => {
-        return await callApi({url:`users/${user_id}/`,"method": "post", params})
+    const updateUser = async (user_id, params) => {        
+        return await callApi({
+            url: `users/${user_id}`,
+            method: 'post',
+            params: params
+        })
     }
 
     const getAlerts = async (user_id) => {
