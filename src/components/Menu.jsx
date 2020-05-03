@@ -1,4 +1,4 @@
-import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote,IonThumbnail,IonImg,IonAvatar} from '@ionic/react'
+import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote,IonThumbnail,IonImg,IonAvatar, IonAlert} from '@ionic/react'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import { volunteer_pages, fellow_pages } from "../utils/Menu"
 import { personOutline, logOutOutline } from 'ionicons/icons'
 
 const Menu = () => {
+    const [ confirmLogout, setConfirmLogout ] = React.useState(false)
     const { user, unsetCurrentUser, isFellow } = React.useContext(authContext)
     const { data } = React.useContext(appContext)
     let render
@@ -41,11 +42,30 @@ const Menu = () => {
                     </IonAvatar>
                     <IonLabel>{user.name}<br/>#{user.id}</IonLabel>
                 </IonItem>
-                <IonItem onClick={ unsetCurrentUser }>
+
+                <IonItem onClick={ () => { setConfirmLogout(true) }}>
                     <IonIcon slot="start" icon={ logOutOutline } />
                     <IonLabel>Logout</IonLabel>
                 </IonItem>
             </IonList>
+
+            <IonAlert
+                isOpen={ confirmLogout }
+                onDidDismiss={ () => setConfirmLogout(false) }
+                header={'Logout!'}
+                message={'Are you sure you wish to logout?'}
+                buttons={[
+                    {
+                        text: 'Cancel',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: e => { }
+                    },
+                    {
+                        text: 'Logout',
+                        handler: unsetCurrentUser
+                    }
+                ]} />
             </>
         );
 

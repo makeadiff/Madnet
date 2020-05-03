@@ -56,6 +56,11 @@ const InductionSetup = () => {
         setStep('done')
     }
 
+    const allDone = () => {
+        // :TODO: Save time to /user/{user_id}/data/induction_done
+        history.push('/dashboard')
+    }
+
     return (
         <IonPage>
             <Title name='MADNet Setup' />

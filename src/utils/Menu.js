@@ -24,7 +24,7 @@ export const volunteer_pages = [
     },
     {
         title: 'Events',
-        url: '/events/invitations',
+        url: '/events',
         iosIcon: calendar,
         mdIcon: calendar
     },

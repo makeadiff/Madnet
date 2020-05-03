@@ -1,21 +1,24 @@
-import { IonList,IonItem,IonLabel } from '@ionic/react'
-import React, { useState, useEffect } from 'react'
+import { IonList,IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonText } from '@ionic/react'
+import React from 'react'
 
+import UserSearch from "./Search"
+import UserDetail from "../../components/User"
 import { authContext } from "../../contexts/AuthContext"
 import { appContext } from "../../contexts/AppContext"
 import { dataContext } from "../../contexts/DataContext"
+
+import "./Form.css"
 
 import './Users.css'
 
 const UserList = ({ segment }) => {
     const { user } = React.useContext(authContext)
-    const { setLoading, showMessage } = React.useContext(appContext)
+    const { showMessage } = React.useContext(appContext)
     const { getUsers } = React.useContext(dataContext)
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = React.useState([])
 
-    useEffect(() => {
+    React.useEffect(() => {
         async function fetchUserList() {
-            setLoading(true)
             let user_data = []
 
             if(segment === "needs-attention") {
@@ -26,30 +29,27 @@ const UserList = ({ segment }) => {
             if(user_data) {
                 setUsers(user_data)
             } else {
-                showMessage("UserList fetch call failed.", "error")
+                showMessage("User List fetch call failed.", "error")
             }
-            setLoading(false)
         }
         fetchUserList();
     }, [segment])
 
+    return segment === "search" ? <UserSearch /> : <Listing users={users} />
+}
+
+const Listing = ({ users }) => {
     return (
         <IonList>
             {users.map((user, index) => {
                 return (
-                    <IonItem key={index} routerLink={ `/users/${user.id}/view` } routerDirection="none" >
-                        <IonLabel>
-                            <h3>{user.name}</h3>
-                            <p>Phone: { user.phone }</p>
-                            <p>Email: { user.email }</p>
-                            <p>Credit : { user.credit } </p>
-                        </IonLabel>
-                    </IonItem>
+                    <UserDetail user={user} index={index} key={index}/>
                 );
             })}
             { (users.length === 0) ? (<IonItem><IonLabel>No users found.</IonLabel></IonItem>) : null }
         </IonList>
-    );
-};
+    )
+}
 
-export default UserList;
+export default UserList
+

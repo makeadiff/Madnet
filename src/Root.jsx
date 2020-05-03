@@ -9,9 +9,12 @@ import Menu from './components/Menu'
 import Page from './pages/Page'
 import Login from "./pages/Login"
 import Dashboard from './pages/Dashboard'
-import Shelters from './pages/Shelters'
-import ManageShelter from './pages/ManageShelter'
+import ShelterView from './pages/Shelters/View'
+import ShelterIndex from './pages/Shelters/Index'
+import BatchView from './pages/Batches/View'
+import BatchIndex from './pages/Batches/Index'
 import EventIndex from './pages/Events/Index'
+import EventCreate from './pages/Events/Create'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
@@ -42,8 +45,7 @@ const Root = () => {
                         onDidDismiss={ () => setMessage(["", false]) }
                         message={ message[0] }
                         className={ (message[1]) ? message[1] + "-toast" : "" }
-                        duration={2000}
-                    />
+                        duration={2000} />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">
@@ -64,11 +66,17 @@ const Root = () => {
                             <Dashboard />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/shelters/:shelter_id/batches/:batch_id">
+                            <BatchView />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/batches">
+                            <BatchIndex />
+                        </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id">
-                            <ManageShelter />
+                            <ShelterView />
                         </PrivateRoute>
                         <PrivateRoute path="/shelters">
-                            <Shelters />
+                            <ShelterIndex />
                         </PrivateRoute>
 
                         <PrivateRoute path="/users/:user_id/view">
@@ -88,8 +96,11 @@ const Root = () => {
                         <PrivateRoute path="/events/:eventId/rsvp">
                             <EventRSVP />
                         </PrivateRoute>
-                        <PrivateRoute path="/events">
+                        <PrivateRoute exact path="/events">
                             <EventIndex />
+                        </PrivateRoute>                    
+                        <PrivateRoute exact path="/events/create">
+                            <EventCreate />
                         </PrivateRoute>
 
                         <PrivateRoute path="/classes">

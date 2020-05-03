@@ -1,32 +1,25 @@
 import { IonPage, IonList,IonMenuToggle,IonItem,IonLabel,IonContent } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
-import Title from "../components/Title"
+import React, { useState, useEffect } from 'react'
 import { useParams } from "react-router-dom"
-import api from "../utils/API"
-import { appContext } from "../contexts/AppContext";
-import './Page.css';
 
-const ManageShelter = () => {
+import Title from "../../components/Title"
+import { dataContext } from "../../contexts/DataContext"
+
+const ShelterView = () => {
     const { shelter_id } = useParams()
-    const [shelter, setShelter] = useState([]);
-    const [shelterId] = useState(shelter_id); // if we don't do this, infinite loading.
-    const { setLoading } = React.useContext(appContext);
+    const [shelter, setShelter] = useState({name: ""})
+    const [shelterId] = useState(shelter_id)
+    const { callApi } = React.useContext(dataContext);
 
     useEffect(() => {
         async function fetchShelter() {
-            setLoading(true)
-            const shelter_data = await api.graphql(`{ center(id: ${shelterId}) { 
+            const shelter_data = await callApi({graphql: `{ center(id: ${shelterId}) { 
                 id name
                 batches { id batch_name }
                 levels { id level_name }
-            }}`);
+            }}`});
 
-            if(shelter_data.center) {
-                setShelter(shelter_data.center)
-            } else {
-                console.log("Shelter fetch call failed.")
-            }
-            setLoading(false)
+            setShelter(shelter_data)
         }
         fetchShelter();
     }, [shelterId])
@@ -38,22 +31,22 @@ const ManageShelter = () => {
             <IonContent>
                 <IonList>
                     <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/page/Shelters/${shelter.id}/batches` } routerDirection="none" >
+                        <IonItem routerLink={ `/shelters/${shelter.id}/batches` } routerDirection="none" >
                             <IonLabel>{ (shelter.batches !== undefined) ? shelter.batches.length : "" } Batch(es)</IonLabel>
                         </IonItem>
                     </IonMenuToggle>
                     <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/page/Shelters/${shelter.id}/levels` } routerDirection="none" >
+                        <IonItem routerLink={ `/shelters/${shelter.id}/levels` } routerDirection="none" >
                             <IonLabel>{ (shelter.levels !== undefined) ? shelter.levels.length : "" } Level(s)</IonLabel>
                         </IonItem>
                     </IonMenuToggle>
                     <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/page/Shelters/${shelter.id}/assign-teachers` } routerDirection="none" >
+                        <IonItem routerLink={ `/shelters/${shelter.id}/assign-teachers` } routerDirection="none" >
                             <IonLabel>Assign Teachers</IonLabel>
                         </IonItem>
                     </IonMenuToggle>
                     <IonMenuToggle autoHide={false}>
-                        <IonItem routerLink={ `/page/Shelters/${shelter.id}/edit` } routerDirection="none" >
+                        <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                             <IonLabel>Edit { shelter.name } Details</IonLabel>
                         </IonItem>
                     </IonMenuToggle>
@@ -63,4 +56,4 @@ const ManageShelter = () => {
     );
 };
 
-export default ManageShelter;
+export default ShelterView;
