@@ -128,7 +128,7 @@ const Profile = () => {
 											</IonItem>
 											<IonItem className={ disable? "hidden": null}>
 												<IonButton expand="full" size="default" color="primary" type="submit" onClick={updateUserData} >Save</IonButton>
-											</IonItem>														
+											</IonItem>									
 										</IonCardContent>
 									</IonCard>							
 								</IonList>

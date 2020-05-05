@@ -15,16 +15,17 @@ export const dataContext = React.createContext({
     setDeviceToken: () => {},
     unsetDeviceToken: () => {},
     getVerticals: () => {},
+    deleteUser: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser } = useHandler();
+    const { callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser } = useHandler();
 
     return (
         <Provider 
-            value={{ callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser}}>
+            value={{ callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser}}>
             {children}
         </Provider>
     );
@@ -210,6 +211,13 @@ const useHandler = () => {
         })
     }
 
+    const deleteUser = async (user_id) => {
+        return await callApi({
+            url: `users/${user_id}`,
+            method: 'delete'
+        })
+    }
+
     const getAlerts = async (user_id) => {
         if(user_id === undefined) user_id = user.id
         return await callApi({url:`users/${user_id}/alerts`})
@@ -233,7 +241,7 @@ const useHandler = () => {
     }    
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals, deleteUser
     };
 };
 

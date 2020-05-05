@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonButton, IonInput, IonPage, IonContent,IonLabel, IonItem,IonList,IonCheckbox,IonRadioGroup,IonListHeader,IonRadio, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonRow, IonFab, IonFabButton, IonIcon, IonChip } from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonContent,IonLabel, IonItem,IonList,IonCheckbox,IonRadioGroup,IonListHeader,IonRadio, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonRow, IonFab, IonFabButton, IonIcon, IonChip, IonAlert } from '@ionic/react'
 import { pencil, close, trash } from 'ionicons/icons'
 import { useParams, useHistory } from "react-router-dom"
 
@@ -15,8 +15,9 @@ const UserForm = () => {
     const [ userGroups, setUserGroups ] = React.useState([])    
     const [ groups, setGroups ] = React.useState([])
     const [ disable, setDisable ] = React.useState(true)
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, deleteUser } = React.useContext(dataContext)
     const { hasPermission } = React.useContext(authContext)
+    const [ confirmDelete, setConfirmDelete ] = React.useState(false)
     const history = useHistory()
 
     const sexArray = {
@@ -56,18 +57,23 @@ const UserForm = () => {
             })
         }
         else{            
-            // userGroups.map((group,index) => {
-            //     if(group.id == e.target.value){
-            //         console.log("here");
-            //         delete(userGroups[index]);
-            //     }                
-            // })
-        }
-        console.log(userGroups);
+            console.log(userGroups);
+            userGroups.map((group,index) => {
+                if(group.id == e.target.value){         
+                    console.log(index);
+                    setUserGroups(userGroups.splice(index,1))                    
+                }                
+            })
+        }            
     }
 
-    const deleteUser = () => {
-
+    const deleteUserHandler = async () => {
+        let response = await deleteUser(user.id);
+        if(response){
+            setConfirmDelete(false);
+            history.push(`/users`)
+            console.log(response)
+        }
     }
 
     React.useEffect(() => {        
@@ -217,11 +223,11 @@ const UserForm = () => {
                                     </IonCardTitle>
                                 </IonCardHeader>
                                 <IonCardContent>
-                                    <IonItem>                                        
+                                    <IonList>                                        
                                         {disable? (
                                             <InputRow label="User Type" type="text" value={ user.user_type } disable={disable}/>
                                         ): (
-                                            <IonRadioGroup name="user_type" value={ user.user_type }>
+                                            <IonRadioGroup name="user_type" value={user.user_type}>
                                                 <IonListHeader>
                                                     <IonLabel>User Type</IonLabel>
                                                 </IonListHeader>
@@ -238,13 +244,13 @@ const UserForm = () => {
 
                                                 <IonItem>
                                                 <IonLabel>Let Go</IonLabel>
-                                                <IonRadio mode="ios" name="seuser_typex" slot="start" value="let_go"/>
+                                                <IonRadio mode="ios" name="user_typex" slot="start" value="let_go"/>
                                                 </IonItem>
                                             </IonRadioGroup>
                                         )}                                         
-                                    </IonItem>
+                                    </IonList>
                                     <IonItem>
-                                        <IonButton size="default" expand="full" onClick={deleteUser}><IonIcon icon={trash}></IonIcon>Delete User</IonButton>
+                                        <IonButton color="danger" size="default" expand="full" onClick={(e) => setConfirmDelete(true)}><IonIcon icon={trash}></IonIcon>Delete User</IonButton>
                                     </IonItem>
                                 </IonCardContent>
                             </IonCard>
@@ -252,6 +258,24 @@ const UserForm = () => {
                     </IonRow>
                 </IonGrid>
             </IonContent>
+
+            <IonAlert
+                isOpen={ confirmDelete }
+                onDidDismiss={ () => setConfirmDelete(false) }
+                header={'Delete'}
+                message={'Are you sure you wish to delete ' + user.name + '?'}
+                buttons={[
+                    {
+                        text: 'Cancel',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: e => { }
+                    },
+                    {
+                        text: 'Delete',
+                        handler: deleteUserHandler
+                    }
+            ]} />
         </IonPage>
     )
 }
