@@ -3,6 +3,7 @@ import React from 'react'
 import { authContext } from "../../contexts/AuthContext"
 import { dataContext } from "../../contexts/DataContext"
 import Title from "../../components/Title"
+import ChildDetail from "../../components/Child"
 
 const ChildIndex = () => {
     const {user} = React.useContext(authContext)
@@ -22,15 +23,11 @@ const ChildIndex = () => {
         <IonPage>
             <Title name="Children" />
       
-            <IonContent>
+            <IonContent className="dark">
                 <IonList>
-                    {children.map((child, index) => (<IonItem key={index} routerLink={"/children"} routerDirection="none">
-                        <IonLabel><h4>{child.name}</h4>
-                            <p>Child ID: { child.id }</p>
-                            <p>Sex: { child.sex }</p>
-                            <p>Birthday: { child.birthday } </p>
-                        </IonLabel>
-                    </IonItem>))}
+                    {children.map((child, index) => (                    
+                        <ChildDetail child={child} index={index} key={index} />
+                    ))}
                 </IonList>
             </IonContent>
         </IonPage>

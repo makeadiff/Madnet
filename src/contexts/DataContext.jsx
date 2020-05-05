@@ -113,7 +113,7 @@ const useHandler = () => {
             if(data) return data
         }
         
-        setLoading(true)
+        setLoading(true)        
         try {            
             if(args.type === "rest") {                
                 call_response = await api.rest(args.url, args.method, args.params)                
@@ -202,7 +202,7 @@ const useHandler = () => {
         return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
-    const updateUser = async (user_id, params) => {        
+    const updateUser = async (user_id, params) => {                
         return await callApi({
             url: `users/${user_id}`,
             method: 'post',

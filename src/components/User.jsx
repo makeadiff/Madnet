@@ -1,5 +1,6 @@
-import { IonList,IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
+import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {ellipsisVertical} from 'ionicons/icons';
 
@@ -13,18 +14,20 @@ const UserDetail = ({user, index}) => {
         isOpen={showOptions}
         onDidDismiss={e => setShowOptions(false)}
     >
-      <IonItem button routerLink={ `/users/${user.id}/view` } routerDirection="none"> More </IonItem>
+      <IonItem button routerLink={ `/users/${user.id}/` } routerDirection="none" onClick={() => setShowOptions(false)}> More </IonItem>
       <IonItem button>Alumni</IonItem>      
         
     </IonPopover>
     <IonCard class="light list" key={index}>
-      <IonCardHeader className="noPadding" routerLink={ `/users/${user.id}/view` } routerDirection="none">
-        <IonCardTitle>          
-            <p>
-              #{index+1}. {user.name}
-            </p>                 
-        </IonCardTitle>
-      </IonCardHeader>
+      <Link to={ `/users/${user.id}/` }>
+        <IonCardHeader className="noPadding">
+          <IonCardTitle>          
+              <p>
+                #{index+1}. {user.name}
+              </p>                 
+          </IonCardTitle>
+        </IonCardHeader>
+      </Link>
         <IonGrid>
             <IonRow>                
                 <IonCol size-md="3" size-xs="6">                    

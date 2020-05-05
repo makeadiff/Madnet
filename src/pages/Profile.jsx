@@ -16,7 +16,8 @@ const Profile = () => {
 
 	const { user } = React.useContext(authContext)	
 	const { setLoading, showMessage } = React.useContext(appContext)
-	const { updateUser } = React.useContext(dataContext)	
+	const { updateUser } = React.useContext(dataContext)
+	const [ error, setError ] = React.useState('');	
 	
 	let breakcondition = false;
 	const [ disable, setDisable ] = React.useState(true);
@@ -50,10 +51,14 @@ const Profile = () => {
 		setDisable(true);
 	}
 
-	async function updateUserData() {		
-		console.log(userData);
-		let update = await updateUser(user.id, userData);
-		console.log(update);
+	async function updateUserData() {				
+		let update = await updateUser(user.id, userData);		
+		if(update){
+			setDisable(true);
+		}
+		else{
+
+		}
 	}
 
 	return (

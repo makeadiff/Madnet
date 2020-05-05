@@ -74,7 +74,7 @@ const Dashboard = () => {
 const AppGrid = ({ apps }) => {
     return (
         <IonGrid>
-            <IonRow class="ion-justify-content-start">
+            <IonRow className="ion-justify-content-start">
                 {apps.map((app, index) => {
                     if(app.title === "Dashboard") return null
                     return (

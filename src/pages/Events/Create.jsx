@@ -46,7 +46,7 @@ const EventCreate = () => {
 
     return (      
       <IonPage>
-        <Title/>
+        <Title name="Create Event"/>
 
         <IonContent className="dark">
           <IonGrid>
