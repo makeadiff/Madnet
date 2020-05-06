@@ -9,6 +9,7 @@ import Menu from './components/Menu'
 import Page from './pages/Page'
 import Login from "./pages/Login"
 import Dashboard from './pages/Dashboard'
+import Links from './pages/Links'
 import ShelterView from './pages/Shelters/View'
 import ShelterIndex from './pages/Shelters/Index'
 import BatchForm from './pages/Batches/Form'
@@ -114,6 +115,11 @@ const Root = () => {
                         <PrivateRoute path="/classes">
                             <Page page={{name: "My Classes"}} />
                         </PrivateRoute>
+
+                        <PrivateRoute path="/links">
+                            <Links />
+                        </PrivateRoute>
+
 
                         <PrivateRoute path="/profile">
                             <Page page={{name: "Profile"}} />
