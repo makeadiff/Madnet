@@ -1,5 +1,5 @@
 import { appsOutline, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp, calendarOutline, calendarSharp, 
-    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp, schoolOutline, schoolSharp } from 'ionicons/icons';
+    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp, schoolOutline, schoolSharp, linkOutline, linkSharp } from 'ionicons/icons';
 import { SITE_URL } from './Constants';
 
 export const volunteer_pages = [
@@ -26,6 +26,12 @@ export const volunteer_pages = [
         url: '/events/invitations',
         iosIcon: calendarOutline,
         mdIcon: calendarSharp
+    },
+    {
+        title: 'Resources',
+        url: '/links',
+        iosIcon: linkOutline,
+        mdIcon: linkSharp
     },
     {
         title: 'Profile',
