@@ -42,3 +42,17 @@ ion-row {
 .icon-medium {
     font-size: large;
 }
+
+.actions ion-col{
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.actions ion-col:hover{
+    background: var(--red-bright);
+}
+
+ion-label.error{
+    color: #FFFFFF !important;    
+}

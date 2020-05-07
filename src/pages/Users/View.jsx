@@ -41,12 +41,13 @@ const UserView = () => {
             <Title name={ user.name } />
 
             <IonContent>
-                { hasPermission('user_edit') ? 
-                    (<IonFab vertical="bottom" horizontal="end" slot="fixed">
+                { hasPermission('user_edit') ?  (
+                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
                         <IonFabButton routerLink={ `/users/${user.id}/edit` }>
                             <IonIcon icon={ createOutline } />
                         </IonFabButton>
-                    </IonFab>) : null }
+                    </IonFab>
+                ) : null }
 
 
                 <IonSegment value={segment} onIonChange={e => setSegment(e.detail.value)}>

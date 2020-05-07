@@ -133,17 +133,17 @@ const UserForm = () => {
                                     <form onSubmit={e => saveUser(e)}>
                                     <IonList>
                                         <InputRow label="Name" name="name" type="text" value={ user.name }  disable={disable} handler={updateField}/>
-                                        <InputRow label="Email" name="email" type="text" value={ user.email } disable={disable}/>
-                                        <InputRow label="Phone" name="phone" type="text" value={ user.phone } disable={disable}/>
+                                        <InputRow label="Email" name="email" type="text" value={ user.email } disable={disable} handler={updateField}/>
+                                        <InputRow label="Phone" name="phone" type="text" value={ user.phone } disable={disable} handler={updateField}/>
                                         {!disable? (
                                             <>
-                                                <InputRow label="Password" id="password" type="password" value="" disable={disable}/>
+                                                <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
                                                 <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
                                             </>
                                         ): null}                     
 
                                         {disable? (
-                                            <InputRow label="Sex" id="sex" type="text" value={ sexArray[user.sex] } disable={disable}/>
+                                            <InputRow label="Sex" id="sex" type="text" value={ sexArray[user.sex] } disable={disable} handler={updateField}/>
                                         ): (
                                             <IonRadioGroup name="sex" value={ user.sex }>
                                                 <IonListHeader>
@@ -280,11 +280,11 @@ const UserForm = () => {
     )
 }
 
-const InputRow = ({ id, label, type, value, disable, handler }) => {    
+const InputRow = ({ id, label, type, value, disable, handler = false }) => {    
     return (
         <IonItem>
             <IonLabel position="stacked">{ label }</IonLabel>
-            <IonInput type={ type } id={ id } placeholder={ label } value={ value }  disabled={disable} onIonChange={e => handler(e)}/>
+            <IonInput type={ type } id={ id } placeholder={ label } value={ value }  disabled={disable} onIonChange={e => handler}/>
         </IonItem>
     )
 }

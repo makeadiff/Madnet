@@ -1,21 +1,44 @@
-import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
+import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon, IonItemDivider, IonLabel} from '@ionic/react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import {ellipsisVertical} from 'ionicons/icons';
+import {ellipsisVertical, trash, personRemove} from 'ionicons/icons';
+import { authContext } from "../contexts/AuthContext"
 
 const UserDetail = ({user, index}) => {  
 
   const [ showOptions, setShowOptions ] = React.useState(false); 
+  const { hasPermission } = React.useContext(authContext)
+  
+  let markAlumni = (user_id) => {
+    console.log(user_id);
+    setShowOptions(false);
+    //TODO: Update functionality
+  }
+
+  let deleteUser = (user_id) => {
+    console.log(user_id);
+    setShowOptions(false);
+    //TODO: Update functionality
+  }
 
   return (
     <>
     <IonPopover
         isOpen={showOptions}
         onDidDismiss={e => setShowOptions(false)}
-    >
-      <IonItem button routerLink={ `/users/${user.id}/` } routerDirection="none" onClick={() => setShowOptions(false)}> More </IonItem>
-      <IonItem button>Alumni</IonItem>      
+    > 
+      
+      <IonItem button routerLink={ `/users/${user.id}/` } routerDirection="none" onClick={() => setShowOptions(false)}> View {user.name} </IonItem>
+      { hasPermission('user_edit') ? (
+        <>
+          <IonItemDivider>
+            <IonLabel> Edit {user.name} </IonLabel>                          
+          </IonItemDivider>
+          <IonItem button onClick={(e)=>markAlumni(user.id)}><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
+          <IonItem button onClick={(e)=>deleteUser(user.id)}><IonIcon className="userOptions" icon={trash}></IonIcon>Delete </IonItem>
+        </>
+      ): null }      
         
     </IonPopover>
     <IonCard class="light list" key={index}>

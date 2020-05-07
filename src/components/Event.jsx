@@ -3,7 +3,7 @@ import React from 'react'
 
 import {ellipsisVertical, location, arrowForward} from 'ionicons/icons';
 
-const EventDetail = ({event, index}) => {  
+const EventDetail = ({event, index, segment}) => {  
 
   const [ showOptions, setShowOptions ] = React.useState(false); 
   console.log(event);
@@ -18,7 +18,7 @@ const EventDetail = ({event, index}) => {
       <IonItem button>Alumni</IonItem>      
         
     </IonPopover> */}
-    <IonCard class="light list" key={index} routerLink={ `/events/${event.id}/rsvp` } routerDirection="none" >
+    <IonCard class="light list" key={index} routerLink={ segment=="invitations"? `/events/${event.id}/rsvp`: '' } routerDirection="none">
       <IonCardHeader className="noPadding">
         <IonCardTitle>          
             <p>

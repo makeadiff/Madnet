@@ -7,7 +7,7 @@ import { dataContext } from "../../contexts/DataContext"
 
 const ShelterView = () => {
     const { shelter_id } = useParams()
-    const [shelter, setShelter] = React.useState({name: "", projects:[]})
+    const [shelter, setShelter] = React.useState({name: "", projects:[], students: []})
     const [projectId, setProjectId] = React.useState(0)
     const [project, setProject] = React.useState({id:0, name:"", batches:[], levels: []})
     const { callApi } = React.useContext(dataContext);
@@ -22,13 +22,16 @@ const ShelterView = () => {
                         batches { id batch_name }
                         levels { id level_name }
                     }
+                    students { id }
                 }}`});
 
             setShelter(shelter_data)
 
             // First project is set as the default project. :TODO: This should default to current user's vertical.
-            setProjectId(shelter_data.projects[0].id)
-            setProject(shelter_data.projects[0])
+            if(shelter_data.projects[0]){
+                setProjectId(shelter_data.projects[0].id)            
+                setProject(shelter_data.projects[0])
+            }
         }
         fetchShelter();
     }, [shelter_id])
@@ -42,13 +45,13 @@ const ShelterView = () => {
         });
     }, [projectId])
 
-    const project_key = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftecare"}
+    const project_key = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare"}
 
     return (
         <IonPage>
-            <Title name={ `Manage ${shelter.name} Shelter` } />
+            <Title name={ `Manage ${shelter.name}` } />
 
-            <IonContent>
+            <IonContent className="dark">
                 <IonSegment value={ projectId } onIonChange={e => setProjectId(e.detail.value)}>
                     { shelter.projects.map(( proj, index) => {
                         return (<IonSegmentButton value={ proj.id } key={index}>
@@ -67,13 +70,17 @@ const ShelterView = () => {
                         <IonLabel>{ project.levels.length ?? "" } Level(s)</IonLabel>
                     </IonItem>
                 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/assign-teachers` } routerDirection="none" >
+                    <IonItem routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
+                        <IonLabel>{ shelter.students.length } Students</IonLabel>
+                    </IonItem>
+
+                    {/* <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/assign-teachers` } routerDirection="none" >
                         <IonLabel>Assign Teachers</IonLabel>
                     </IonItem>
-                
+
                     <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
-                    </IonItem>
+                    </IonItem> */}
                 
                 </IonList>
             </IonContent>
