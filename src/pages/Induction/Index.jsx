@@ -1,6 +1,6 @@
 import React from 'react'
-import { IonButton, IonInput, IonPage, IonContent, IonIcon, IonList,IonItem } from '@ionic/react'
-import { arrowForwardOutline } from 'ionicons/icons'
+import { IonButton, IonInput, IonPage, IonContent, IonIcon, IonText,IonItem, IonCardContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonLabel } from '@ionic/react'
+import { arrowForwardOutline, logoGoogle } from 'ionicons/icons'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
 
@@ -9,6 +9,8 @@ import { appContext } from "../../contexts/AppContext"
 import api from "../../utils/API"
 import { assets, setStoredUser } from "../../utils/Helpers"
 import Title from '../../components/Title'
+
+import './Induction.css'
 
 const InductionIndex = () => {
     const [init, setInit] = React.useState(false)
@@ -94,23 +96,35 @@ const InductionIndex = () => {
     return (
         <IonPage>
             <Title name="Welcome to MADNet" />
-            <IonContent>
-                <IonList>
-                <IonItem lines="none"><strong>Welcome to Make A Difference.</strong></IonItem>
-                
-                <IonItem lines="none"><span>We'll be setting up your profile in our database now. 
-                    To continue, please <strong>enter the email you provided when registering for MAD</strong>.</span></IonItem>
-                
-                <IonItem lines="none"><IonInput name="identifier" id="identifier" placeholder="Email" /></IonItem>
-
-                <IonItem><IonButton name="action" onClick={ stepOne }>Next <IonIcon icon={arrowForwardOutline}></IonIcon></IonButton></IonItem>
-
-                <IonItem lines="none">OR</IonItem>
-
-                <IonItem lines="none"><img width="200" src={ assets('glogin.png') } alt="Login With Google" onClick={ signInWithGoogle } /></IonItem>
-
-                <IonItem lines="none">{message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}</IonItem>
-                </IonList>
+            <IonContent className="dark">
+                <IonCard className="dark loginCard">
+                    <IonCardHeader>
+                        <IonCardTitle>
+                            Welcome to Make A Difference.
+                        </IonCardTitle>
+                        <IonCardSubtitle>
+                            We'll be setting up your profile in our database now. To continue, please enter the email you provided when registering for MAD
+                        </IonCardSubtitle>
+                    </IonCardHeader>
+                    <IonCardContent>                                         
+                        <IonItem className="padded">
+                            <IonLabel position="stacked">Enter your Registered Email</IonLabel>
+                            <IonInput name="identifier" id="identifier" placeholder="Email" />
+                        </IonItem>                        
+                        <IonButton name="action" expand="full" onClick={ stepOne } size="default">
+                            Next <IonIcon icon={arrowForwardOutline}></IonIcon>
+                        </IonButton>                                                
+                        <IonText className="centerAlign">
+                            <p>--Or--</p>
+                        </IonText>                                            
+                        <IonButton type="button" expand="full" color="tertiary" block={true} size="default" onClick={signInWithGoogle}>
+                            <IonIcon icon={logoGoogle}/>Login With Google
+                        </IonButton>                                                 
+                        <IonItem>
+                            {message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}
+                        </IonItem>                        
+                    </IonCardContent>
+                </IonCard>                
             </IonContent>
         </IonPage>
     )

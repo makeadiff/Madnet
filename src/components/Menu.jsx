@@ -1,4 +1,4 @@
-import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote,IonAlert } from '@ionic/react'
+import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote,IonThumbnail,IonImg,IonAvatar, IonAlert} from '@ionic/react'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 
@@ -18,23 +18,29 @@ const Menu = () => {
         render = (
             <>
             <IonList id="volunteer-list" className="sections">
-                <IonListHeader>MADNet</IonListHeader>
-                <IonNote>{ user.name }</IonNote>
-                <MenuSection pages={volunteer_pages} />
-            </IonList>
+                <IonListHeader>
+                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet                    
+                </IonListHeader>                  
+            </IonList>                               
+
+            <IonList id="user-list" className="sections">
+                <IonListHeader>User Section</IonListHeader>                
+                <MenuSection pages={volunteer_pages} />                                                                                                          
+            </IonList> 
 
             { isFellow() ? (
                 <IonList id="admin-list" className="sections">
                     <IonListHeader>Admin Section</IonListHeader>
                     <MenuSection pages={fellow_pages} />
                 </IonList>
-            ) : null }
+            ) : null }           
 
-            <IonList id="user-list" className="sections">
-                <IonListHeader>User Section</IonListHeader>
-                <IonItem routerLink="/profile" className={data.path.includes("/profile") ? 'selected' : ''}>
-                    <IonIcon slot="start" icon={ personOutline } />
-                    <IonLabel>Profile</IonLabel>
+            <IonList className="sections">
+                <IonItem className="noHover" routerLink='/profile' className={data.path.includes('/profile') ? 'selected' : ''}>
+                    <IonAvatar slot="start">
+                    <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
+                    </IonAvatar>
+                    <IonLabel>{user.name}<br/>#{user.id}</IonLabel>
                 </IonItem>
 
                 <IonItem onClick={ () => { setConfirmLogout(true) }}>
@@ -65,9 +71,11 @@ const Menu = () => {
 
     } else {
         render = (
-            <IonList id="volunteer-list">
-                <IonListHeader>MADNet</IonListHeader>
-                <IonNote>Please Login to use this app</IonNote>
+            <IonList id="volunteer-list">                
+                <IonListHeader>
+                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet
+                </IonListHeader>
+                {/* <IonNote>Please Login to use this app</IonNote> */}
             </IonList>
         )
     }
@@ -99,7 +107,7 @@ const MenuSection = ({ pages }) => {
             return (
                 <IonItem key={index} className={data.path.includes(app.url) ? 'selected' : ''} { ...attr }>
                     <IonIcon slot="start" icon={app.iosIcon} />
-                    <IonLabel>{app.title}</IonLabel>
+                    <IonLabel className="uppercase">{app.title}</IonLabel>
                 </IonItem>
             );
         }) 

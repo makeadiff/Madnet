@@ -1,0 +1,26 @@
+ion-card.list{
+  border: none;
+  border-left: 3px solid var(--red-bright);
+}
+
+ion-card.list ion-card-title{
+  font-size:15px;
+}
+
+ion-card.list ion-card-title p{
+  margin-bottom: 0px
+}
+
+ion-card.list ion-chip{
+  font-size: 13px;
+  padding: 8px;
+}
+
+ion-card-header.noPadding{
+  padding: 0;
+  padding-left: 10px;
+}
+
+ion-button.userEditButton{
+  float: right;
+}

@@ -1,0 +1,58 @@
+ion-content, .list-md{
+  --background: var(--ion-background-color);
+}
+
+.input_field{
+  border: thin solid #CCC;
+  padding: 10px;
+  --padding-start: 20px;
+}
+
+ion-item.logoHolder{
+  width: 100%;
+  text-align: center;  
+}
+
+ion-item.logoHolder ion-img{
+  padding-top: 20px;
+  width: 80px;
+  margin: auto;  
+}
+
+.list-md{
+  padding: 0px;
+}
+
+ion-content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginCard{
+  width: 450px;
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);    
+}
+
+.loginCard ion-item{
+  margin-bottom: 20px;
+}
+
+.cardCaption{
+  padding: 10px;
+  background: var(--blue-grey-light);
+  margin-top: 20px;
+}
+
+@media (max-width:500px){
+  .loginCard{
+    width: 90%;    
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);  
+  } 
+}
+

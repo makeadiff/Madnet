@@ -10,18 +10,21 @@ export const dataContext = React.createContext({
     getSurveyForm: () => {},
     setSurveyResponses: () => {},
     getUsers: () => {},
+    updateUser: () => {},    
     getAlerts: () => {},
     setDeviceToken: () => {},
-    unsetDeviceToken: () => {}
+    unsetDeviceToken: () => {},
+    getVerticals: () => {},
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken } = useHandler();
+    const { callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser } = useHandler();
 
     return (
-        <Provider value={{ callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken }}>
+        <Provider 
+            value={{ callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser}}>
             {children}
         </Provider>
     );
@@ -30,7 +33,7 @@ const DataProvider = ({ children }) => {
 const useHandler = () => {
     const { setLoading, showMessage } = React.useContext(appContext)
     const [error, setError] = React.useState([])
-    const { user } = React.useContext(authContext)
+    const { user } = React.useContext(authContext)    
 
     const getCacheKey = (type, key_seed) => {
         let key = "API:" + type + ":"
@@ -71,7 +74,7 @@ const useHandler = () => {
     }
 
     /// An API wrapper to make th calls.
-    const callApi = async(user_args) => {
+    const callApi = async(user_args) => {        
         const default_args = {
             url: "",
             type: "rest",
@@ -83,6 +86,9 @@ const useHandler = () => {
             name: "",
             key: ""
         }
+
+    
+
         if(user_args.url !== undefined) {
             default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
             default_args["key"] = default_args["name"]
@@ -96,6 +102,7 @@ const useHandler = () => {
 
         let call_response
         const args = { ...default_args, ...user_args} // Merge both array - so that we have default values
+    
 
         // See if it exists in Cache first.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
@@ -107,15 +114,15 @@ const useHandler = () => {
         }
         
         setLoading(true)
-        try {
-            if(args.type === "rest") {
-                call_response = await api.rest(args.url, args.method, args.params)
+        try {            
+            if(args.type === "rest") {                
+                call_response = await api.rest(args.url, args.method, args.params)                
             } else if(args.type === "graphql") {
                 call_response = await api.graphql(args.graphql, args.graphql_type)
 
             } else console.log("Dev Error: Unsupported type given in callApi({args.type})")
         } catch(e) {
-            showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")
+            showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")            
         }
         setLoading(false)
 
@@ -195,9 +202,21 @@ const useHandler = () => {
         return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
+    const updateUser = async (user_id, params) => {        
+        return await callApi({
+            url: `users/${user_id}`,
+            method: 'post',
+            params: params
+        })
+    }
+
     const getAlerts = async (user_id) => {
         if(user_id === undefined) user_id = user.id
         return await callApi({url:`users/${user_id}/alerts`})
+    }
+
+    const getVerticals = async () => {
+        return await callApi({url: `verticals/`})
     }
 
     const setDeviceToken = async (token, user_id) => {
@@ -211,10 +230,10 @@ const useHandler = () => {
 
         if(device_response) return device_response
         return false
-    }
+    }    
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, getAlerts, setDeviceToken, unsetDeviceToken
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals
     };
 };
 

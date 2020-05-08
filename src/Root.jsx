@@ -17,11 +17,13 @@ import BatchIndex from './pages/Batches/Index'
 import LevelForm from './pages/Levels/Form'
 import LevelIndex from './pages/Levels/Index'
 import EventIndex from './pages/Events/Index'
+import EventCreate from './pages/Events/Create'
 import EventRSVP from './pages/Events/RSVP'
 import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
+import Profile from './pages/Profile'
 import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
@@ -110,6 +112,9 @@ const Root = () => {
                         </PrivateRoute>
                         <PrivateRoute path="/events" exact={true} >
                             <EventIndex />
+                        </PrivateRoute>                    
+                        <PrivateRoute exact path="/events/create">
+                            <EventCreate />
                         </PrivateRoute>
 
                         <PrivateRoute path="/classes">
@@ -122,7 +127,7 @@ const Root = () => {
 
 
                         <PrivateRoute path="/profile">
-                            <Page page={{name: "Profile"}} />
+                            <Profile />
                         </PrivateRoute>
 
                         <PrivateRoute path="/students" exact={true}>

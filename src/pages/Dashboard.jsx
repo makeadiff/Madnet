@@ -1,31 +1,68 @@
-import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText } from '@ionic/react';
+import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonItem, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/react';
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom'
 
 import Title from '../components/Title'
 import { authContext } from "../contexts/AuthContext";
 import { volunteer_pages, fellow_pages } from "../utils/Menu"
+import './All.css';
 import './Dashboard.css';
 const Alerts = lazy(() => import('../components/Alerts'))
 
 const Dashboard = () => {
     const { isFellow } = React.useContext(authContext);
+    const { user } = React.useContext(authContext)	
+    console.log(user);
 
     return (
         <IonPage>
-            <Title name="Dashboard" />
-
-            <IonContent>
-                <h3>Volunteer Pages</h3>
-                <AppGrid apps={volunteer_pages} />
-
-                { isFellow() ? (
-                    <div>
-                        <h3>Fellow Pages</h3>
-                        <AppGrid apps={fellow_pages} />
-                    </div>
-                ) : null }
-
+            <Title name="Dashboard" />            
+            <IonContent class="dark">
+                <IonGrid>
+                    <IonRow>
+                        <IonCol size-md="6" size-xs="12">
+                            <IonCard className="light">
+                                <IonCardHeader>
+                                    <IonCardTitle>Hello, {user.name}</IonCardTitle>
+                                </IonCardHeader>
+                                <IonCardContent>
+                                    <IonGrid>
+                                        <IonRow>
+                                            <IonCol size="3">
+                                                <IonText className="centerAlign">
+                                                    <p>Credits</p>
+                                                </IonText>
+                                                <div className="infoDisc small">
+                                                    <IonText>{user.credit}</IonText>
+                                                </div>
+                                            </IonCol>
+                                        </IonRow>
+                                    </IonGrid>
+                                </IonCardContent>
+                            </IonCard>
+                        </IonCol>
+                        <IonCol size-md="6" size-xs="12">
+                            <IonCard className="dark no-shadow">
+                                <IonCardHeader>
+                                    <IonCardTitle>Your Section</IonCardTitle>
+                                </IonCardHeader>
+                                <IonCardContent>
+                                    <AppGrid apps={volunteer_pages} />  
+                                </IonCardContent>
+                            </IonCard>                                                          
+                            { isFellow() ? (
+                                <IonCard className="dark no-shadow">
+                                    <IonCardHeader>
+                                        <IonCardTitle>Admin</IonCardTitle>
+                                    </IonCardHeader>
+                                    <IonCardContent>                                    
+                                        <AppGrid apps={fellow_pages} />
+                                    </IonCardContent>
+                                </IonCard>
+                            ) : null }                                                            
+                        </IonCol>
+                    </IonRow>                                              
+                </IonGrid>
                 <Suspense fallback={<h4>Loading...</h4>}>
                     <Alerts />
                 </Suspense>
@@ -41,11 +78,11 @@ const AppGrid = ({ apps }) => {
                 {apps.map((app, index) => {
                     if(app.title === "Dashboard") return null
                     return (
-                        <IonCol key={index} size-xs="6" size-md="3">
+                        <IonCol className="menu-item" key={index} size-xs="4" size-md="4">                            
                             <Link to={app.url}>
                                 <div className="box">
-                                    <IonIcon slot="start" icon={app.iosIcon} size="large" /><br />
-                                    <IonText>{app.title}</IonText>
+                                    <IonIcon slot="start" icon={app.iosIcon} /><br />
+                                    <IonText className="appTitle">{app.title}</IonText>
                                 </div>
                             </Link>
                         </IonCol>

@@ -1,31 +1,32 @@
-import { appsOutline, appsSharp, bookOutline, bookSharp, cashOutline, cashSharp, calendarOutline, calendarSharp, 
-    personOutline, personSharp, peopleOutline, peopleSharp, businessOutline, businessSharp, schoolOutline, schoolSharp, linkOutline, linkSharp } from 'ionicons/icons';
+import { apps, appsSharp, library, wallet, calendar, personSharp, people, 
+        businessOutline, schoolOutline, schoolSharp, businessSharp } from 'ionicons/icons';
+
 import { SITE_URL } from './Constants';
 
 export const volunteer_pages = [
     {
         title: 'Dashboard',
         url: '/dashboard',
-        iosIcon: appsOutline,
+        iosIcon: apps,
         mdIcon: appsSharp
     },
     {
         title: 'My Classes',
         url: '/classes',
-        iosIcon: bookOutline,
-        mdIcon: bookSharp
+        iosIcon: library,
+        mdIcon: library
     },
     {
         title: 'Donations',
         url: SITE_URL + 'donut',
-        iosIcon: cashOutline,
-        mdIcon: cashSharp
+        iosIcon: wallet,
+        mdIcon: wallet
     },
     {
         title: 'Events',
-        url: '/events/invitations',
-        iosIcon: calendarOutline,
-        mdIcon: calendarSharp
+        url: '/events',
+        iosIcon: calendar,
+        mdIcon: calendar
     },
     {
         title: 'Resources',
@@ -45,8 +46,8 @@ export const fellow_pages = [
     {
         title: 'Volunteers',
         url: '/users',
-        iosIcon: peopleOutline,
-        mdIcon: peopleSharp
+        iosIcon: people,        
+        mdIcon: people
     },
     {
         title: 'Shelters',
@@ -61,4 +62,3 @@ export const fellow_pages = [
         mdIcon: schoolSharp
     }
 ];
-
