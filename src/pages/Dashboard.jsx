@@ -12,7 +12,6 @@ const Alerts = lazy(() => import('../components/Alerts'))
 const Dashboard = () => {
     const { isFellow } = React.useContext(authContext);
     const { user } = React.useContext(authContext)	
-    console.log(user);
 
     return (
         <IonPage>

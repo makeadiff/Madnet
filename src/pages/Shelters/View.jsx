@@ -10,7 +10,7 @@ const ShelterView = () => {
     const [shelter, setShelter] = React.useState({name: "", projects:[], students: []})
     const [projectId, setProjectId] = React.useState(0)
     const [project, setProject] = React.useState({id:0, name:"", batches:[], levels: []})
-    const { callApi } = React.useContext(dataContext);
+    const { callApi } = React.useContext(dataContext)
 
     React.useEffect(() => {
         async function fetchShelter() {
@@ -26,6 +26,8 @@ const ShelterView = () => {
                 }}`});
 
             setShelter(shelter_data)
+
+            console.log(shelter_data)
 
             // First project is set as the default project. :TODO: This should default to current user's vertical.
             setProjectId(shelter_data.projects[0].id)
@@ -70,6 +72,10 @@ const ShelterView = () => {
                 
                     <IonItem routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
                         <IonLabel>{ shelter.students.length } Students</IonLabel>
+                    </IonItem>
+
+                    <IonItem routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none" >
+                        <IonLabel>3 Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
 
                     {/* <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/assign-teachers` } routerDirection="none" >
