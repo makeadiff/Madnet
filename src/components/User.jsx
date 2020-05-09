@@ -21,7 +21,7 @@ const UserDetail = ({user, index}) => {
     if(response){
         setConfirmDelete(false);
         history.push(`/users`)
-        console.log(response)
+        // console.log(response)
     }
     //TODO: Remove Caching of Data upon update.
   }
@@ -32,7 +32,7 @@ const UserDetail = ({user, index}) => {
     if(response){
         setConfirmDelete(false);
         history.push(`/users`)
-        console.log(response)
+        // console.log(response)
     }
     //TODO: Remove Caching of Data upon update.
   }
@@ -120,7 +120,7 @@ const UserDetail = ({user, index}) => {
     <IonAlert
         isOpen={ confirmAlumni }
         onDidDismiss={ () => { setConfirmAlumni(false); setShowOptions(false); } }
-        header={'Delete'}
+        header={'Mark as Alumni'}
         message={'Are you sure you wish to mark ' + user.name + ' as an alumni?'}
         buttons={[
             {
@@ -130,7 +130,7 @@ const UserDetail = ({user, index}) => {
                 handler: e => { }
             },
             {
-                text: 'Delete',
+                text: 'Mark as Alumni',
                 handler: e => markAlumni(user.id)
             }
     ]} />

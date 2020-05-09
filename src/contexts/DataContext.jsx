@@ -87,9 +87,7 @@ const useHandler = () => {
             name: "",
             key: ""
         }
-
     
-
         if(user_args.url !== undefined) {
             default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
             default_args["key"] = default_args["name"]

@@ -1,6 +1,6 @@
 import React from 'react'
 import { IonButton, IonInput, IonPage, IonContent,IonLabel, IonItem,IonList,IonCheckbox,IonRadioGroup,IonListHeader,IonRadio, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonRow, IonFab, IonFabButton, IonIcon, IonChip, IonAlert } from '@ionic/react'
-import { pencil, close, trash } from 'ionicons/icons'
+import { pencil, close, trash, add } from 'ionicons/icons'
 import { useParams, useHistory } from "react-router-dom"
 
 import { authContext } from '../../contexts/AuthContext'
@@ -15,7 +15,7 @@ const UserForm = () => {
     const [ userGroups, setUserGroups ] = React.useState([])    
     const [ groups, setGroups ] = React.useState([])
     const [ disable, setDisable ] = React.useState(true)
-    const { callApi, deleteUser } = React.useContext(dataContext)
+    const { callApi, deleteUser, updateUser } = React.useContext(dataContext)
     const { hasPermission } = React.useContext(authContext)
     const [ confirmDelete, setConfirmDelete ] = React.useState(false)
     const history = useHistory()
@@ -30,8 +30,7 @@ const UserForm = () => {
 		setUser({
 			...user,
 			[e.target.name]: e.target.value
-        })
-        console.log(e.target.value);
+        })        
     }
      
     const openEdit = () => {
@@ -62,14 +61,12 @@ const UserForm = () => {
                 setUserGroups([role_detail[0]]);
             }
         }
-        else{            
-            console.log(userGroups);
+        else{                        
             userGroups.map((group,index) => {
                 console.log(e.target.value, group.id)
                 if(group.id == e.target.value){                     
                     let del = userGroups.splice(index,1)
-                    setUserGroups([...userGroups])
-                    console.log(userGroups);
+                    setUserGroups([...userGroups])                    
                 }                
             })
         }            
@@ -106,9 +103,44 @@ const UserForm = () => {
     }, [user_id])
     
 
-    const saveUser = (e) => {
+    const saveUser = async (e) => {
         e.preventDefault();
-        console.log(user); 
+        let updateElements = {
+            name: user.name,
+            email: user.email,
+            // mad_email: user.mad_email,
+            phone: user.phone,
+            sex: user.sex,
+            user_type: user.user_type
+        }
+        let update = await updateUser(user.id,updateElements);
+        var to_delete_groups = [], to_add_groups = [];
+        let existing_groups = user.groups
+        var exists;
+
+        userGroups.map((group,index) => {                  
+            exists = existing_groups.filter(function(item) {      
+                console.log(item, group);       
+                if(item.id == group.id){                
+                    return index
+                }                      
+            });
+            console.log(exists)
+        })
+        
+        if(!existing_groups.length){
+            userGroups.map(async (group)=> {
+                let updateRoles = await callApi({url: `/users/${user.id}/groups/${group.id}`, method: 'post'});
+                console.log(updateRoles);
+            })
+        }
+        
+        console.log(to_delete_groups, to_add_groups);
+
+        if(update){
+            setDisable(true)
+            //TODO: give success message        
+        }
     }
     
 
@@ -150,11 +182,15 @@ const UserForm = () => {
                                             </IonItem>
                                             <IonItem>
                                                 <IonLabel position="stacked">Email</IonLabel>
-                                                <IonInput type="email" name="email" placeholder="Volunteer Email" value={ user.email }  disabled={disable} onIonChange={updateField}/>
+                                                <IonInput type="email" name="email" placeholder="Personal Email" value={ user.email }  disabled={disable} onIonChange={updateField}/>
                                             </IonItem>
+                                            {/* <IonItem>
+                                                <IonLabel position="stacked">MAD Email</IonLabel>
+                                                <IonInput type="email" name="mad_email" placeholder="Official Email" value={ user.mad_email }  disabled={disable} onIonChange={updateField}/>
+                                            </IonItem> */}
                                             <IonItem>
                                                 <IonLabel position="stacked">Phone</IonLabel>
-                                                <IonInput type="text" name="phone" placeholder="Volunteer Phone" value={ user.phone }  disabled={disable} onIonChange={updateField}/>
+                                                <IonInput type="text" name="phone" placeholder="Phone" value={ user.phone }  disabled={disable} onIonChange={updateField}/>
                                             </IonItem>
                                             {/* {!disable? (
                                                 <>
