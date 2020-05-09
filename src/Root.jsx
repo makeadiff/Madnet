@@ -140,6 +140,9 @@ const Root = () => {
                         <PrivateRoute path="/students/:student_id" exact={true} >
                             <StudentForm />
                         </PrivateRoute>
+                        <PrivateRoute path="/students/:item_id/notes" exact={true} >
+                            <Notes item_type="student" />
+                        </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>

@@ -38,7 +38,9 @@ const useHandler = () => {
     const [error, setError] = React.useState([])
     const { user } = React.useContext(authContext)    
 
-    const getCacheKey = (type, key_seed) => {
+    const getCacheKey = (type, key_seed, cache_key) => {
+        if(cache_key) return cache_key
+        
         let key = "API:" + type + ":"
         if(type === "rest") key += key_seed // URL is the final part of the key
         else if(type === "graphql") {
