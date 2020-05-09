@@ -1,9 +1,9 @@
-import { IonList,IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
+import { IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonItemDivider, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
 import React from 'react'
 import * as moment from 'moment'
 import { Link } from 'react-router-dom'
 
-import {ellipsisVertical} from 'ionicons/icons';
+import {ellipsisVertical, personRemove, trash} from 'ionicons/icons';
 
 const ChildDetail = ({child, index}) => {  
 
@@ -15,16 +15,18 @@ const ChildDetail = ({child, index}) => {
     null : "Not mentioned"
 	}
 
-  console.log(child);
-
   return (
     <>
     <IonPopover
         isOpen={showOptions}
         onDidDismiss={e => setShowOptions(false)}
     >
-      <IonItem button routerLink={ `/students/${child.id}`} routerDirection="none"> More </IonItem>
-      <IonItem button>Alumni</IonItem>      
+      <IonItem button routerLink={ `/students/${child.id}`}> More </IonItem>
+      <IonItemDivider>
+          <IonLabel> Edit {child.name} </IonLabel>                          
+      </IonItemDivider>
+      <IonItem button><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
+      <IonItem button><IonIcon className="userOptions" icon={trash}></IonIcon>Delete </IonItem>
         
     </IonPopover>
     <IonCard class="light list" key={index}>

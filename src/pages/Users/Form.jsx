@@ -7,7 +7,6 @@ import { authContext } from '../../contexts/AuthContext'
 import { dataContext } from '../../contexts/DataContext'
 import Title from '../../components/Title'
 import './Form.css'
-import { userInfo } from 'os'
 
 const UserForm = () => {
     const { user_id } = useParams()
@@ -63,7 +62,6 @@ const UserForm = () => {
         }
         else{                        
             userGroups.map((group,index) => {
-                console.log(e.target.value, group.id)
                 if(group.id == e.target.value){                     
                     let del = userGroups.splice(index,1)
                     setUserGroups([...userGroups])                    
@@ -108,7 +106,7 @@ const UserForm = () => {
         let updateElements = {
             name: user.name,
             email: user.email,
-            // mad_email: user.mad_email,
+            mad_email: user.mad_email,
             phone: user.phone,
             sex: user.sex,
             user_type: user.user_type
@@ -116,30 +114,54 @@ const UserForm = () => {
         let update = await updateUser(user.id,updateElements);
         var to_delete_groups = [], to_add_groups = [];
         let existing_groups = user.groups
-        var exists;
 
-        userGroups.map((group,index) => {                  
-            exists = existing_groups.filter(function(item) {      
-                console.log(item, group);       
-                if(item.id == group.id){                
-                    return index
-                }                      
-            });
-            console.log(exists)
+        // Section to filter out newly added Groups to the user.        
+        userGroups.map((group) => {                  
+            existing_groups.filter(function(item) {                                  
+                if(item.id === group.id){                
+                    //Do Nothing                 
+                }
+                else{
+                    to_add_groups[group.id] = {user_id: user.id, group_id: group.id};
+                }
+            });            
+        })
+
+        // Section to filter out  Groups that the user doesn't hold anymore.
+        existing_groups.map((group) => {
+            userGroups.filter(function(item) {
+                if(item.id === group.id){
+                    //Do Nothing
+                }
+                else{
+                    to_delete_groups[group.id] = {user_id: user.id, group_id: group.id};
+                }
+            })
         })
         
+        
+
         if(!existing_groups.length){
             userGroups.map(async (group)=> {
                 let updateRoles = await callApi({url: `/users/${user.id}/groups/${group.id}`, method: 'post'});
                 console.log(updateRoles);
             })
         }
-        
-        console.log(to_delete_groups, to_add_groups);
+        else{
+            to_add_groups.map(async (group)=> {
+                let updateRoles = await callApi({url: `/users/${group.user_id}/groups/${group.group_id}`, method: 'post'});
+                console.log(updateRoles);
+            })
+
+            to_delete_groups.map(async (group)=> {
+                let updateRoles = await callApi({url: `/users/${group.user_id}/groups/${group.group_id}`, method: 'delete'});
+                console.log(updateRoles);
+            })
+        }
 
         if(update){
             setDisable(true)
-            //TODO: give success message        
+            //TODO: give success message      
         }
     }
     
