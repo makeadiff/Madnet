@@ -15,7 +15,7 @@ import './Event.css'
 
 const EventRSVP = () => {
     const { eventId } = useParams()
-    const [event, setEvent] = React.useState({})
+    const [ event, setEvent ] = React.useState({})
     const [rsvp, setRsvp] = React.useState('no_data')
     const { setLoading } = React.useContext(appContext);
     const { user } = React.useContext(authContext)

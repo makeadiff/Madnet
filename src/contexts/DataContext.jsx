@@ -120,9 +120,9 @@ const useHandler = () => {
                 call_response = await api.rest(args.url, args.method, args.params)                
             } else if(args.type === "graphql") {
                 call_response = await api.graphql(args.graphql, args.graphql_type)
-
             } else console.log("Dev Error: Unsupported type given in callApi({args.type})")
-        } catch(e) {
+            
+        } catch(e) {            
             showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")            
         }
         setLoading(false)
@@ -203,12 +203,12 @@ const useHandler = () => {
         return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
-    const updateUser = async (user_id, params) => {                
+    const updateUser = async (user_id, params) => {                        
         return await callApi({
             url: `users/${user_id}`,
             method: 'post',
             params: params
-        })
+        })        
     }
 
     const deleteUser = async (user_id) => {
@@ -216,7 +216,7 @@ const useHandler = () => {
             url: `users/${user_id}`,
             method: 'delete'
         })
-    }
+    }    
 
     const getAlerts = async (user_id) => {
         if(user_id === undefined) user_id = user.id

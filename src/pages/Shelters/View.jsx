@@ -1,9 +1,10 @@
-import { IonPage, IonList,IonItem,IonLabel,IonContent,IonSegment,IonSegmentButton } from '@ionic/react';
+import { IonPage, IonList,IonItem,IonLabel,IonContent,IonSegment,IonSegmentButton, IonChip} from '@ionic/react';
 import React from 'react'
 import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
+import './Shelters.css';
 
 const ShelterView = () => {
     const { shelter_id } = useParams()
@@ -62,16 +63,19 @@ const ShelterView = () => {
 
                 <IonList>
                
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
-                        <IonLabel>{ project.batches.length ?? "" } Batch(es)</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
+                        <IonChip className="roles"> { project.batches.length ?? "" } </IonChip>
+                        <IonLabel className="shelterList"> Batch(es)</IonLabel>
                     </IonItem>
                 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
-                        <IonLabel>{ project.levels.length ?? "" } Level(s)</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
+                        <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
+                        <IonLabel className="shelterList"> Level(s)</IonLabel>
                     </IonItem>
                 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
-                        <IonLabel>{ shelter.students.length } Students</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
+                        <IonChip className="roles">{ shelter.students.length }</IonChip>
+                        <IonLabel className="shelterList"> Students</IonLabel>
                     </IonItem>
 
                     {/* <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/assign-teachers` } routerDirection="none" >

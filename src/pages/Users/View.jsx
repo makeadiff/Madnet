@@ -38,8 +38,7 @@ const UserView = () => {
 
     return (
         <IonPage>
-            <Title name={ user.name } />
-
+            <Title name={ user.name } />        
             <IonContent>
                 { hasPermission('user_edit') ?  (
                     <IonFab vertical="bottom" horizontal="end" slot="fixed">

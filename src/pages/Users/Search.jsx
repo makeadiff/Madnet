@@ -8,8 +8,8 @@ import "./Form.css"
 
 const UserSearch = ({ segment }) => {
     const { user } = React.useContext(authContext)
-    const [groups, setGroups] = React.useState([])
-    const [showMore, setShowMore] = React.useState(false)
+    const [ groups, setGroups ] = React.useState([])
+    const [ showMore, setShowMore ] = React.useState(false)
     const { getUsers, callApi } = React.useContext(dataContext)
     const [users, setUsers] = React.useState( null )
     const [search, setSearch] = React.useState({

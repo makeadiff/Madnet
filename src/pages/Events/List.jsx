@@ -12,7 +12,7 @@ import './Event.css'
 const EventList = ({ segment }) => {
     const { user } = React.useContext(authContext);
     const { setLoading } = React.useContext(appContext);
-    const [events, setEvents] = useState([]);    
+    const [ events, setEvents ] = useState([]);    
 
     useEffect(() => {
         async function fetchEventList() {

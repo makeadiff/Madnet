@@ -11,8 +11,7 @@ const Alerts = lazy(() => import('../components/Alerts'))
 
 const Dashboard = () => {
     const { isFellow } = React.useContext(authContext);
-    const { user } = React.useContext(authContext)	
-    console.log(user);
+    const { user } = React.useContext(authContext)	    
 
     return (
         <IonPage>
@@ -40,6 +39,9 @@ const Dashboard = () => {
                                     </IonGrid>
                                 </IonCardContent>
                             </IonCard>
+                            <Suspense fallback={<h4>Loading...</h4>}>
+                                <Alerts />
+                            </Suspense>
                         </IonCol>
                         <IonCol size-md="6" size-xs="12">
                             <IonCard className="dark no-shadow">
@@ -62,10 +64,7 @@ const Dashboard = () => {
                             ) : null }                                                            
                         </IonCol>
                     </IonRow>                                              
-                </IonGrid>
-                <Suspense fallback={<h4>Loading...</h4>}>
-                    <Alerts />
-                </Suspense>
+                </IonGrid>                
             </IonContent>
         </IonPage>
     );

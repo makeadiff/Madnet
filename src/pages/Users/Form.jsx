@@ -30,7 +30,8 @@ const UserForm = () => {
 		setUser({
 			...user,
 			[e.target.name]: e.target.value
-        })        
+        })
+        console.log(e.target.value);
     }
      
     const openEdit = () => {
@@ -47,21 +48,28 @@ const UserForm = () => {
             if(item.id == e.target.value){                
                 return item
             }                   
-        })
-        
-        if(e.target.checked){                  
-            userGroups.map((group,index) => {
-                if(group.id != e.target.value){                    
-                    setUserGroups([...userGroups,role_detail[0]]);                    
-                }
-            })
+        })     
+
+        if(e.target.checked){
+            if(userGroups.length){              
+                userGroups.map((group,index) => {
+                    if(group.id != e.target.value){                    
+                        setUserGroups([...userGroups,role_detail[0]]);
+                    }
+                })
+            }
+            else{
+                setUserGroups([role_detail[0]]);
+            }
         }
         else{            
             console.log(userGroups);
             userGroups.map((group,index) => {
-                if(group.id == e.target.value){         
-                    console.log(index);
-                    setUserGroups(userGroups.splice(index,1))                    
+                console.log(e.target.value, group.id)
+                if(group.id == e.target.value){                     
+                    let del = userGroups.splice(index,1)
+                    setUserGroups([...userGroups])
+                    console.log(userGroups);
                 }                
             })
         }            
@@ -99,165 +107,197 @@ const UserForm = () => {
     
 
     const saveUser = (e) => {
-        e.preventDefault();        
+        e.preventDefault();
+        console.log(user); 
     }
+    
 
     return (
         <IonPage>
-            <Title name={(!disable? 'Edit ':'') + user.name } />            
-            <IonContent className="dark">
-                { hasPermission('user_edit') && disable ?  (
-                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                        <IonFabButton onClick={openEdit}>
-                            <IonIcon icon={ pencil } />
-                        </IonFabButton>
-                    </IonFab>
-                ) : (
-                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                        <IonFabButton onClick={closeEdit}>
-                            <IonIcon icon={ close } />
-                        </IonFabButton>
-                    </IonFab>
-                ) }
+            {user.name ? (
+            <>
+                <Title name={(!disable? 'Edit ':'') + user.name } />
+                <IonContent className="dark">
+                    { hasPermission('user_edit') && disable ?  (
+                        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                            <IonFabButton onClick={openEdit}>
+                                <IonIcon icon={ pencil } />
+                            </IonFabButton>
+                        </IonFab>
+                    ) : (
+                        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                            <IonFabButton onClick={closeEdit}>
+                                <IonIcon icon={ close } />
+                            </IonFabButton>
+                        </IonFab>
+                    ) }
 
-                <IonGrid>
-                    <IonRow>
-                        <IonCol size-xs="12" size-md="6">
-                            <IonCard className="dark">
-                                <IonCardHeader>
-                                    <IonCardTitle>
-                                        {!disable? ('Edit'): null} Volunteer Details
-                                    </IonCardTitle>
-                                </IonCardHeader>
-                                <IonCardContent>
-                                    <form onSubmit={e => saveUser(e)}>
-                                    <IonList>
-                                        <InputRow label="Name" name="name" type="text" value={ user.name }  disable={disable} handler={updateField}/>
-                                        <InputRow label="Email" name="email" type="text" value={ user.email } disable={disable} handler={updateField}/>
-                                        <InputRow label="Phone" name="phone" type="text" value={ user.phone } disable={disable} handler={updateField}/>
-                                        {!disable? (
-                                            <>
-                                                <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
-                                                <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
-                                            </>
-                                        ): null}                     
-
-                                        {disable? (
-                                            <InputRow label="Sex" id="sex" type="text" value={ sexArray[user.sex] } disable={disable} handler={updateField}/>
-                                        ): (
-                                            <IonRadioGroup name="sex" value={ user.sex }>
-                                                <IonListHeader>
-                                                    <IonLabel>Sex</IonLabel>
-                                                </IonListHeader>
-
-                                                <IonItem>
-                                                <IonLabel>Male</IonLabel>
-                                                <IonRadio mode="ios" name="sex" slot="start" value="m" />
-                                                </IonItem>
-
-                                                <IonItem>
-                                                <IonLabel>Female</IonLabel>
-                                                <IonRadio mode="ios" name="sex" slot="start" value="f" />
-                                                </IonItem>
-
-                                                <IonItem>
-                                                <IonLabel>Other</IonLabel>
-                                                <IonRadio mode="ios" name="sex" slot="start" value="o"/>
-                                                </IonItem>
-                                            </IonRadioGroup>
-                                        )}    
-
-                                        <IonItem>
-                                            <IonLabel position="stacked">Roles</IonLabel>
-                                        </IonItem>                                        
-                                        { userGroups.map((grp, index) => {
-                                            return (
-                                                <IonChip key={index} className="roles">{grp.name}</IonChip>
-                                            )                                                
-                                        })}                                                                                    
-
-                                        {disable? null : (
-                                            <>                                            
-                                            <div className="groups-area">
-                                            { groups.map((grp, index) => {
-                                                return (
-                                                <IonItem key={ index } lines="none" className="group-selectors">
-                                                    <IonCheckbox value={ grp.id }                                                        
-                                                        onIonChange={updateUserGroup}
-                                                        checked={ 
-                                                            userGroups.reduce((found, ele) => { // We are reducing the groups array of the user to a true/false based on this group.
-                                                            if(found) return found
-                                                            else if(ele.id === grp.id) return true
-                                                            else return false
-                                                        }, false) } /><IonLabel> &nbsp; { grp.name }</IonLabel>
-                                                </IonItem>)
-                                            })}
-                                            </div>
-                                            </>
-                                        )}                                        
-
-                                        { !disable? (
+                    <IonGrid>
+                        <IonRow>
+                            <IonCol size-xs="12" size-md="6">
+                                <IonCard className="dark">
+                                    <IonCardHeader>
+                                        <IonCardTitle>
+                                            {!disable? ('Edit'): null} Volunteer Details
+                                        </IonCardTitle>
+                                    </IonCardHeader>
+                                    <IonCardContent>
+                                        <form onSubmit={e => saveUser(e)}>
+                                        <IonList>
                                             <IonItem>
-                                                <IonButton type="submit" size="default">Save</IonButton>
+                                                <IonLabel position="stacked">Name</IonLabel>
+                                                <IonInput type="text" name="name" placeholder="Volunteer Name" value={ user.name }  disabled={disable} onIonChange={updateField}/>
                                             </IonItem>
-                                        ): null}                                        
+                                            <IonItem>
+                                                <IonLabel position="stacked">Email</IonLabel>
+                                                <IonInput type="email" name="email" placeholder="Volunteer Email" value={ user.email }  disabled={disable} onIonChange={updateField}/>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel position="stacked">Phone</IonLabel>
+                                                <IonInput type="text" name="phone" placeholder="Volunteer Phone" value={ user.phone }  disabled={disable} onIonChange={updateField}/>
+                                            </IonItem>
+                                            {/* {!disable? (
+                                                <>
+                                                    <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
+                                                    <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
+                                                </>
+                                            ): null}*/}
 
-                                        {/* <IonItemDivider><IonLabel>Other Actions</IonLabel></IonItemDivider>
+                                            {disable? (
+                                                <IonItem>
+                                                    <IonLabel position="stacked">Sex</IonLabel>
+                                                    <IonInput type="text" placeholder="Sex" value={ sexArray[user.sex] } disabled={disable}/>
+                                                </IonItem>                                                                                                                                        
+                                            ): (
+                                                <IonRadioGroup name="sex" value={ user.sex } onIonChange={updateField}>
+                                                    <IonListHeader>
+                                                        <IonLabel>Sex</IonLabel>
+                                                    </IonListHeader>
 
+                                                    <IonItem>
+                                                    <IonLabel>Male</IonLabel>
+                                                    <IonRadio mode="ios" name="sex" slot="start" value="m" />
+                                                    </IonItem>
+
+                                                    <IonItem>
+                                                    <IonLabel>Female</IonLabel>
+                                                    <IonRadio mode="ios" name="sex" slot="start" value="f" />
+                                                    </IonItem>
+
+                                                    <IonItem>
+                                                    <IonLabel>Other</IonLabel>
+                                                    <IonRadio mode="ios" name="sex" slot="start" value="o"/>
+                                                    </IonItem>
+                                                </IonRadioGroup>
+                                            )}    
+
+                                            <IonItem>
+                                                <IonLabel position="stacked">Roles</IonLabel>
+                                            </IonItem>                                        
+                                            { userGroups.map((grp, index) => {
+                                                return (
+                                                    <IonChip key={index} className="roles">{grp.name}</IonChip>
+                                                )                                                
+                                            })}                                                                                    
+
+                                            {disable? null : (
+                                                <>                                            
+                                                <div className="groups-area">
+                                                { groups.map((grp, index) => {
+                                                    return (
+                                                    <IonItem key={ index } lines="none" className="group-selectors">
+                                                        <IonCheckbox name="groups" value={ grp.id }
+                                                            onIonChange={updateUserGroup}
+                                                            checked={ 
+                                                                userGroups.reduce((found, ele) => { // We are reducing the groups array of the user to a true/false based on this group.
+                                                                if(found) return found
+                                                                else if(ele.id === grp.id) return true
+                                                                else return false
+                                                            }, false) } /><IonLabel> &nbsp; { grp.name }</IonLabel>
+                                                    </IonItem>)
+                                                })}
+                                                </div>
+                                                </>
+                                            )}                                        
+
+                                            { !disable? (
+                                                <IonItem>
+                                                    <IonButton type="submit" size="default">Save</IonButton>
+                                                </IonItem>
+                                            ): null}                                        
+                                            
+
+                                            </IonList>
+                                        </form>
+                                    </IonCardContent>
+                                </IonCard>
+                            </IonCol>
+                            <IonCol size-md="6" size-xs="12">
+                                <IonCard className="light">
+                                    <IonCardHeader>
+                                        <IonCardTitle>
+                                            Other Actions
+                                        </IonCardTitle>
+                                    </IonCardHeader>
+                                    <IonCardContent>
+                                        <IonList>                                        
+                                            {disable? (
+                                                <IonItem>
+                                                    <IonLabel position="stacked">User Type</IonLabel>
+                                                    <IonInput type="text" name="user_type" placeholder="User Type" value={ user.user_type }  disabled={disable}/>
+                                                </IonItem>                                                
+                                            ): (
+                                                <IonRadioGroup name="user_type" value={user.user_type} onIonChange={updateField}>
+                                                    <IonListHeader>
+                                                        <IonLabel>User Type</IonLabel>
+                                                    </IonListHeader>
+
+                                                    <IonItem>
+                                                    <IonLabel>Volunteer</IonLabel>
+                                                    <IonRadio mode="ios" name="user_type" slot="start" value="volunteer" />
+                                                    </IonItem>
+
+                                                    <IonItem>
+                                                    <IonLabel>Alumni</IonLabel>
+                                                    <IonRadio mode="ios" name="user_type" slot="start" value="alumni" />
+                                                    </IonItem>
+
+                                                    <IonItem>
+                                                    <IonLabel>Let Go</IonLabel>
+                                                    <IonRadio mode="ios" name="user_typex" slot="start" value="let_go"/>
+                                                    </IonItem>
+                                                </IonRadioGroup>
+                                            )}                                         
+                                        </IonList>                                        
                                         <IonItem>
-                                            // :TODO:
-                                            Let Go of Volunteer
-                                            Mark Volunteer as Alumni
-                                        </IonItem> */}
-
-                                        </IonList>
-                                    </form>
-                                </IonCardContent>
-                            </IonCard>
-                        </IonCol>
-                        <IonCol size-md="6" size-xs="12">
-                            <IonCard className="light">
-                                <IonCardHeader>
-                                    <IonCardTitle>
-                                        Volunteer Update
-                                    </IonCardTitle>
-                                </IonCardHeader>
-                                <IonCardContent>
-                                    <IonList>                                        
-                                        {disable? (
-                                            <InputRow label="User Type" type="text" value={ user.user_type } disable={disable}/>
-                                        ): (
-                                            <IonRadioGroup name="user_type" value={user.user_type}>
-                                                <IonListHeader>
-                                                    <IonLabel>User Type</IonLabel>
-                                                </IonListHeader>
-
-                                                <IonItem>
-                                                <IonLabel>Volunteer</IonLabel>
-                                                <IonRadio mode="ios" name="user_type" slot="start" value="volunteer" />
-                                                </IonItem>
-
-                                                <IonItem>
-                                                <IonLabel>Alumni</IonLabel>
-                                                <IonRadio mode="ios" name="user_type" slot="start" value="alumni" />
-                                                </IonItem>
-
-                                                <IonItem>
-                                                <IonLabel>Let Go</IonLabel>
-                                                <IonRadio mode="ios" name="user_typex" slot="start" value="let_go"/>
-                                                </IonItem>
-                                            </IonRadioGroup>
-                                        )}                                         
-                                    </IonList>
-                                    <IonItem>
-                                        <IonButton color="danger" size="default" expand="full" onClick={(e) => setConfirmDelete(true)}><IonIcon icon={trash}></IonIcon>Delete User</IonButton>
-                                    </IonItem>
-                                </IonCardContent>
-                            </IonCard>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
-            </IonContent>
+                                         {!disable? (
+                                            <IonButton type="submit" size="default" onClick={saveUser}>Save</IonButton>
+                                         ):null }
+                                            <IonButton color="danger" size="default" expand="full" onClick={(e) => setConfirmDelete(true)}><IonIcon icon={trash}></IonIcon>Delete User</IonButton>
+                                        </IonItem>
+                                    </IonCardContent>
+                                </IonCard>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
+                </IonContent>
+            </>
+            ): (
+            <>
+                <Title name="Oops!" />
+                <IonContent className="dark">
+                    <IonCard className="dark">
+                        <IonCardHeader>
+                            <IonCardTitle>User not found.</IonCardTitle>
+                        </IonCardHeader>
+                        <IonCardContent>
+                            There is no user active user (volunteer, let_go or alumni) with the specified ID.
+                        </IonCardContent>
+                    </IonCard>
+                </IonContent>
+            </>
+            )}
+                        
 
             <IonAlert
                 isOpen={ confirmDelete }
@@ -277,15 +317,6 @@ const UserForm = () => {
                     }
             ]} />
         </IonPage>
-    )
-}
-
-const InputRow = ({ id, label, type, value, disable, handler = false }) => {    
-    return (
-        <IonItem>
-            <IonLabel position="stacked">{ label }</IonLabel>
-            <IonInput type={ type } id={ id } placeholder={ label } value={ value }  disabled={disable} onIonChange={e => handler}/>
-        </IonItem>
     )
 }
 

@@ -1,25 +1,40 @@
-import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon, IonItemDivider, IonLabel} from '@ionic/react'
+import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon, IonItemDivider, IonLabel, IonCardContent, IonAlert } from '@ionic/react'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import {ellipsisVertical, trash, personRemove} from 'ionicons/icons';
 import { authContext } from "../contexts/AuthContext"
+import { dataContext } from "../contexts/DataContext"
 
 const UserDetail = ({user, index}) => {  
 
-  const [ showOptions, setShowOptions ] = React.useState(false); 
+  const [ showOptions, setShowOptions ] = React.useState(false)
   const { hasPermission } = React.useContext(authContext)
+  const { deleteUser, updateUser } = React.useContext(dataContext)
+  const [ confirmDelete, setConfirmDelete ] = React.useState(false)
+  const [ confirmAlumni, setConfirmAlumni ] = React.useState(false)
+  const history = useHistory()
   
-  let markAlumni = (user_id) => {
-    console.log(user_id);
+  let markAlumni = async (user_id) => {    
     setShowOptions(false);
-    //TODO: Update functionality
+    let response = await updateUser(user.id, {user_type: 'alumni'});
+    if(response){
+        setConfirmDelete(false);
+        history.push(`/users`)
+        console.log(response)
+    }
+    //TODO: Remove Caching of Data upon update.
   }
 
-  let deleteUser = (user_id) => {
-    console.log(user_id);
+  let deleteVolunteer = async (user_id) => {    
     setShowOptions(false);
-    //TODO: Update functionality
+    let response = await deleteUser(user.id);
+    if(response){
+        setConfirmDelete(false);
+        history.push(`/users`)
+        console.log(response)
+    }
+    //TODO: Remove Caching of Data upon update.
   }
 
   return (
@@ -35,8 +50,8 @@ const UserDetail = ({user, index}) => {
           <IonItemDivider>
             <IonLabel> Edit {user.name} </IonLabel>                          
           </IonItemDivider>
-          <IonItem button onClick={(e)=>markAlumni(user.id)}><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
-          <IonItem button onClick={(e)=>deleteUser(user.id)}><IonIcon className="userOptions" icon={trash}></IonIcon>Delete </IonItem>
+          <IonItem button onClick={(e)=>setConfirmAlumni(true)}><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
+          <IonItem button onClick={(e)=>setConfirmDelete(true)}><IonIcon className="userOptions" icon={trash}></IonIcon>Delete </IonItem>
         </>
       ): null }      
         
@@ -51,30 +66,74 @@ const UserDetail = ({user, index}) => {
           </IonCardTitle>
         </IonCardHeader>
       </Link>
+      <IonCardContent>
         <IonGrid>
-            <IonRow>                
-                <IonCol size-md="3" size-xs="6">                    
-                    <p>{ user.email }</p>
-                    <p>{ user.phone }</p>                    
-                </IonCol>
-                <IonCol size-md="2" size-xs="6">                    
-                    <p>Credit<br/>{ user.credit } </p>                    
-                </IonCol>
-                <IonCol size-md="5" size-xs="6">
-                    {
-                      user.groups.map((role,count) => {
-                        return (
-                          <IonChip className="roles" key={count}>{role.name}</IonChip>
-                        )
-                      })
-                    }
-                </IonCol>
-                <IonCol size-md="2" size-xs="6">
-                  <IonButton  size="small" fill="clear" slots="icon-only" color="light" className="userEditButton" onClick={() => setShowOptions(true)}><IonIcon icon={ellipsisVertical}></IonIcon></IonButton>
-                </IonCol>
+            <IonRow>
+              <IonCol size="11">
+                <IonRow>
+                  <IonCol size-md="5" size-xs="6">                    
+                      <p>Email: <strong>{ user.email }</strong></p>
+                      {user.mad_email ? (
+                        <p>MAD Email: { user.mad_email }</p>
+                      ): null}
+                      <p>{ user.phone }</p>                    
+                  </IonCol>
+                  <IonCol size-md="2" size-xs="6">                    
+                      <p>Credit<br/><strong>{ user.credit }</strong></p>                    
+                  </IonCol>
+                  <IonCol size-md="5" size-xs="12">
+                      {
+                        user.groups.map((role,count) => {
+                          return (
+                            <IonChip className="roles" key={count}>{role.name}</IonChip>
+                          )
+                        })
+                      }
+                  </IonCol>
+                </IonRow>
+              </IonCol>
+              <IonCol size="1">
+                <IonButton  size="small" fill="clear" slots="icon-only" color="light" className="userEditButton" onClick={() => setShowOptions(true)}><IonIcon icon={ellipsisVertical}></IonIcon></IonButton>
+              </IonCol>
             </IonRow>
         </IonGrid>
+      </IonCardContent>
     </IonCard>
+    <IonAlert
+        isOpen={ confirmDelete }
+        onDidDismiss={ () => { setConfirmDelete(false); setShowOptions(false); } }
+        header={'Delete'}
+        message={'Are you sure you wish to delete ' + user.name + '?'}
+        buttons={[
+            {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: e => { }
+            },
+            {
+                text: 'Delete',
+                handler: e => deleteVolunteer(user.id)
+            }
+    ]} />
+
+    <IonAlert
+        isOpen={ confirmAlumni }
+        onDidDismiss={ () => { setConfirmAlumni(false); setShowOptions(false); } }
+        header={'Delete'}
+        message={'Are you sure you wish to mark ' + user.name + ' as an alumni?'}
+        buttons={[
+            {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: e => { }
+            },
+            {
+                text: 'Delete',
+                handler: e => markAlumni(user.id)
+            }
+    ]} />
     </>
   )
 }
