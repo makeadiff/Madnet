@@ -69,7 +69,7 @@ const LevelForm = () => {
                         <IonSelect name="grade" value={ level.grade } onIonChange={ updateField } disabled={disable}>
                             { all_grades.map((grade, index) => {
                                 return (
-                                    <IonSelectOption key={ index } value={ grade }>{ grade }</IonSelectOption>
+                                    <IonSelectOption key={ index } value={ grade }>{ (grade === "13" ? "Aftercare" : grade) }</IonSelectOption>
                                 )
                             })}
                         </IonSelect>

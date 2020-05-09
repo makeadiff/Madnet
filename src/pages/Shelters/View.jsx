@@ -27,11 +27,11 @@ const ShelterView = () => {
 
             setShelter(shelter_data)
 
-            console.log(shelter_data)
-
             // First project is set as the default project. :TODO: This should default to current user's vertical.
-            setProjectId(shelter_data.projects[0].id)
-            setProject(shelter_data.projects[0])
+            if(shelter_data.projects.length) {
+                setProjectId(shelter_data.projects[0].id)
+                setProject(shelter_data.projects[0])
+            }
         }
         fetchShelter();
     }, [shelter_id])

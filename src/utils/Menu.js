@@ -10,12 +10,12 @@ export const volunteer_pages = [
         iosIcon: apps,
         mdIcon: appsSharp
     },
-    {
-        title: 'My Classes',
-        url: '/classes',
-        iosIcon: library,
-        mdIcon: library
-    },
+    // {
+    //     title: 'My Classes',
+    //     url: '/classes',
+    //     iosIcon: library,
+    //     mdIcon: library
+    // },
     {
         title: 'Donations',
         url: SITE_URL + 'donut',
