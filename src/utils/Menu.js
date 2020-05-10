@@ -1,4 +1,4 @@
-import { apps, library, wallet, calendar, person, people, business, schoolSharp, school, businessSharp, link } from 'ionicons/icons';
+import { apps, link, person, library, wallet, calendar, business, school, people, schoolSharp, businessSharp } from 'ionicons/icons';
 
 import { SITE_URL } from './Constants';
 
@@ -9,12 +9,12 @@ export const volunteer_pages = [
         iosIcon: apps,
         mdIcon: apps
     },
-    {
-        title: 'My Classes',
-        url: '/classes',
-        iosIcon: library,
-        mdIcon: library
-    },
+    // {
+    //     title: 'My Classes',
+    //     url: '/classes',
+    //     iosIcon: library,
+    //     mdIcon: library
+    // },
     {
         title: 'Donations',
         url: SITE_URL + 'donut',

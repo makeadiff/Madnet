@@ -24,6 +24,7 @@ import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
 import Profile from './pages/Profile'
+import Notes from './pages/Notes'
 import UserIndex from './pages/Users/Index'
 import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
@@ -86,6 +87,9 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id/students" exact={true} >
                             <StudentIndex />
                         </PrivateRoute>
+                        <PrivateRoute path="/shelters/:item_id/notes" exact={true} >
+                            <Notes item_type="center" />
+                        </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id" exact={true} >
                             <ShelterView />
                         </PrivateRoute>
@@ -135,6 +139,9 @@ const Root = () => {
                         </PrivateRoute>
                         <PrivateRoute path="/students/:student_id" exact={true} >
                             <StudentForm />
+                        </PrivateRoute>
+                        <PrivateRoute path="/students/:item_id/notes" exact={true} >
+                            <Notes item_type="student" />
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />

@@ -6,6 +6,7 @@ import api from "../utils/API"
 // This is the global store. Just didn't want to call it a store because I'm not sure if this is how to implement it.
 
 export const dataContext = React.createContext({
+    unsetLocalCache: () => {},
     callApi: () => {},
     getSurveyForm: () => {},
     setSurveyResponses: () => {},
@@ -21,11 +22,11 @@ export const dataContext = React.createContext({
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser } = useHandler();
+    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser } = useHandler();
 
     return (
         <Provider 
-            value={{ callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser}}>
+            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser}}>
             {children}
         </Provider>
     );
@@ -36,7 +37,9 @@ const useHandler = () => {
     const [error, setError] = React.useState([])
     const { user } = React.useContext(authContext)    
 
-    const getCacheKey = (type, key_seed) => {
+    const getCacheKey = (type, key_seed, cache_key) => {
+        if(cache_key) return cache_key
+        
         let key = "API:" + type + ":"
         if(type === "rest") key += key_seed // URL is the final part of the key
         else if(type === "graphql") {
@@ -45,9 +48,9 @@ const useHandler = () => {
         return key
     }
 
-    const getLocalCache = (type, key_seed) => {
-        const key = getCacheKey(type, key_seed)
-        const itemStr = localStorage.getItem(key)
+    const getLocalCache = (type, key_seed, cache_key) => {
+        if(!cache_key) cache_key = getCacheKey(type, key_seed)
+        const itemStr = localStorage.getItem(cache_key)
 
         if (!itemStr) {
             return null
@@ -59,19 +62,23 @@ const useHandler = () => {
         // compare the expiry time of the item with the current time
         if (now.getTime() > item.expiry) {
             // If the item is expired, delete the item from storage and return null
-            localStorage.removeItem(key)
+            localStorage.removeItem(cache_key)
             return null
         }
         return item.data
     }
 
-    const setLocalCache = (type, key_seed, data) => {
+    const setLocalCache = (type, key_seed, data, cache_key) => {
         const now = new Date()
         const item = {
             data: data,
             expiry: now.getTime() + (1000 * 60 * 60 * 24) // Expires in a day
         }
-        window.localStorage.setItem(getCacheKey(type, key_seed), JSON.stringify(item))
+        window.localStorage.setItem(getCacheKey(type, key_seed, cache_key), JSON.stringify(item))
+    }
+
+    const unsetLocalCache = (cache_key) => {
+        localStorage.removeItem(cache_key)
     }
 
     /// An API wrapper to make th calls.
@@ -85,9 +92,9 @@ const useHandler = () => {
             graphql_type: "query",
             cache: true,
             name: "",
-            key: ""
+            key: "",
+            cache_key: ""
         }
-    
         if(user_args.url !== undefined) {
             default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
             default_args["key"] = default_args["name"]
@@ -101,14 +108,13 @@ const useHandler = () => {
 
         let call_response
         const args = { ...default_args, ...user_args} // Merge both array - so that we have default values
-    
 
         // See if it exists in Cache first.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
-            let data = getLocalCache(args.type, args.url)
+            let data = getLocalCache(args.type, args.url, args.cache_key)
             if(data) return data
         } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
-            let data = getLocalCache(args.type, args.graphql)
+            let data = getLocalCache(args.type, args.graphql, args.cache_key)
             if(data) return data
         }
         
@@ -145,9 +151,9 @@ const useHandler = () => {
 
         // Save fetched data to cache.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
-            setLocalCache(args.type, args.url, data)
+            setLocalCache(args.type, args.url, data, args.cache_key)
         } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
-            setLocalCache(args.type, args.graphql, data)
+            setLocalCache(args.type, args.graphql, data, args.cache_key)
         }
         return data
     }
@@ -239,7 +245,7 @@ const useHandler = () => {
     }    
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals, deleteUser
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals, deleteUser, unsetLocalCache
     };
 };
 
