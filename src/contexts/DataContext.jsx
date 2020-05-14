@@ -15,18 +15,18 @@ export const dataContext = React.createContext({
     getAlerts: () => {},
     setDeviceToken: () => {},
     unsetDeviceToken: () => {},
-    getVerticals: () => {},
+    getEventTypes: () => {},
     deleteUser: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser } = useHandler();
+    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser } = useHandler();
 
     return (
         <Provider 
-            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getVerticals,updateUser, deleteUser}}>
+            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser}}>
             {children}
         </Provider>
     );
@@ -227,8 +227,8 @@ const useHandler = () => {
         return await callApi({url:`users/${user_id}/alerts`})
     }
 
-    const getVerticals = async () => {
-        return await callApi({url: `verticals/`})
+    const getEventTypes = async () => {
+        return await callApi({url: `event_types`})
     }
 
     const setDeviceToken = async (token, user_id) => {
@@ -245,7 +245,7 @@ const useHandler = () => {
     }    
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals, deleteUser, unsetLocalCache
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, unsetLocalCache
     };
 };
 

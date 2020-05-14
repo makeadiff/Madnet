@@ -56,3 +56,7 @@ ion-row {
 ion-label.error{
     color: #FFFFFF !important;    
 }
+
+ion-alert .alert-radio-label{
+    color: var(--black) !important;
+}
