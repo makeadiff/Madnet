@@ -57,6 +57,22 @@ ion-label.error{
     color: #FFFFFF !important;    
 }
 
-ion-alert .alert-radio-label{
+ion-alert .alert-radio-label, ion-alert .alert-checkbox-label{
     color: var(--black) !important;
+}
+
+ion-card.light ion-checkbox{
+    --border-color: var(--black)
+}
+
+ion-card.dark ion-checkbox{
+    --border-color: #FFFFFF;
+}
+
+h3.no-padding{
+    padding: 0;
+}
+
+ion-input.search{
+    --background: var(--black)
 }
