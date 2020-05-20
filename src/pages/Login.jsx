@@ -2,22 +2,18 @@ import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, Io
 import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
+import { logoGoogle, arrowForward } from 'ionicons/icons';
 
 import { requestPermission, firebase, onMessage,convertNotificationPayload } from "../init-fcm"
 import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import api from "../utils/API"
-import { assets } from "../utils/Helpers"
-// import Title from '../components/Title'
-
-import { logoGoogle, arrowForward } from 'ionicons/icons';
 
 import './Login.css'
 
 /*
 :TODO:
 - Forget password
-- Sign in with Google
 - Identifier based login rather than email
 - Remember me (?)
 - Key Check on return.
@@ -30,8 +26,6 @@ function Login() {
     const { loading, setLoading, message, showMessage, addNotification } = React.useContext(appContext)
     const { setCurrentUser } = React.useContext(authContext)
     const history = useHistory()
-
-    console.log(message.length, message)
     
     React.useEffect(() => { // Run on load - just once.
         if(init) return
@@ -85,15 +79,14 @@ function Login() {
         // }).catch(e => showMessage(e.message, "error"))
     }
 
-    const authHandler = () => {        
-        try {
-            setLoading(true);
-            api.rest(`users/login?email=${userEmail}&password=${userPassword}`, "get") //, { email: userEmail, password: userPassword });
-                .then(user_data => loginUser(user_data, "api"))
-        } catch (err){            
-            setLoading(false);
-            showMessage(err.message, "error");
-        }        
+    const authHandler = () => {
+        setLoading(true);
+        api.rest(`users/login?email=${userEmail}&password=${userPassword}`, "get")
+            .then(user_data => loginUser(user_data, "api"))
+            .catch(err => {
+                setLoading(false);
+                showMessage(err.message, "error");
+            })
     }
 
     const handleSubmit = (e) => {
@@ -146,7 +139,7 @@ function Login() {
                                     <IonInput type="password" id="password" name="password" requried="true" value={userPassword}
                                         placeholder="*****" onIonChange={e => setUserPassword(e.target.value)} />
                                 </IonItem>                                
-                                <IonButton type="submit" expand="full" disabled={loading} block={true} size="default">
+                                <IonButton type="submit" id="login" expand="full" disabled={loading} block={true} size="default">
                                     {loading ? "Loading..." : "Sign In"}
                                 </IonButton>
                                 <IonText className="centerAlign">

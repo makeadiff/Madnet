@@ -4,7 +4,9 @@ const api = {
 
     rest: async (url, method, params) => {
         if(url[0] === '/') url = url.substring(1) // Sometimes the argument url might have a '/' at the start. Causes an error.
-        const response = await fetch(API_REST_URL + url, {
+        let response = {}
+
+        response = await fetch(API_REST_URL + url, {
             method: method,
             headers: { 
                 "Accept": "application/json",
@@ -23,7 +25,13 @@ const api = {
                 if(method === "delete") return true
             }
         } else {
-            throw response
+            let response_text = await response.text()
+            let data = {}
+            if(response_text) data = JSON.parse(response_text)
+
+            if(data.fail) throw new Error(data.fail)
+            else if(data) throw new Error(data)
+            else throw new Error(response)
         }
 
         return false;
