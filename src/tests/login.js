@@ -12,7 +12,7 @@ describe('MADNet App Test', function() {
 
     it('should show error if no email or password is given', async () => {
         await element(by.id("login")).click();
-        expect(await element(by.css('ion-input[name="email"] input')).getAttribute("validationMessage")).toBe("Please fill in this field.")
+        expect(await element(by.css('ion-input[name="email"] input')).getAttribute("validationMessage")).toBe("Please fill out this field.")
     });
 
     // This works - but if un-commented, it causes an error in the next function : "Failed: element click intercepted"
@@ -28,8 +28,8 @@ describe('MADNet App Test', function() {
     // });
 
     it('should login with valid creds', async () => {
-        await element(by.css('ion-input[name="email"] input')).clear().sendKeys("data.simulation@makeadiff.in");
-        await element(by.css('ion-input[name="password"] input')).clear().sendKeys("pass");
+        await element(by.css('ion-input[name="email"] input')).clear().sendKeys("picard.simulation@makeadiff.in");
+        await element(by.css('ion-input[name="password"] input')).clear().sendKeys("mad4ever");
         expect(await element(by.css('ion-input[name="email"] input')).getAttribute("validationMessage")).toBe("")
         await element(by.id("login")).click();
         await browser.sleep(3000)

@@ -161,16 +161,14 @@ const useHandler = () => {
     }
 
     const getSurveyForm = async (survey_id) => {
-        setLoading(true)
-        const survey_response = await api.rest(`surveys/${survey_id}`)
+        const survey_response = await callApi({url: `surveys/${survey_id}`})
 
-        if (survey_response.surveys !== undefined) {
-            let survey = survey_response.surveys
-            const questions_response = await api.rest(`survey_templates/${survey.survey_template_id}/categorized_questions`)
+        if (survey_response !== undefined) {
+            let survey = survey_response
+            const questions_response = await callApi({url: `survey_templates/${survey.survey_template_id}/categorized_questions`})
 
-            if (questions_response.questions !== undefined) {
-                survey['questions'] = questions_response.questions
-                setLoading(false)
+            if (questions_response !== undefined) {
+                survey['questions'] = questions_response
                 return survey
             } else {
                 setError({
@@ -178,7 +176,6 @@ const useHandler = () => {
                     "message": "Survey Questions fetch call failed",
                     "endpoint": `survey_templates/${survey.survey_template_id}/categorized_questions`
                 })
-                setLoading(false)
                 return survey
             }
         } else {
@@ -188,7 +185,6 @@ const useHandler = () => {
                 "endpoint": `surveys/${survey_id}`
             })
         }
-        setLoading(false)
         return false
     }
 

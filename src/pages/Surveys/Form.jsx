@@ -8,7 +8,6 @@ import { authContext } from "../../contexts/AuthContext";
 import StarRating from "../../components/StarRating"
 import './Form.css'
 
-var responses = {}
 var survey_response = {}
 var survey_data = {}
 var survey_questions = {}
@@ -18,7 +17,7 @@ var responder_id = 0
 
 const setQuestionResponse = (question_id, value) => {
     // :TODO: Response validaiton.
-    let question = survey_questions[question_id]
+    const question = survey_questions[question_id]
     
     survey_response[question_id] = {
         responder_id: responder_id,
@@ -36,34 +35,54 @@ const setQuestionResponse = (question_id, value) => {
 const SurveyForm = () => {
     const { surveyId } = useParams()
     const [survey, setSurvey] = React.useState({})
-    const { getSurveyForm,setSurveyResponses } = React.useContext(dataContext)
+    const [responses, setResponses] = React.useState({})
+    const { getSurveyForm,setSurveyResponses,callApi } = React.useContext(dataContext)
     const { user } = React.useContext(authContext)
 
     React.useEffect(() => {
+        async function getSurveyResponse(responder_id) {
+            const existing_survey_response = await callApi({ url: `/surveys/${surveyId}/responses?responder_id=${responder_id}`})
+            let existing_responses = {}
+            for(let i in existing_survey_response) {
+                let ele = existing_survey_response[i]
+                const question = survey_questions[ele.survey_question_id]
+                let response = ele.response
+                if(question.response_type === "choice") {
+                    response = ele.survey_choice_id
+                }
+                existing_responses[question.id] = response
+            }
+            setResponses(existing_responses)
+        }
+
         async function fetchSurvey() {
             survey_data = await getSurveyForm(surveyId)
             if(survey_data) {
-                setSurvey(survey_data)
-
                 survey_data.questions.forEach(function flatten(q, i) {
                     if(q.type !== undefined && q.type === "category") { // If there are more questions inside a category...
                         q.questions.forEach(flatten) // add those recursivly
                     } else {
                         survey_questions[q.id] = q // Save all questions to a global array.
+                        survey_response[q.id] = {
+                            response: "",
+                            survey_choice_id: 0
+                        }
                     }
                 })
+                setSurvey(survey_data)
                 
                 // Set responder id according to survey(student, volunteer, self, etc.)
                 if(survey_data.responder === "User") {
                     const options = JSON.parse(survey_data.options)
                     if(options.responder_list === "self") {
                         responder_id = user.id // Current user is the responder.
+                        getSurveyResponse(responder_id)
                     }
                     // :TODO: Filling survey for other volunteers.
                 }
                 // :TODO: Student responder.
             } else {
-                console.log("Error fetting survey form")
+                console.log("Error fetching survey form")
             }
         }
         fetchSurvey();
@@ -88,7 +107,7 @@ const SurveyForm = () => {
 
             <IonContent>
                 <form onSubmit={e => saveResponses(e)}>
-                <QuestionsOrCategory questions={survey.questions} />
+                <QuestionsOrCategory questions={survey.questions} responses={responses} />
 
                 <IonButton color="success" type="submit">Save</IonButton>
                 </form>
@@ -97,7 +116,7 @@ const SurveyForm = () => {
     );
 };
 
-const QuestionsOrCategory = ({ questions }) => {
+const QuestionsOrCategory = ({ questions, responses }) => {
     if(questions === undefined) return null
 
     return questions.map((ques, index ) => {
@@ -105,79 +124,67 @@ const QuestionsOrCategory = ({ questions }) => {
             return (
                 <div className="category" key={index}>
                 <IonItem className="category-name"><h3>{ ques.name }</h3></IonItem>
-                <QuestionsOrCategory questions={ques.questions} />
+                <QuestionsOrCategory questions={ques.questions} responses={responses} />
                 </div>
             )
         } else {
-            return (<IonItem key={index}><Question {...ques} /></IonItem>)
+            let response = ""
+            if(responses !== undefined) response = responses[ques.id]
+            return (<IonItem key={index}><Question {...ques} response={response} /></IonItem>)
         }
     })
 }
 
-const Question = ({ id, question, description, response_type, choices, options }) => {
+const Question = ({ id, question, description, response_type, choices, response, options }) => {
     return (<div className="question-area" id={ "question-" + id }>
         <IonItem className="question" lines="none">
             <div>
             <div className="question-text">{ question }</div>
-            { description ? <p className="question-description">{ description }</p> : null }
+            { description ? <p className="question-description">{ description } ({id} : { response })</p> : null }
             </div>
         </IonItem>
-        <IonItem><Response question_id={id} response_type={response_type} choices={choices} /></IonItem>
+        <IonItem><Response question_id={id} response_type={response_type} choices={choices} response={response} /></IonItem>
     </div>)
 }
 
-const Response = ({question_id, response_type, choices}) => {
-    let render = null
-
-    // :DEBUG: Prefill data
-    responses = {
-        9: "Matrix",
-        10: "1997",
-        11: 9,
-        14: 5,
-        15: "13/04/2000",
-        12: true,
-        13: 4
-    }
-
+const Response = ({question_id, response, response_type, choices}) => {
     if(response_type === "choice") {
         // :TODO: Implement options.field_type == 'select'
-        render = (<IonList><IonRadioGroup onIonChange={e => setQuestionResponse(question_id, e.detail.value)}>
+        return (<IonList><IonRadioGroup onIonChange={e => setQuestionResponse(question_id, e.detail.value)}>
             { choices.map((choice, index) => {
                 return (
-                    <IonItem key={index}>
-                        <IonRadio value={choice.id} />
+                    <IonItem key={ index }>
+                        <IonRadio value={ choice.id } />
                         <IonLabel> &nbsp; { choice.name }</IonLabel>
                     </IonItem>
                 )})
             }</IonRadioGroup></IonList>)
 
     } else if(response_type === "longtext") {
-        render = (<IonTextarea value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        return (<IonTextarea value={ response } onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
 
     } else if(response_type === "text") {
-        render = (<IonInput type="text" value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        return (<IonInput value={ response } type="text" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     } else if(response_type === "1-5") {
-        render = (<StarRating value={responses[question_id]} min="0" max="5" onChange={value => setQuestionResponse(question_id, value) } />)
+        return (<StarRating value={ response } min="0" max="5" onChange={value => setQuestionResponse(question_id, value) } />)
     
     } else if(response_type === "1-10") {
-        render = (<StarRating value={responses[question_id]} min="0" max="10" onChange={value => setQuestionResponse(question_id, value)} />)
+        console.log(response)
+        return (<StarRating value={ response } min="0" max="10" onChange={value => setQuestionResponse(question_id, value)} />)
     
     } else if(response_type === "date") {
-        render = (<IonInput type="date" value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        return (<IonInput value={ response } type="date" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     } else if(response_type === "yes-no") {
-        render = (<IonCheckbox value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.checked)} />)
+        return (<IonCheckbox checked={ response ? true : false } onIonChange={e => setQuestionResponse(question_id, e.target.checked)} />)
     
     } else if(response_type === "number") {
-        render = (<IonInput type="number" value={responses[question_id]} onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
-    
+        return (<IonInput value={ response } type="number" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     }
+        // :TODO: multi-choice
 
-    // :TODO: multi-choice
-
-    return render
+    return null
 }
 
 export default SurveyForm;
