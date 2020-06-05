@@ -16,17 +16,19 @@ export const dataContext = React.createContext({
     setDeviceToken: () => {},
     unsetDeviceToken: () => {},
     getEventTypes: () => {},
-    deleteUser: () => {}
+    deleteUser: () => {},
+    getVerticals: () => {},
+    getGroupTypes: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser } = useHandler();
+    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
 
     return (
         <Provider 
-            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser}}>
+            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
             {children}
         </Provider>
     );
@@ -244,8 +246,16 @@ const useHandler = () => {
         return false
     }    
 
+    const getVerticals = async () => {
+        return await callApi({url: `verticals`})
+    }
+
+    const getGroupTypes = async () => {
+        return await callApi({url: `group_types`})
+    }
+
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, unsetLocalCache
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, unsetLocalCache, getVerticals, getGroupTypes
     };
 };
 

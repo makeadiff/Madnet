@@ -16,12 +16,18 @@ const EventCreate = () => {
     const { user } = React.useContext(authContext);
     const [ inviteUsers, setInviteUsers ] = React.useState(false)
     const [ usersList, setUsersList ] = React.useState({}) 
-    const { getEventTypes, getUsers, callApi } = React.useContext(dataContext)
+    const { getEventTypes, getUsers, callApi, getVerticals } = React.useContext(dataContext)
+    
     const [ eventTypes, setEventTypes ] = React.useState({})
+    const [ verticals, setVerticals ] = React.useState({})
+
     const [ selectedShelter, setSelectedShelter ] = React.useState(0)
-    const [ selectedGroups, setSelectedGroups ] = React.useState(0)
+    const [ selectedGroups, setSelectedGroups ] = React.useState(0)    
+    const [ selectedVertical, setSelectedVertical ] = React.useState(0)
+    
     const [ checkAll, setCheckAll ] = React.useState(false);
     const [ userFilterParameter, setUserFilterParameter ] = React.useState({});
+    const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState([]);
     
     const [ location, setLocation ] = React.useState({})
     const [ shelters, setShelters ] = React.useState({})
@@ -51,6 +57,9 @@ const EventCreate = () => {
     const filterUser = async (e) => {
       let filter_name = e.target.name;
       let filterParameters = userFilterParameter;
+
+      let groupFilterParameter = userGroupFilterParameter;
+
       if(filter_name === 'shelter_id'){
         let value = e.target.value;
         filterParameters.center_id = value;     
@@ -60,13 +69,32 @@ const EventCreate = () => {
       if(filter_name === 'group_id'){
         let value = e.target.value;
         setSelectedGroups(value);
+        filterParameters.group_in = value.join(",");        
+        
+        // Unset Vertical Selection Upon Groups Selection 
+        filterParameters.vertical_id = '';
+        
+      }
+
+      if(filter_name === 'vertical_id'){
+        let value = e.target.value;
+        filterParameters.vertical_id = value
+        groupFilterParameter['vertical_id'] = value;
+
+        setSelectedVertical(value)
+        setUserGroupFilterParameter(groupFilterParameter)
+
+        let userGroupData = [];
+        userGroupData = await callApi({url: "groups"})
+        console.log(userGroupData)
+        if(userGroupData){
+          setUserGroups(userGroupData) 
+        }
+
+        // Unset UserGroup Selection Upon Groups Selection 
         filterParameters.group_in = '';
-        value.map((group_id, index) => {
-          filterParameters.group_in += group_id;
-          if(index < (value.length - 1)){
-            filterParameters.group_in += ',';
-          }
-        });
+        setSelectedGroups([]);
+
       }
 
       console.log(filterParameters);
@@ -100,6 +128,7 @@ const EventCreate = () => {
       setInviteUsers(true);
       
       console.log(eventData);
+      
     }
 
     React.useEffect(() => {
@@ -131,6 +160,15 @@ const EventCreate = () => {
         }        
       }
       fetchUserGroups();
+
+      async function fetchVerticals(){
+        let verticalData = [];
+        verticalData = await getVerticals();
+        if(verticalData){
+          setVerticals(verticalData)
+        }
+      }      
+      fetchVerticals();
 
     }, [user])
 
@@ -224,6 +262,18 @@ const EventCreate = () => {
                     </IonSelect>
                   ):null}
 
+                  {verticals.length? (
+                    <IonSelect placeholder="Select Verical" interface="alert" name="vertical_id" value={selectedVertical} onIonChange={filterUser}>
+                      {
+                        verticals.map((vertical,index) => {
+                          return (
+                            <IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>
+                          )
+                        })
+                      }
+                    </IonSelect>
+                  ):null}
+
                   {userGroups.length? (
                     <IonSelect placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
                       {
@@ -244,9 +294,9 @@ const EventCreate = () => {
                     <IonListHeader>
                       <IonItem>
                       <IonCheckbox name="check_all" onIonChange={toggleCheckAll} />&nbsp;
-                      <IonLabel>Select All Users</IonLabel>
+                      <IonLabel>Select All Users [{usersList.length}]</IonLabel>
                       </IonItem>                                         
-                      <IonInput className="search" placeholder="Search User..."></IonInput>
+                      <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput>
                     </IonListHeader>
                   {usersList.map((user,index) => {
                     return(
