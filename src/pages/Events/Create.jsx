@@ -16,10 +16,11 @@ const EventCreate = () => {
     const { user } = React.useContext(authContext);
     const [ inviteUsers, setInviteUsers ] = React.useState(false)
     const [ usersList, setUsersList ] = React.useState({}) 
-    const { getEventTypes, getUsers, callApi, getVerticals } = React.useContext(dataContext)
+    const { getEventTypes, getUsers, callApi, getVerticals, getGroupTypes} = React.useContext(dataContext)
     
     const [ eventTypes, setEventTypes ] = React.useState({})
     const [ verticals, setVerticals ] = React.useState({})
+    const [ groupTypes, setGroupTypes ] = React.useState({});
 
     const [ selectedShelter, setSelectedShelter ] = React.useState(0)
     const [ selectedGroups, setSelectedGroups ] = React.useState(0)    
@@ -128,7 +129,7 @@ const EventCreate = () => {
       setInviteUsers(true);
       
       console.log(eventData);
-      
+
     }
 
     React.useEffect(() => {
@@ -142,6 +143,16 @@ const EventCreate = () => {
         }                
       }
       fetchEventTypes();
+
+      async function fetchGroupTypes() {
+        let groupTypesData = [];
+
+        groupTypesData = await getGroupTypes();        
+        if(groupTypesData){
+          setGroupTypes(groupTypesData);
+        }
+      }
+      fetchGroupTypes();
 
       async function fetchShelters() {
         let shelterData = [];
@@ -268,6 +279,18 @@ const EventCreate = () => {
                         verticals.map((vertical,index) => {
                           return (
                             <IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>
+                          )
+                        })
+                      }
+                    </IonSelect>
+                  ):null}
+
+                  {groupTypes.length? (
+                    <IonSelect placeholder="Select Role Type(s)" interface="alert" name="group_types"  onIonChange={filterUser}>
+                      {
+                        groupTypes.map((groupType,index) => {
+                          return (
+                            <IonSelectOption key={index} value={groupType.type}>{groupType.type}</IonSelectOption>
                           )
                         })
                       }
