@@ -18,8 +18,10 @@ const EventCreate = () => {
     const [ usersList, setUsersList ] = React.useState({}) 
     const { getEventTypes, getUsers, callApi } = React.useContext(dataContext)
     const [ eventTypes, setEventTypes ] = React.useState({})
-    const [ selectedShelter, setSeelectedShelter ] = React.useState(0)
+    const [ selectedShelter, setSelectedShelter ] = React.useState(0)
+    const [ selectedGroups, setSelectedGroups ] = React.useState(0)
     const [ checkAll, setCheckAll ] = React.useState(false);
+    const [ userFilterParameter, setUserFilterParameter ] = React.useState({});
     
     const [ location, setLocation ] = React.useState({})
     const [ shelters, setShelters ] = React.useState({})
@@ -46,8 +48,32 @@ const EventCreate = () => {
       setEventData({...eventData, latitude: locationData.lat, longitude: locationData.lng})
     }
 
-    const filterUser = e => {
-      console.log(e.target.name);
+    const filterUser = async (e) => {
+      let filter_name = e.target.name;
+      let filterParameters = userFilterParameter;
+      if(filter_name === 'shelter_id'){
+        let value = e.target.value;
+        filterParameters.center_id = value;     
+        setSelectedShelter(value);   
+      }
+
+      if(filter_name === 'group_id'){
+        let value = e.target.value;
+        setSelectedGroups(value);
+        filterParameters.group_in = '';
+        value.map((group_id, index) => {
+          filterParameters.group_in += group_id;
+          if(index < (value.length - 1)){
+            filterParameters.group_in += ',';
+          }
+        });
+      }
+
+      console.log(filterParameters);
+      setUserFilterParameter(filterParameters);
+
+      let users = await getUsers(userFilterParameter);
+      setUsersList(users);
     }
 
     const toggleCheckAll = e => {
@@ -187,7 +213,7 @@ const EventCreate = () => {
                   Select Users to Invite to Event.
                   <IonItem>
                   {shelters.length? (
-                    <IonSelect placeholder="Select Shelter" interface="alert" name="shelter_id" value={selectedShelter} onIonChange={filterUser} multiple>
+                    <IonSelect placeholder="Select Shelter" interface="alert" name="shelter_id" value={selectedShelter} onIonChange={filterUser}>
                       {
                         shelters.map((shelter,index) => {
                           return (
@@ -199,7 +225,7 @@ const EventCreate = () => {
                   ):null}
 
                   {userGroups.length? (
-                    <IonSelect placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedShelter} onIonChange={filterUser} multiple>
+                    <IonSelect placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
                       {
                         userGroups.map((group,index) => {
                           return (
