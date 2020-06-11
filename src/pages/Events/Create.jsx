@@ -1,4 +1,4 @@
-import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, useIonViewDidEnter, IonList, IonCheckbox, IonSelectPopover, IonListHeader} from '@ionic/react';
+import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, useIonViewDidEnter, IonList, IonCheckbox, IonListHeader, IonNote} from '@ionic/react';
 import { add, calendar, filter } from 'ionicons/icons'
 import React from 'react';
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
@@ -9,12 +9,13 @@ import MapContainer from '../../components/Map'
 import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
 import UserDetail from '../../components/User';
+import StudentIndex from '../Students/Index';
 
 const EventCreate = () => {
 
     const { hasPermission } = React.useContext(authContext);
     const { user } = React.useContext(authContext);
-    const [ inviteUsers, setInviteUsers ] = React.useState(false)
+    const [ sendEmail, setSendEmail ] = React.useState(false)
     const [ usersList, setUsersList ] = React.useState({}) 
     const { getEventTypes, getUsers, callApi, getVerticals, getGroupTypes} = React.useContext(dataContext)
     
@@ -41,6 +42,7 @@ const EventCreate = () => {
       name: '',
       description: '',
       starts_on: '',
+      time: '',
       place: '',
       city_id: user.city_id,
       event_type_id: 0,      
@@ -48,6 +50,7 @@ const EventCreate = () => {
       latitude: 0,
       longitude: 0,   
     });
+    const [ errorMessage, setErrorMessage ] = React.useState('');
 
 
     const getUpdatedLocation = (location, address) => {
@@ -171,23 +174,65 @@ const EventCreate = () => {
       setEventData({
         ...eventData,
         [e.target.name]: e.target.value
-      })
+      })      
     }
 
-    let inviteUser = e => {
-      console.log(e.target.value);
+    let inviteUser = e => {      
+      let invitee_id = e.target.value;
+      let invitees = selectedUsers;
+      if(e.target.checked){
+        if(invitees.indexOf(invitee_id) < 0){
+          invitees.push(invitee_id);
+        }
+      }   
+      else{
+        if(invitees.indexOf(invitee_id) >= 0){
+          invitees.splice(invitees.indexOf(invitee_id),1);
+        }
+      }      
+      setSelectedUsers(invitees);
     }
 
-    let createEvent = async () => {
-      let users = await getUsers(userFilterParameter);
-      setUsersList(users);
-      setInviteUsers(true);
-      
+    let createEvent = async (e) => {
+      e.preventDefault();
       console.log(eventData);
+
+      if(!eventData.event_type_id){
+        setErrorMessage('Select Event Type');        
+      }
+      else{
+        setErrorMessage('');
+        let users = await getUsers(userFilterParameter);      
+        setUsersList(users);
+      }      
     }
 
     let submitForm = async () => {
+      let event = eventData;
+      event.starts_on +=  ' '+event.time;
+      delete event.time;
 
+      let response = await callApi({url: 'events', params: event, method: 'post'});
+      // console.log(response);
+
+      if(response){
+        let event_id = response.id;
+        let email = 0
+        if(sendEmail){
+          email = 1;
+        }
+
+        let sendInvites = await callApi({
+          url: `events/${event_id}/users`,
+          method: `post`,
+          params: {
+            invite_user_ids: selectedUsers.join(','),
+            send_invite_emails: email
+          }
+        });
+
+        // console.log(sendInvites);
+      }
     }
 
     React.useEffect(() => {
@@ -256,47 +301,52 @@ const EventCreate = () => {
               <IonGrid>
                 <IonRow>
                   <IonCol size-md="6" size-xs="12">
-                    <IonItem>
-                      <IonLabel position="stacked">Event Name</IonLabel>
-                      <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
-                    </IonItem>
-                    <IonItem>
-                      <IonLabel position="stacked">Event Description</IonLabel>
-                      <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?"></IonTextarea>
-                    </IonItem>
-                    <IonItem>
-                      <IonLabel position="stacked">Event Date</IonLabel>
-                      <IonInput name="starts_on" type="date" required onIonChange={updateField} placeholder="Enter Event Date"></IonInput>
-                    </IonItem>
-                    <IonItem>
-                      <IonLabel position="stacked">Event Time</IonLabel>
-                      <IonInput name="time" type="time" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
-                    </IonItem>
-                    <IonItem>
-                      <IonLabel position="stacked">Event Location</IonLabel>
-                      <IonInput name="place" type="text" onIonChange={updateField} placeholder="Enter Event Location Name"></IonInput>
-                    </IonItem>
-                    <IonItem>
-                      <IonCheckbox name="send_email" color="danger"/> &nbsp;
-                      <IonLabel>Send Invitation by Email</IonLabel>                      
-                    </IonItem>
-                    <IonItem>
-                      <IonLabel position="stacked">Event Type</IonLabel>
-                      { eventTypes.length ? (
-                      <IonSelect  placeholder="Select Event Type" interface="alert" name="event_type_id" value={eventData.event_type_id} onIonChange={updateField}>
-                        {                                                                                                       
-                          eventTypes.map((eventType,index) => {
-                            return (
-                              <IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>
-                            )
-                          })
-                        }
-                      </IonSelect>
-                      ): null }
-                    </IonItem>
-                    <IonItem>
-                        <IonButton type="submit" size="default" onClick={createEvent}>Save</IonButton>
-                    </IonItem>   
+                    <form onSubmit={createEvent}>
+                      <IonItem>
+                        <IonLabel position="stacked">Event Name</IonLabel>
+                        <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                      </IonItem>
+                      <IonItem>
+                        <IonLabel position="stacked">Event Description</IonLabel>
+                        <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?"></IonTextarea>
+                      </IonItem>
+                      <IonItem>
+                        <IonLabel position="stacked">Event Date</IonLabel>
+                        <IonInput name="starts_on" type="date" required onIonChange={updateField} placeholder="Enter Event Date"></IonInput>
+                      </IonItem>
+                      <IonItem>
+                        <IonLabel position="stacked">Event Time</IonLabel>
+                        <IonInput name="time" type="time" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                      </IonItem>
+                      <IonItem>
+                        <IonLabel position="stacked">Event Location</IonLabel>
+                        <IonInput name="place" type="text" onIonChange={updateField} placeholder="Enter Event Location Name"></IonInput>
+                      </IonItem>
+                      <IonItem>
+                        <IonCheckbox name="send_email" color="danger" onIonChange={e => setSendEmail(e.target.checked)}/> &nbsp;
+                        <IonLabel>Send Invitation by Email</IonLabel>                      
+                      </IonItem>                      
+                      <IonItem>
+                        <IonLabel position="stacked">Event Type</IonLabel>
+                        { eventTypes.length ? (
+                        <IonSelect  placeholder="Select Event Type" required interface="alert" name="event_type_id" value={eventData.event_type_id} onIonChange={updateField}>
+                          {                                                                                                       
+                            eventTypes.map((eventType,index) => {
+                              return (
+                                <IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>
+                              )
+                            })
+                          }
+                        </IonSelect>
+                        ): null }
+                      </IonItem>
+                      {errorMessage? (
+                        <IonLabel color="danger">{errorMessage}</IonLabel>
+                      ):null}
+                      <IonItem>
+                          <IonButton type="submit" size="default">Save</IonButton>
+                      </IonItem>   
+                    </form>
                   </IonCol>
                   <IonCol size-md="6" size-xs="12">
                     <MapContainer
@@ -313,7 +363,7 @@ const EventCreate = () => {
               </IonGrid>                             
             </IonCardContent>
           </IonCard>              
-          { inviteUsers ? (            
+          { usersList ? (            
             <IonCard className="dark">
               <IonCardHeader>
                 <IonCardTitle>
