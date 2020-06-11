@@ -49,9 +49,7 @@ const MapContainer = withScriptjs(withGoogleMap((props) => {
   let onPlacesChanged =  () => {    
     const places = refs.searchBox.getPlaces();
     const bounds = new google.maps.LatLngBounds();
-
-    console.log(places);
-
+        
     places.forEach(place => {
       if (place.geometry.viewport) {
         bounds.union(place.geometry.viewport)
@@ -65,10 +63,11 @@ const MapContainer = withScriptjs(withGoogleMap((props) => {
 
     // const nextCenter = _.get(nextMarkers, '0.position', this.state.center);
     const nextCenter = nextMarkers[0].position;
+    const address = places[0].formatted_address;
 
     setCenter(nextCenter);
     setMarkers(nextMarkers);
-    props.locationUpdate(nextCenter);
+    props.locationUpdate(nextCenter, address);
     // refs.map.fitBounds(bounds);
   }
 

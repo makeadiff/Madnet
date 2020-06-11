@@ -1,5 +1,5 @@
 import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, useIonViewDidEnter, IonList, IonCheckbox, IonSelectPopover, IonListHeader} from '@ionic/react';
-import { add, calendar } from 'ionicons/icons'
+import { add, calendar, filter } from 'ionicons/icons'
 import React from 'react';
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
 
@@ -25,10 +25,14 @@ const EventCreate = () => {
     const [ selectedShelter, setSelectedShelter ] = React.useState(0)
     const [ selectedGroups, setSelectedGroups ] = React.useState(0)    
     const [ selectedVertical, setSelectedVertical ] = React.useState(0)
+    const [ selectedGroupType, setSelectedGroupType ] = React.useState();
+    const [ selectedUsers, setSelectedUsers ] = React.useState([]);
     
     const [ checkAll, setCheckAll ] = React.useState(false);
-    const [ userFilterParameter, setUserFilterParameter ] = React.useState({});
-    const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState([]);
+    const [ userFilterParameter, setUserFilterParameter ] = React.useState({
+      city_id: user.city_id
+    });
+    const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({});
     
     const [ location, setLocation ] = React.useState({})
     const [ shelters, setShelters ] = React.useState({})
@@ -46,11 +50,19 @@ const EventCreate = () => {
     });
 
 
-    const getUpdatedLocation = (data) => {
+    const getUpdatedLocation = (location, address) => {
       let locationData = {
-        lat: data.lat(),
-        lng: data.lng()
+        lat: location.lat(),
+        lng: location.lng()
       }
+      
+      if(eventData.place !== ''){
+        setEventData({
+          ...eventData,
+          place: address
+        })
+      }
+
       setLocation(locationData);
       setEventData({...eventData, latitude: locationData.lat, longitude: locationData.lng})
     }
@@ -58,51 +70,92 @@ const EventCreate = () => {
     const filterUser = async (e) => {
       let filter_name = e.target.name;
       let filterParameters = userFilterParameter;
-
       let groupFilterParameter = userGroupFilterParameter;
+      let value = e.target.value
 
-      if(filter_name === 'shelter_id'){
-        let value = e.target.value;
-        filterParameters.center_id = value;     
-        setSelectedShelter(value);   
-      }
-
-      if(filter_name === 'group_id'){
-        let value = e.target.value;
-        setSelectedGroups(value);
-        filterParameters.group_in = value.join(",");        
-        
-        // Unset Vertical Selection Upon Groups Selection 
-        filterParameters.vertical_id = '';
-        
-      }
-
-      if(filter_name === 'vertical_id'){
-        let value = e.target.value;
-        filterParameters.vertical_id = value
-        groupFilterParameter['vertical_id'] = value;
-
-        setSelectedVertical(value)
-        setUserGroupFilterParameter(groupFilterParameter)
-
-        let userGroupData = [];
-        userGroupData = await callApi({url: "groups"})
-        console.log(userGroupData)
-        if(userGroupData){
-          setUserGroups(userGroupData) 
+      if(e.target.value){      
+        if(filter_name === 'shelter_id'){          
+          filterParameters.center_id = value;     
+          setSelectedShelter(value);   
         }
 
-        // Unset UserGroup Selection Upon Groups Selection 
-        filterParameters.group_in = '';
-        setSelectedGroups([]);
+        if(filter_name === 'group_id'){          
+          setSelectedGroups(value);
+          filterParameters.group_in = value.join(",");        
+          
+          // Unset Vertical Selection Upon Groups Selection 
+          if(filterParameters.vertical_id) delete filterParameters.vertical_id;
+          
+        }
 
+        if(filter_name === 'vertical_id'){          
+          filterParameters.vertical_id = value
+          groupFilterParameter['vertical_id'] = value;
+
+          setSelectedVertical(value)
+          setUserGroupFilterParameter(groupFilterParameter)                   
+        }
+
+        if(filter_name === 'group_types'){
+          groupFilterParameter.type_in = value.join(',');
+          setSelectedGroupType(value)
+          setUserGroupFilterParameter(groupFilterParameter)
+        }
+
+        if(filter_name=== 'group_types' || filter_name === 'vertical_id'){
+          let userGroupData = [];
+          let apiUrl = `groups/?`;
+          console.log(userGroupFilterParameter);
+          Object.keys(userGroupFilterParameter).map((key,index)=> {
+            apiUrl += key+'='+userGroupFilterParameter[key]+'&'
+          });
+
+          console.log(apiUrl);
+          userGroupData = await callApi({url: apiUrl})          
+
+          if(userGroupData){
+            setUserGroups(userGroupData) 
+          }
+          // Unset UserGroup Selection Upon Groups Selection 
+          if(filterParameters.group_in){
+            delete filterParameters.group_in;
+            setSelectedGroups([]);
+          }
+        }
+
+        console.log(filterParameters);
+        setUserFilterParameter(filterParameters);
+
+        let users = await getUsers(userFilterParameter);
+        setUsersList(users);
       }
+    }
 
-      console.log(filterParameters);
+    const clearFilter = async (e) => {
+      
+      setSelectedShelter();
+      setSelectedGroups();
+      setSelectedVertical();
+      setSelectedGroupType();
+
+      let filterParameters = userFilterParameter;
+      let groupFilterParameter = userGroupFilterParameter;
+
+      if(filterParameters.vertical_id) delete filterParameters.vertical_id;
+      if(filterParameters.group_in) delete filterParameters.group_in;
+      if(filterParameters.center_id) delete filterParameters.center_id;
+
+      if(groupFilterParameter.vertical_id) delete groupFilterParameter.vertical_id;
+      if(groupFilterParameter.type_in) delete groupFilterParameter.type_in;
+
       setUserFilterParameter(filterParameters);
-
+      setUserGroupFilterParameter(groupFilterParameter);
+      
       let users = await getUsers(userFilterParameter);
       setUsersList(users);
+
+      let groups = await callApi({url: 'groups'});
+      setUserGroups(groups);
     }
 
     const toggleCheckAll = e => {
@@ -114,21 +167,26 @@ const EventCreate = () => {
       }
     }
 
-    const updateField = e => {
+    const updateField = e => {      
       setEventData({
         ...eventData,
         [e.target.name]: e.target.value
       })
     }
 
+    let inviteUser = e => {
+      console.log(e.target.value);
+    }
+
     let createEvent = async () => {
-      let users = await getUsers({
-        city_id: user.city_id
-      });
+      let users = await getUsers(userFilterParameter);
       setUsersList(users);
       setInviteUsers(true);
       
       console.log(eventData);
+    }
+
+    let submitForm = async () => {
 
     }
 
@@ -200,7 +258,7 @@ const EventCreate = () => {
                   <IonCol size-md="6" size-xs="12">
                     <IonItem>
                       <IonLabel position="stacked">Event Name</IonLabel>
-                      <IonInput name="name" type="text" onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                      <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
                     </IonItem>
                     <IonItem>
                       <IonLabel position="stacked">Event Description</IonLabel>
@@ -208,11 +266,11 @@ const EventCreate = () => {
                     </IonItem>
                     <IonItem>
                       <IonLabel position="stacked">Event Date</IonLabel>
-                      <IonInput name="starts_on" type="date" onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                      <IonInput name="starts_on" type="date" required onIonChange={updateField} placeholder="Enter Event Date"></IonInput>
                     </IonItem>
                     <IonItem>
                       <IonLabel position="stacked">Event Time</IonLabel>
-                      <IonInput name="starts_on" type="time" onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                      <IonInput name="time" type="time" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
                     </IonItem>
                     <IonItem>
                       <IonLabel position="stacked">Event Location</IonLabel>
@@ -286,7 +344,7 @@ const EventCreate = () => {
                   ):null}
 
                   {groupTypes.length? (
-                    <IonSelect placeholder="Select Role Type(s)" interface="alert" name="group_types"  onIonChange={filterUser}>
+                    <IonSelect placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUser} multiple>
                       {
                         groupTypes.map((groupType,index) => {
                           return (
@@ -308,24 +366,27 @@ const EventCreate = () => {
                       }
                     </IonSelect>
                   ):null}
+                  <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filter(s)</IonButton>
                 </IonItem>
                 </IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
                 {usersList.length? (                               
+                  <>
                   <IonList>
                     <IonListHeader>
                       <IonItem>
                       <IonCheckbox name="check_all" onIonChange={toggleCheckAll} />&nbsp;
                       <IonLabel>Select All Users [{usersList.length}]</IonLabel>
                       </IonItem>                                         
-                      <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput>
+                      {/* <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput> */}                                            
                     </IonListHeader>
+                    <IonButton size="default" onClick={submitForm}>Invite Users</IonButton>
                   {usersList.map((user,index) => {
-                    return(
+                    return(                      
                       <IonItem key={index}>
                         <IonAvatar slot="start">  
-                          <IonCheckbox name="user_id" value={user.id} checked={checkAll}></IonCheckbox>                        
+                          <IonCheckbox name="user_id" value={user.id} checked={checkAll} onIonChange={inviteUser}></IonCheckbox>                        
                         </IonAvatar>
                         <IonLabel>
                           <h2>{user.name}</h2>
@@ -340,11 +401,15 @@ const EventCreate = () => {
                             }
                           </p>
                         </IonLabel>
-                      </IonItem>
+                      </IonItem>                                            
                     );
                   })}
                   </IonList>
-                ):null}                                
+                  <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>   
+                  </>                   
+                ):(
+                  <IonLabel>No Users in the selected filter.</IonLabel>
+                )}                
               </IonCardContent>
             </IonCard>              
           ):null}
