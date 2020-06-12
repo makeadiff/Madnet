@@ -30,8 +30,8 @@ import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
 import StudentIndex from './pages/Students/Index'
 import StudentForm from './pages/Students/Form'
-import TeacherIndex from './pages/Class Allocation/Index'
-import TeacherForm from './pages/Class Allocation/Form'
+import TeacherIndex from './pages/Allocations/Index'
+import TeacherForm from './pages/Allocations/Form'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)

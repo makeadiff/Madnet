@@ -14,9 +14,9 @@ const TeacherForm = () => {
     const [batches, setBatches] = React.useState([])
     const [levels, setLevels] = React.useState([])
     const { showMessage } = React.useContext(appContext)
-    const [combo, setCombo] = React.useState({bat:"", lev:""})
+    const [combo, setCombo] = React.useState({batch_id:"", level_id:""})
     const [sub, setSub] = React.useState([])
-    const [subjectField, setSubjectField] = React.useState({id:"0"})
+    const [subjectField, setSubjectField] = React.useState({subject_id:"0"})
 
     React.useEffect(() => {
         async function fetchData(){
@@ -26,7 +26,7 @@ const TeacherForm = () => {
                 }
                 }`}); 
             
-            const levelsinfo = await callApi({graphql:`{
+            const levels_info = await callApi({graphql:`{
                 levels(center_id:${shelter_id}, project_id:${project_id}){
                     id level_name                               
                 }    
@@ -34,17 +34,17 @@ const TeacherForm = () => {
 
             // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"});  // 2 (Diff results for 1 and 2. Why?)
 
-            const teachername = await callApi({url: "/users/" + user_id});
-            const subdata = await callApi({graphql:`{
+            const teacher_name = await callApi({url: "/users/" + user_id});
+            const subject_data = await callApi({graphql:`{
                 subjects {
                   id name
                 }
               }`});
 
             setBatches(data)
-            setLevels(levelsinfo)
-            setTeacher(teachername)
-            setSub(subdata)
+            setLevels(levels_info)
+            setTeacher(teacher_name)
+            setSub(subject_data)
 
         }
         fetchData()
@@ -62,7 +62,7 @@ const TeacherForm = () => {
 
     const saveAssign = (e) => {
         e.preventDefault()
-        callApi({url: `/batches/${combo.bat}/levels/${combo.lev}/teachers/${user_id}` , method: 'post', param: subjectField }).then((data)=> {
+        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', param: subjectField }).then((data)=> {
             showMessage("Saved class assignment successfully")
         })
     }
@@ -75,7 +75,7 @@ const TeacherForm = () => {
                 <IonList>
                     <IonItem>
                     <IonLabel>Batch:</IonLabel>
-                    <IonSelect slot ="end" name = "bat" value = {combo.bat} onIonChange={updateField} required = "true"  >
+                    <IonSelect slot ="end" name = "batch_id" value = {combo.batch_id} onIonChange={updateField} required = "true"  >
                     {batches.map((batch, index) => {
                         return(
                             <IonSelectOption key={index} value = {batch.id.toString()}>
@@ -87,7 +87,7 @@ const TeacherForm = () => {
                 </IonItem>
                 <IonItem>
                     <IonLabel>Level:</IonLabel>
-                    <IonSelect slot ="end" name = "lev" value = {combo.lev} onIonChange={updateField} required = "true" >
+                    <IonSelect slot ="end" name = "level_id" value = {combo.level_id} onIonChange={updateField} required = "true" >
                     {levels.map((level, index) => {
                         return(
                             <IonSelectOption key={index} value ={level.id.toString()}>
@@ -99,7 +99,7 @@ const TeacherForm = () => {
                     </IonItem>
                     <IonItem>
                     <IonLabel>Subject:</IonLabel>
-                    <IonSelect slot ="end" name = "id" value = {subjectField.id} onIonChange={updateSubField} >
+                    <IonSelect slot ="end" name = "subject_id" value = {subjectField.id} onIonChange={updateSubField} >
                     <IonSelectOption key="0" value="0" > None </IonSelectOption>
                     {sub.map((subject, index) => {
                         return(
