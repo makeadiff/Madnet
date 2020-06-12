@@ -22,16 +22,18 @@ const TeacherForm = () => {
                 batchSearch(center_id:${shelter_id}, project_id:${project_id}){
                     id batch_name
                 }
-                }`});
+                }`}); 
             
             const levelsinfo = await callApi({graphql:`{
                 levels(center_id:${shelter_id}, project_id:${project_id}){
                     id level_name                               
                 }    
-                }`});                                                               
+                }`});               //1                                                
 
-            // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"}); 
+            // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"});  // 2 (Diff results for 1 and 2. Why?)
+            
             const teachername = await callApi({url: "/users/" + user_id});
+
 
             setBatches(data)
             setLevels(levelsinfo)

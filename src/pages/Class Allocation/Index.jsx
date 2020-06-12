@@ -18,7 +18,8 @@ const TeacherIndex= () => {
 
     React.useEffect(() => {
         async function fetchTeacherList() {
-            const user_data =  await callApi({url: "cities/" + cityId + "/teachers" });
+            const user_data =  await callApi({url: "cities/" + cityId + "/users" });    // 1
+            // const user_data = await callApi({url:"cities/" + cityId + "/teachers"})  // 2 (Diff values. Why?)
             const city_name = await callApi({url: "cities/" + cityId });
                
             if(user_data)
