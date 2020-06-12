@@ -15,6 +15,8 @@ const TeacherForm = () => {
     const [levels, setLevels] = React.useState([])
     const { showMessage } = React.useContext(appContext)
     const [combo, setCombo] = React.useState({bat:"", lev:""})
+    const [sub, setSub] = React.useState([])
+    const [subjectField, setSubjectField] = React.useState({id:"0"})
 
     React.useEffect(() => {
         async function fetchData(){
@@ -28,16 +30,21 @@ const TeacherForm = () => {
                 levels(center_id:${shelter_id}, project_id:${project_id}){
                     id level_name                               
                 }    
-                }`});               //1                                                
+                }`}); //1                                                
 
             // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"});  // 2 (Diff results for 1 and 2. Why?)
-            
-            const teachername = await callApi({url: "/users/" + user_id});
 
+            const teachername = await callApi({url: "/users/" + user_id});
+            const subdata = await callApi({graphql:`{
+                subjects {
+                  id name
+                }
+              }`});
 
             setBatches(data)
             setLevels(levelsinfo)
             setTeacher(teachername)
+            setSub(subdata)
 
         }
         fetchData()
@@ -48,10 +55,14 @@ const TeacherForm = () => {
         setCombo({ ...combo, [e.target.name]: e.target.value })
     }
 
+    const updateSubField = (e) => {
+        setSubjectField({ id: e.target.value })
+    }
+
 
     const saveAssign = (e) => {
         e.preventDefault()
-        callApi({url: `/batches/${combo.bat}/levels/${combo.lev}/teachers/${user_id}` , method: 'post' }).then((data)=> {
+        callApi({url: `/batches/${combo.bat}/levels/${combo.lev}/teachers/${user_id}` , method: 'post', param: subjectField }).then((data)=> {
             showMessage("Saved class assignment successfully")
         })
     }
@@ -81,6 +92,19 @@ const TeacherForm = () => {
                         return(
                             <IonSelectOption key={index} value ={level.id.toString()}>
                             {level.level_name}
+                            </IonSelectOption>
+                        )
+                    })}
+                    </IonSelect>
+                    </IonItem>
+                    <IonItem>
+                    <IonLabel>Subject:</IonLabel>
+                    <IonSelect slot ="end" name = "id" value = {subjectField.id} onIonChange={updateSubField} >
+                    <IonSelectOption key="0" value="0" > None </IonSelectOption>
+                    {sub.map((subject, index) => {
+                        return(
+                            <IonSelectOption key={index} value ={subject.id.toString()}>
+                            {subject.name}
                             </IonSelectOption>
                         )
                     })}
