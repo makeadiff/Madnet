@@ -41,9 +41,7 @@ const TeacherIndex= () => {
                     {(teachers.map((teacher, index) => {
                         return (
                             <IonItem key={index} routerLink={ "/shelters/" + shelter_id + "/projects/" + project_id + "/assign-teachers/" + teacher.id } routerDirection="none" >
-                                <IonLabel><h4>{teacher.name}</h4>
-                                        <p>Batch: </p>
-                                        <p>Class: </p>
+                                <IonLabel><h4>{teacher.name}</h4> 
                                 </IonLabel>
                             </IonItem>
                         );

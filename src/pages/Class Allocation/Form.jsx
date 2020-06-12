@@ -30,7 +30,7 @@ const TeacherForm = () => {
                 }    
                 }`});                                                               
 
-            // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"});
+            // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"}); 
             const teachername = await callApi({url: "/users/" + user_id});
 
             setBatches(data)
