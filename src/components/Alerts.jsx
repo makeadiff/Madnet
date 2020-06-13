@@ -4,6 +4,7 @@ import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import { dataContext } from "../contexts/DataContext"
 import './Alerts.css'
+import { IonCardContent, IonCardHeader, IonCard, IonCardTitle } from '@ionic/react'
 
 // Send test Push Notification using https://console.firebase.google.com/u/1/project/madnet-28ca4/notification/compose
 
@@ -30,22 +31,32 @@ const Alerts = () => {
         fetchAlerts();
     }, [user_id])
 
-    return (
-        <div className="card-area">
-            { alerts.map((alert, index) => {
-                // :TODO: Some highlight based on read or not - you can get it from appContext.notifications
-                // :TODO: Once read, delete that alert from appContext.notifications
-                return (
-                    <div className="alert-card danger" key={index}>
-                        <div className="alert-card-content">
-                            <h4><URL alert={alert} /></h4>
-                            <p>{ alert.description }</p>
-                        </div>
-                    </div>
-                )
-            })}
-        </div>
-    )
+    if(alerts.length){
+        return (        
+            <IonCard className="light">
+                <IonCardHeader>
+                    <IonCardTitle>Alerts</IonCardTitle>
+                </IonCardHeader>
+                <IonCardContent>
+                    { alerts.map((alert, index) => {
+                        // :TODO: Some highlight based on read or not - you can get it from appContext.notifications
+                        // :TODO: Once read, delete that alert from appContext.notifications
+                        return (                    
+                            <div className="alert-card danger" key={index}>
+                                <div className="alert-card-content">
+                                    <h4><URL alert={alert} /></h4>
+                                    <p>{ alert.description }</p>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </IonCardContent>
+            </IonCard>         
+        )
+    }
+    else{
+        return null
+    }
 }
 
 const URL = ({ alert }) => {

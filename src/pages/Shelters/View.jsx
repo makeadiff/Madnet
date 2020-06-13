@@ -1,9 +1,11 @@
-import { IonPage, IonList,IonItem,IonLabel,IonContent,IonSegment,IonSegmentButton } from '@ionic/react';
+import { IonPage, IonList,IonItem,IonLabel,IonContent,IonSegment,IonSegmentButton, IonChip} from '@ionic/react';
 import React from 'react'
 import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
+import './Shelters.css';
+import { connect } from 'tls';
 
 const ShelterView = () => {
     const { shelter_id } = useParams()
@@ -23,12 +25,12 @@ const ShelterView = () => {
                         levels { id level_name }
                     }
                     students { id }
-                }}`});
+                }}`});                
 
             setShelter(shelter_data)
 
             // First project is set as the default project. :TODO: This should default to current user's vertical.
-            if(shelter_data.projects.length) {
+            if(shelter_data.projects && shelter_data.projects.length) {
                 setProjectId(shelter_data.projects[0].id)
                 setProject(shelter_data.projects[0])
             }
@@ -44,38 +46,45 @@ const ShelterView = () => {
             }
         });
     }, [projectId])
+    
 
-    const project_key = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftecare"}
+    const project_key = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare"}
 
     return (
         <IonPage>
-            <Title name={ `Manage ${shelter.name} Shelter` } />
+            <Title name={ `Manage ${shelter.name}` } />
 
-            <IonContent>
-                <IonSegment value={ projectId } onIonChange={e => setProjectId(e.detail.value)}>
-                    { shelter.projects.map(( proj, index) => {
-                        return (<IonSegmentButton value={ proj.id } key={index}>
-                            <IonLabel>{ project_key[proj.id] }</IonLabel>
-                        </IonSegmentButton>)
-                    })}
-                </IonSegment>
+            <IonContent className="dark">
+                {shelter.projects ? (
+                    <IonSegment value={ projectId } onIonChange={e => setProjectId(e.detail.value)}>
+                        { shelter.projects.map(( proj, index) => {
+                            return (<IonSegmentButton value={ proj.id } key={index}>
+                                <IonLabel>{ project_key[proj.id] }</IonLabel>
+                            </IonSegmentButton>)
+                        })}
+                    </IonSegment>
+                ): null}                
 
                 <IonList>
                
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
-                        <IonLabel>{ project.batches.length ?? "" } Batch(es)</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
+                        <IonChip className="roles"> { project.batches.length ?? "" } </IonChip>
+                        <IonLabel className="shelterList"> Batch(es)</IonLabel>
                     </IonItem>
                 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
-                        <IonLabel>{ project.levels.length ?? "" } Level(s)</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
+                        <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
+                        <IonLabel className="shelterList"> Level(s)</IonLabel>
                     </IonItem>
                 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
-                        <IonLabel>{ shelter.students.length } Students</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
+                        <IonChip className="roles">{ shelter.students ? shelter.students.length: 0 }</IonChip>
+                        <IonLabel className="shelterList"> Students</IonLabel>
                     </IonItem>
 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none" >
-                        <IonLabel>3 Note(s) about { shelter.name }</IonLabel>
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none" >
+                        <IonChip className="roles">3</IonChip>
+                        <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
 
                     <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/assign-teachers` } routerDirection="none" >

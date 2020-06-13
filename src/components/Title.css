@@ -16,3 +16,8 @@
 .home-link {
     color: var(--ion-color-light);
 }
+
+ion-title{
+    font-size: 20px;
+    font-weight: 400;
+}

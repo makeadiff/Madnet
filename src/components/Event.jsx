@@ -1,9 +1,10 @@
-import { IonList,IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonCardSubtitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
+import { IonList,IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonButton, IonPopover, IonIcon } from '@ionic/react'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {ellipsisVertical, location, arrowForward} from 'ionicons/icons';
 
-const EventDetail = ({event, index}) => {  
+const EventDetail = ({event, index, segment}) => {  
 
   const [ showOptions, setShowOptions ] = React.useState(false); 
   console.log(event);
@@ -18,17 +19,20 @@ const EventDetail = ({event, index}) => {
       <IonItem button>Alumni</IonItem>      
         
     </IonPopover> */}
-    <IonCard class="light list" key={index} routerLink={ `/events/${event.id}/rsvp` } routerDirection="none" >
-      <IonCardHeader className="noPadding">
-        <IonCardTitle>          
-            <p>
-              #{index+1}. {event.event_type} / {event.name}              
-            </p>
-        </IonCardTitle>
-        {event.description ? (
-          <IonCardSubtitle>{event.description}</IonCardSubtitle>
-        ): null }                
-      </IonCardHeader>
+    <IonCard class="light list" key={index}>
+      <Link to={ segment=="invitations"? `/events/${event.id}/rsvp`: false }>
+        <IonCardHeader className="noPadding">
+          <IonCardTitle>          
+              <p>
+                #{index+1}. {event.event_type} / {event.name}              
+              </p>
+          </IonCardTitle>
+          {event.description ? (
+            <IonCardSubtitle>{event.description}</IonCardSubtitle>
+          ): null }                
+        </IonCardHeader>
+      </Link>
+      <IonCardContent>
         <IonGrid>
             <IonRow>                                
                 <IonCol size-md="6" size-xs="6">                    
@@ -42,6 +46,7 @@ const EventDetail = ({event, index}) => {
                 </IonCol> */}
             </IonRow>
         </IonGrid>
+      </IonCardContent>
     </IonCard>
     </>
   )

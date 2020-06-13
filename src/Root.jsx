@@ -99,10 +99,10 @@ const Root = () => {
                             <ShelterIndex />
                         </PrivateRoute>
 
-                        <PrivateRoute path="/users/:user_id/view">
+                        {/* <PrivateRoute path="/users/:user_id/view">
                             <UserView />
-                        </PrivateRoute>
-                        <PrivateRoute path="/users/:user_id/edit">
+                        </PrivateRoute> */}
+                        <PrivateRoute path="/users/:user_id/">
                             <UserForm />
                         </PrivateRoute>
                         <PrivateRoute path="/users" exact={true} >

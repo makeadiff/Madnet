@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonChip, IonGrid, IonRow, IonCol, IonList, IonItem, IonAvatar, IonLabel, IonInput, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonTextarea, IonRadioGroup, IonRadio, IonListHeader, IonFab, IonFabButton, IonIcon, IonButton, IonToggle} from '@ionic/react';
+import { IonContent, IonPage, IonChip, IonGrid, IonRow, IonCol, IonList, IonItem, IonAvatar, IonLabel, IonInput, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonTextarea, IonRadioGroup, IonRadio, IonListHeader, IonFab, IonFabButton, IonIcon, IonButton, IonToggle, IonNote} from '@ionic/react';
 
 import { pencil, close } from 'ionicons/icons';
 import React from 'react';
@@ -16,7 +16,11 @@ const Profile = () => {
 
 	const { user } = React.useContext(authContext)	
 	const { setLoading, showMessage } = React.useContext(appContext)
-	const { updateUser } = React.useContext(dataContext)	
+	const { updateUser } = React.useContext(dataContext)
+	const [ error, setError ] = React.useState('')
+	const [ changePassword, setChangePassword ] = React.useState(false)
+	const [ password, setPassword ] = React.useState('')
+	const [ confirmPassword, setConfirmPassword ] = React.useState('');
 	
 	let breakcondition = false;
 	const [ disable, setDisable ] = React.useState(true);
@@ -32,7 +36,8 @@ const Profile = () => {
 		phone: user.phone,
 		sex: user.sex,
 		birthday: user.birthday,
-		address: user.address
+		address: user.address,
+		password: password,		
 	});
 
 	const updateField = e => {
@@ -50,10 +55,18 @@ const Profile = () => {
 		setDisable(true);
 	}
 
-	async function updateUserData() {		
+	async function updateUserData() {
+		if(changePassword){
+			userData.password = password;
+		}
 		console.log(userData);
-		let update = await updateUser(user.id, userData);
-		console.log(update);
+		let update = await updateUser(user.id, userData);		
+		if(update){
+			setDisable(true);			
+		}
+		else{
+
+		}
 	}
 
 	return (
@@ -116,14 +129,34 @@ const Profile = () => {
 											<IonItem>	
 												<IonLabel position="stacked">Birthday</IonLabel>
 												<IonInput required type="date" name="birthday" value={userData.birthday} disabled={disable} onIonChange={updateField}></IonInput>
-											</IonItem>
+											</IonItem>											
 											<IonItem>			
 												<IonLabel position="stacked">Address</IonLabel>
 												<IonTextarea required value={userData.address} disabled={disable} name="address" onIonChange={updateField}></IonTextarea>
 											</IonItem>
 											<IonItem className={ disable? "hidden": null}>
+												<IonLabel className="trigger" color="primary" onClick={(e)=>setChangePassword(true)} >Change Password</IonLabel>
+											</IonItem>
+											{ changePassword? (
+												<>
+													<IonItem>			
+															<IonLabel position="stacked">Password</IonLabel>
+															<IonInput required type="password" name="password" placeholder="****" disabled={disable} onIonChange={(e) => setPassword(e.target.value)}></IonInput>
+													</IonItem>													
+													<IonItem>			
+															<IonLabel position="stacked">Confirm Password</IonLabel>
+															<IonInput required type="password" name="confirm_password" placeholder="****" disabled={disable} onIonChange={(e) => setConfirmPassword(e.target.value)}></IonInput>
+													</IonItem>
+												</>
+											): null}
+											{ ((password && confirmPassword) && password !== confirmPassword) ? (
+													<IonItem>
+														<IonNote color="danger">Passwords should match.</IonNote>
+													</IonItem>
+											): null}											
+											<IonItem className={ disable? "hidden": null} disabled={(changePassword && (password !== confirmPassword))? true : false}>
 												<IonButton expand="full" size="default" color="primary" type="submit" onClick={updateUserData} >Save</IonButton>
-											</IonItem>														
+											</IonItem>									
 										</IonCardContent>
 									</IonCard>							
 								</IonList>

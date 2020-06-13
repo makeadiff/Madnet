@@ -1,6 +1,5 @@
 import React from 'react'
-import { IonButton, IonInput, IonPage, IonContent,IonLabel,IonFab,IonFabButton,
-        IonItem,IonList,IonRadioGroup,IonListHeader,IonRadio,IonIcon, IonTextarea } from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonContent,IonLabel,IonFab,IonFabButton, IonItem,IonList,IonRadioGroup,IonListHeader,IonRadio,IonIcon, IonTextarea, IonCard, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react'
 import { pencil, close } from 'ionicons/icons'
 import { useParams } from "react-router-dom"
 import moment from 'moment'
@@ -81,7 +80,7 @@ const StudentForm = () => {
 
     return (
         <IonPage>
-            <Title name={"Edit " + student.name } />
+            <Title name={"View/Edit " + student.name } />
             <IonContent>
                 <form onSubmit={e => saveStudent(e)}>
                 <IonList>
@@ -111,6 +110,31 @@ const StudentForm = () => {
                         </IonListHeader>
 
                         <IonItem>
+                            <IonLabel position="stacked">Name</IonLabel>
+                            <IonInput id="name" type="text" value={ student.name } 
+                                    required={true} minlength="2" maxlength="70" pattern="[A-Za-z\-' ]{1,60}"
+                                    autocapitalize={true} disabled={ disable } onIonChange={ updateField } />
+                            { errors.name ? <p className="error-message">{ errors.name }</p> : null }
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="stacked">Description</IonLabel>
+                            <IonTextarea id="description" type="text" value={ student.description } 
+                                    disabled={ disable } onIonChange={ updateField }  />
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel position="stacked">Birthday</IonLabel>
+                            <IonInput id="birthday" type="date" value={ student.birthday } max={ (moment().year()-5) + "-01-01" }
+                                    disabled={ disable } onIonChange={ updateField  } />
+                            { errors.birthday ? <p className="error-message">{ errors.birthday }</p> : null }
+                        </IonItem>
+                    </IonRadioGroup>
+                    <IonRadioGroup id="sex" value={ student.sex } onIonChange={ updateField }>
+                        <IonListHeader>
+                            <IonLabel>Sex</IonLabel>
+                        </IonListHeader>
+
+                        <IonItem>
                             <IonLabel>Male</IonLabel>
                             <IonRadio mode="ios" name="sex" slot="start" value="m" disabled={disable} />
                         </IonItem>
@@ -120,8 +144,13 @@ const StudentForm = () => {
                             <IonRadio mode="ios" name="sex" slot="start" value="f" disabled={disable} />
                         </IonItem>
                     </IonRadioGroup>
-
-                    { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
+                    { disable ? null : <IonItem><IonButton size="default" type="submit">Save</IonButton></IonItem> }
+                {/* </IonList>
+                {/* </form>
+            </IonCardContent> */} */}
+        {/* </IonCard> */}
+                                   
+                    
 
                     {/* <IonItemDivider><IonLabel>Other Actions</IonLabel></IonItemDivider>
 

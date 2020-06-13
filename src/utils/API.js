@@ -14,7 +14,7 @@ const api = {
                 "Authorization": `Basic ${API_AUTH.base64}`
             },
             body: params ? JSON.stringify(params) : undefined
-        });
+        });    
         if(response.ok) {
             // If its a delete call, it might have no return. 
             let response_text = await response.text()

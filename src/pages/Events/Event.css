@@ -42,3 +42,37 @@ ion-row {
 .icon-medium {
     font-size: large;
 }
+
+.actions ion-col{
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.actions ion-col:hover{
+    background: var(--red-bright);
+}
+
+ion-label.error{
+    color: #FFFFFF !important;    
+}
+
+ion-alert .alert-radio-label, ion-alert .alert-checkbox-label{
+    color: var(--black) !important;
+}
+
+ion-card.light ion-checkbox{
+    --border-color: var(--black)
+}
+
+ion-card.dark ion-checkbox{
+    --border-color: #FFFFFF;
+}
+
+h3.no-padding{
+    padding: 0;
+}
+
+ion-input.search{
+    --background: var(--black)
+}
