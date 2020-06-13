@@ -39,6 +39,9 @@ const Dashboard = () => {
                                     </IonGrid>
                                 </IonCardContent>
                             </IonCard>
+                            <Suspense fallback={<h4>Loading...</h4>}>
+                                <Alerts />
+                            </Suspense>
                         </IonCol>
                         <IonCol size-md="6" size-xs="12">
                             <IonCard className="dark no-shadow">
@@ -61,10 +64,7 @@ const Dashboard = () => {
                             ) : null }                                                            
                         </IonCol>
                     </IonRow>                                              
-                </IonGrid>
-                <Suspense fallback={<h4>Loading...</h4>}>
-                    <Alerts />
-                </Suspense>
+                </IonGrid>                
             </IonContent>
         </IonPage>
     );
@@ -73,7 +73,7 @@ const Dashboard = () => {
 const AppGrid = ({ apps }) => {
     return (
         <IonGrid>
-            <IonRow class="ion-justify-content-start">
+            <IonRow className="ion-justify-content-start">
                 {apps.map((app, index) => {
                     if(app.title === "Dashboard") return null
                     return (

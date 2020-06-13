@@ -7,11 +7,12 @@ import { authContext } from "../../contexts/AuthContext";
 import { appContext } from "../../contexts/AppContext";
 import api from "../../utils/API";
 import EventDetail from "../../components/Event";
+import './Event.css'
 
 const EventList = ({ segment }) => {
     const { user } = React.useContext(authContext);
     const { setLoading } = React.useContext(appContext);
-    const [events, setEvents] = useState([]);
+    const [ events, setEvents ] = useState([]);    
 
     useEffect(() => {
         async function fetchEventList() {
@@ -42,10 +43,12 @@ const EventList = ({ segment }) => {
         <IonList>
             {events.map((event, index) => {
                 return (
-                    <EventDetail event={event} index={index} key={index}/>                    
+                    <EventDetail event={event} segment={segment} index={index} key={index}/>                
                 );
             })}
-            { (events.length === 0) ? (<IonItem><IonLabel>No Events found.</IonLabel></IonItem>) : null }
+            { (events.length === 0) ? (
+                <IonItem><IonLabel className="error">No Events found.</IonLabel></IonItem>
+            ) : null }
         </IonList>
     );
 };

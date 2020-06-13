@@ -15,20 +15,21 @@ export const dataContext = React.createContext({
     getAlerts: () => {},
     setDeviceToken: () => {},
     unsetDeviceToken: () => {},
+    getEventTypes: () => {},
+    deleteUser: () => {},
     getVerticals: () => {},
+    getGroupTypes: () => {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,
-            setDeviceToken,unsetDeviceToken,getVerticals,updateUser } = useHandler();
+    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
 
     return (
         <Provider 
-            value={{ unsetLocalCache,callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,
-                    setDeviceToken,unsetDeviceToken,getVerticals,updateUser }}>
-            { children }
+            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
+            {children}
         </Provider>
     );
 };
@@ -96,7 +97,6 @@ const useHandler = () => {
             key: "",
             cache_key: ""
         }
-
         if(user_args.url !== undefined) {
             default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
             default_args["key"] = default_args["name"]
@@ -120,15 +120,15 @@ const useHandler = () => {
             if(data) return data
         }
         
-        setLoading(true)
+        setLoading(true)        
         try {            
             if(args.type === "rest") {                
                 call_response = await api.rest(args.url, args.method, args.params)                
             } else if(args.type === "graphql") {
                 call_response = await api.graphql(args.graphql, args.graphql_type)
-
             } else console.log("Dev Error: Unsupported type given in callApi({args.type})")
-        } catch(e) {
+            
+        } catch(e) {            
             showMessage(`${args.name} ${args.method} call failed: ${e.message}`, "error")            
         }
         setLoading(false)
@@ -209,21 +209,28 @@ const useHandler = () => {
         return await callApi({url:`users?${query_parts.join("&")}`})
     }
 
-    const updateUser = async (user_id, params) => {        
+    const updateUser = async (user_id, params) => {                        
         return await callApi({
             url: `users/${user_id}`,
             method: 'post',
             params: params
-        })
+        })        
     }
+
+    const deleteUser = async (user_id) => {
+        return await callApi({
+            url: `users/${user_id}`,
+            method: 'delete'
+        })
+    }    
 
     const getAlerts = async (user_id) => {
         if(user_id === undefined) user_id = user.id
         return await callApi({url:`users/${user_id}/alerts`})
     }
 
-    const getVerticals = async () => {
-        return await callApi({url: `verticals/`})
+    const getEventTypes = async () => {
+        return await callApi({url: `event_types`})
     }
 
     const setDeviceToken = async (token, user_id) => {
@@ -239,9 +246,16 @@ const useHandler = () => {
         return false
     }    
 
+    const getVerticals = async () => {
+        return await callApi({url: `verticals`})
+    }
+
+    const getGroupTypes = async () => {
+        return await callApi({url: `group_types`})
+    }
+
     return {
-        callApi, getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getVerticals,
-        unsetLocalCache
+        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, unsetLocalCache, getVerticals, getGroupTypes
     };
 };
 

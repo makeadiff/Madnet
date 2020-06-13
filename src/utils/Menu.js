@@ -1,5 +1,4 @@
-import { apps, appsSharp, library, wallet, calendar, personSharp, personOutline, people, linkOutline,linkSharp,
-        businessOutline, schoolOutline, schoolSharp, businessSharp } from 'ionicons/icons';
+import { apps, link, person, library, wallet, calendar, business, school, people, schoolSharp, businessSharp } from 'ionicons/icons';
 
 import { SITE_URL } from './Constants';
 
@@ -8,7 +7,7 @@ export const volunteer_pages = [
         title: 'Dashboard',
         url: '/dashboard',
         iosIcon: apps,
-        mdIcon: appsSharp
+        mdIcon: apps
     },
     // {
     //     title: 'My Classes',
@@ -31,14 +30,14 @@ export const volunteer_pages = [
     {
         title: 'Resources',
         url: '/links',
-        iosIcon: linkOutline,
-        mdIcon: linkSharp
+        iosIcon: link,
+        mdIcon: link
     },
     {
         title: 'Profile',
         url: '/profile',
-        iosIcon: personOutline,
-        mdIcon: personSharp
+        iosIcon: person,
+        mdIcon: person
     }
 ];
 
@@ -52,13 +51,13 @@ export const fellow_pages = [
     {
         title: 'Shelters',
         url: '/shelters',
-        iosIcon: businessOutline,
+        iosIcon: business,
         mdIcon: businessSharp
     },
     {
         title: 'Students',
         url: '/students',
-        iosIcon : schoolOutline,
+        iosIcon : school,
         mdIcon: schoolSharp
     }
 ];

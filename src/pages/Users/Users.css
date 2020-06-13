@@ -14,6 +14,12 @@ ion-card.list ion-card-title p{
 ion-card.list ion-chip{
   font-size: 13px;
   padding: 8px;
+  height: 25px;
+}
+
+ion-icon.userOptions{
+  color: var(--red-bright);
+  font-size: 18px;
 }
 
 ion-card-header.noPadding{
@@ -23,4 +29,12 @@ ion-card-header.noPadding{
 
 ion-button.userEditButton{
   float: right;
+}
+
+a{
+  text-decoration: none;
+}
+
+ion-select-option {
+  color: var(--black);
 }

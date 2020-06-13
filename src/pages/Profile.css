@@ -69,3 +69,12 @@ ion-card.dark textarea.native-textarea[disabled]{
 .hidden{
   display:none;
 }
+
+ion-label.trigger{
+  cursor: pointer;
+}
+
+ion-note.danger{
+  color: red;
+  font-size: 12px;
+}

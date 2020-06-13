@@ -10,7 +10,7 @@ const Page = ({ page }) => {
         <IonPage>
             <Title name={page.name} />
 
-            <IonContent>
+            <IonContent className="dark">
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">{ page.name }</IonTitle>

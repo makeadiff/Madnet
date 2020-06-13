@@ -25,7 +25,7 @@ const Links = () => {
         <IonPage>
             <Title name="Support Links" />
 
-            <IonContent>
+            <IonContent className="dark">
                 {Object.entries(links).map((section, key) => {
                     return (<LinkSection key={key} index={section[0]} section={section[1]} />)
                 })}

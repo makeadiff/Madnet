@@ -1,14 +1,15 @@
-import { IonList,IonItem,IonLabel,IonInput,IonCheckbox,IonSelect,IonSelectOption,IonButton } from '@ionic/react'
+import { IonList,IonItem,IonLabel,IonInput,IonCheckbox,IonSelect,IonSelectOption,IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent} from '@ionic/react'
 import React from 'react'
 
 import { authContext } from "../../contexts/AuthContext"
 import { dataContext } from "../../contexts/DataContext"
+import UserDetail from "../../components/User"
 import "./Form.css"
 
 const UserSearch = ({ segment }) => {
     const { user } = React.useContext(authContext)
-    const [groups, setGroups] = React.useState([])
-    const [showMore, setShowMore] = React.useState(false)
+    const [ groups, setGroups ] = React.useState([])
+    const [ showMore, setShowMore ] = React.useState(false)
     const { getUsers, callApi } = React.useContext(dataContext)
     const [users, setUsers] = React.useState( null )
     const [search, setSearch] = React.useState({
@@ -62,39 +63,45 @@ const UserSearch = ({ segment }) => {
 
     return (<>
         <form onSubmit={e => searchUser(e)}>
-        <IonList>
-            <InputRow label="ID" id="id" type="text" value={search.id} onIonInput={e => setSearchValue("id", e.target.value)} />
-            <InputRow label="Name" id="name" type="text" value={search.name} onIonInput={e => setSearchValue("name", e.target.value)} />
-            <InputRow label="Email" id="any_email" type="text" value={search.any_email} onIonInput={e => setSearchValue("any_email", e.target.value)} />
-            <InputRow label="Phone" id="phone" type="text" value={search.phone} onIonInput={e => setSearchValue("phone", e.target.value)} />
+        
+        <IonCard className="dark">
+            <IonCardHeader>
+                <IonCardTitle>Search Volunteer(s)</IonCardTitle>
+            </IonCardHeader>
+            <IonCardContent>
+                <InputRow label="Volunteer ID" id="id" type="text" value={search.id} onIonInput={e => setSearchValue("id", e.target.value)} />
+                <InputRow label="Volunteer Name" id="name" type="text" value={search.name} onIonInput={e => setSearchValue("name", e.target.value)} />
+                <InputRow label="Volunteer Email" id="any_email" type="text" value={search.any_email} onIonInput={e => setSearchValue("any_email", e.target.value)} />
+                <InputRow label="Volunteer Phone" id="phone" type="text" value={search.phone} onIonInput={e => setSearchValue("phone", e.target.value)} />
 
-            { showMore ?
-                (<div className="more-options">
-                    <IonItem><IonLabel>Groups</IonLabel></IonItem>
-                    <div className="groups-area">
-                    { groups.map((grp, index) => {
-                        return (<IonItem key={ index } lines="none" className="group-selectors">
-                            <IonCheckbox value={ grp.id } onIonChange={ setGroupSearch } />
-                            <IonLabel> &nbsp; { grp.name }</IonLabel>
-                        </IonItem>)
-                    })}
-                    </div>
+                { showMore ?
+                    (<div className="more-options">
+                        <IonItem><IonLabel>Groups</IonLabel></IonItem>
+                        <div className="groups-area">
+                        { groups.map((grp, index) => {
+                            return (<IonItem key={ index } lines="none" className="group-selectors">
+                                <IonCheckbox value={ grp.id } onIonChange={ setGroupSearch } />
+                                <IonLabel> &nbsp; { grp.name }</IonLabel>
+                            </IonItem>)
+                        })}
+                        </div>
 
-                    <IonItem>
-                        <IonLabel>User Type</IonLabel>
-                        <IonSelect value={ search.user_type } placeholder="Select One" onIonChange={ e => setSearchValue("user_type", e.target.value)}>
-                            <IonSelectOption value="volunteer" selected={true}>Volunteer</IonSelectOption>
-                            <IonSelectOption value="applicant">Applicant</IonSelectOption>
-                            <IonSelectOption value="alumni">Alumni</IonSelectOption>
-                            <IonSelectOption value="let_go">Let Go</IonSelectOption>
-                            <IonSelectOption value="any">Any</IonSelectOption>
-                        </IonSelect>
-                    </IonItem>
-                </div>)
-                : <IonItem onClick={() => setShowMore(true) }><a>Show More Options...</a></IonItem> }
+                        <IonItem>
+                            <IonLabel>User Type</IonLabel>
+                            <IonSelect value={ search.user_type } placeholder="Select One" interface="popover" onIonChange={ e => setSearchValue("user_type", e.target.value)}>
+                                <IonSelectOption value="volunteer" selected={true}>Volunteer</IonSelectOption>
+                                <IonSelectOption value="applicant">Applicant</IonSelectOption>
+                                <IonSelectOption value="alumni">Alumni</IonSelectOption>
+                                <IonSelectOption value="let_go">Let Go</IonSelectOption>
+                                <IonSelectOption value="any">Any</IonSelectOption>
+                            </IonSelect>
+                        </IonItem>
+                    </div>)
+                    : <IonItem onClick={() => setShowMore(true) }><a>Show More Options...</a></IonItem> }
 
-            <IonItem><IonButton type="submit">Search</IonButton></IonItem>
-        </IonList>
+                <IonItem><IonButton type="submit" size="default">Search</IonButton></IonItem>
+            </IonCardContent>
+        </IonCard>
         </form>
         { users !== null ? <Listing users={users} /> : null }
         </>
@@ -115,14 +122,7 @@ const Listing = ({ users }) => {
         <IonList>
             {users.map((user, index) => {
                 return (
-                    <IonItem key={index} routerLink={ `/users/${user.id}/view` } routerDirection="none" >
-                        <IonLabel>
-                            <h4>{user.name}</h4>
-                            <p>Phone: { user.phone }</p>
-                            <p>Email: { user.email }</p>
-                            <p>Credit: { user.credit } </p>
-                        </IonLabel>
-                    </IonItem>
+                    <UserDetail user={user} index={index} key={index}/>
                 );
             })}
             { (users.length === 0) ? (<IonItem><IonLabel>No users found.</IonLabel></IonItem>) : null }
