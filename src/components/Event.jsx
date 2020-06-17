@@ -6,8 +6,7 @@ import {ellipsisVertical, location, arrowForward} from 'ionicons/icons';
 
 const EventDetail = ({event, index, segment}) => {  
 
-  const [ showOptions, setShowOptions ] = React.useState(false); 
-  console.log(event);
+  const [ showOptions, setShowOptions ] = React.useState(false);  
 
   return (
     <>
@@ -20,7 +19,7 @@ const EventDetail = ({event, index, segment}) => {
         
     </IonPopover> */}
     <IonCard class="light list" key={index}>
-      <Link to={ segment=="invitations"? `/events/${event.id}/rsvp`: false }>
+      <Link to={`/events/${event.id}`}>
         <IonCardHeader className="noPadding">
           <IonCardTitle>          
               <p>
