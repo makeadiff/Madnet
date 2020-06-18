@@ -32,6 +32,7 @@ import StudentIndex from './pages/Students/Index'
 import StudentForm from './pages/Students/Form'
 import TeacherIndex from './pages/Allocations/Index'
 import TeacherForm from './pages/Allocations/Form'
+import TeacherView from './pages/Allocations/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -145,6 +146,10 @@ const Root = () => {
                             <Notes item_type="student" />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-teachers" exact={true}>
+                            <TeacherView />
+                        </PrivateRoute>
+
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers" exact={true} >
                             <TeacherIndex />
                         </PrivateRoute>
@@ -152,6 +157,8 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id" exact={true} >
                             <TeacherForm />
                         </PrivateRoute>
+
+                        
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>

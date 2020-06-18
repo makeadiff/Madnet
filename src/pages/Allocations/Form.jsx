@@ -56,13 +56,13 @@ const TeacherForm = () => {
     }
 
     const updateSubField = (e) => {
-        setSubjectField({ id: e.target.value })
+        setSubjectField( {subject_id: e.target.value })
     }
 
 
     const saveAssign = (e) => {
         e.preventDefault()
-        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', param: subjectField }).then((data)=> {
+        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', params: subjectField }).then((data)=> {
             showMessage("Saved class assignment successfully")
         })
     }
@@ -99,8 +99,8 @@ const TeacherForm = () => {
                     </IonItem>
                     <IonItem>
                     <IonLabel>Subject:</IonLabel>
-                    <IonSelect slot ="end" name = "subject_id" value = {subjectField.id} onIonChange={updateSubField} >
-                    <IonSelectOption key="0" value="0" > None </IonSelectOption>
+                    <IonSelect slot ="end" name = "subject_id" value = {subjectField.subject_id} onIonChange={updateSubField} >
+                    <IonSelectOption key="0" value= "0" > None </IonSelectOption>
                     {sub.map((subject, index) => {
                         return(
                             <IonSelectOption key={index} value ={subject.id.toString()}>
@@ -113,6 +113,9 @@ const TeacherForm = () => {
                 </IonList>
                 <IonItem><IonButton type="submit">Save</IonButton></IonItem>
                 </form>
+                <IonItem routerLink={ `/shelters/${shelter_id}/projects/${project_id}/view-teachers` } routerDirection="none">
+                    <IonButton>Back</IonButton>
+                </IonItem> 
             </IonContent>
         </IonPage>
     );
