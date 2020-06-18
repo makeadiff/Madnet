@@ -24,28 +24,21 @@ const TeacherForm = () => {
                 batchSearch(center_id:${shelter_id}, project_id:${project_id}){
                     id batch_name
                 }
-                }`}); 
-            
-            const levels_info = await callApi({graphql:`{
                 levels(center_id:${shelter_id}, project_id:${project_id}){
                     id level_name                               
-                }    
-                }`}); //1                                                
-
-            // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"});  // 2 (Diff results for 1 and 2. Why?)
-
-            const teacher_name = await callApi({url: "/users/" + user_id});
-            const subject_data = await callApi({graphql:`{
+                }
+                user(id: ${user_id}) {
+                    name
+                }
                 subjects {
                   id name
                 }
               }`});
 
-            setBatches(data)
-            setLevels(levels_info)
-            setTeacher(teacher_name)
-            setSub(subject_data)
-
+            setBatches(data.batchSearch)
+            setLevels(data.levels)
+            setTeacher(data.user)
+            setSub(data.subjects)
         }
         fetchData()
 
@@ -58,7 +51,6 @@ const TeacherForm = () => {
     const updateSubField = (e) => {
         setSubjectField( {subject_id: e.target.value })
     }
-
 
     const saveAssign = (e) => {
         e.preventDefault()
@@ -111,10 +103,10 @@ const TeacherForm = () => {
                     </IonSelect>
                     </IonItem>
                 </IonList>
-                <IonItem><IonButton type="submit">Save</IonButton></IonItem>
+                <IonItem><IonButton type="submit">Save Assignment</IonButton></IonItem>
                 </form>
                 <IonItem routerLink={ `/shelters/${shelter_id}/projects/${project_id}/view-teachers` } routerDirection="none">
-                    <IonButton>Back</IonButton>
+                    <IonButton color="light">&lt; Back</IonButton>
                 </IonItem> 
             </IonContent>
         </IonPage>
