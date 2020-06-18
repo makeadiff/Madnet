@@ -1,24 +1,20 @@
 import { IonPage,IonList,IonItem,IonLabel,IonContent, IonButton } from '@ionic/react'
 import React from 'react'
 
-import { authContext } from "../../contexts/AuthContext"
 import { dataContext } from "../../contexts/DataContext"
-import { appContext } from "../../contexts/AppContext"
 import { useParams } from "react-router-dom"
 import Title from "../../components/Title"
 
 const TeacherView = () => {
-    const {user} = React.useContext(authContext)
     const {shelter_id, project_id} = useParams()
-    const {callApi} = React.useContext(dataContext)
-    const [ cityId ] = React.useState(user.city_id)
-    const [batches , setBatches] = React.useState([])
-    // const [project, setProject] = React.useState("")
-    const [ location, setLocation ] = React.useState("")
+    const { callApi } = React.useContext(dataContext)
+    const [ batches , setBatches ] = React.useState([])
+    const [ shelter, setShelter ] = React.useState("")
 
     React.useEffect(() => {
         async function fetchMapping() {
-             const data=  await callApi({graphql: `{
+            const data =  await callApi({graphql: `{
+                center(id: ${shelter_id}) { name }
                 batchSearch(center_id:${shelter_id}, project_id: ${project_id}) {
                     id batch_name 
                     allocations {
@@ -34,26 +30,19 @@ const TeacherView = () => {
                       }
                     }
                 }
-              }`});
-            
-                const city_name = await callApi({url: "cities/" + cityId });
-                // const project_name = await callApi({graphql:`project(id:${project_id}){name}`});
-
-                
-                setBatches(data)
-                setLocation(city_name.name)
-                
-        } fetchMapping()}
-     ,[cityId, shelter_id, project_id])
-       
-
+              }`, cache: false});
+            setBatches(data.batchSearch)
+            setShelter(data.center.name)
+        } 
+        fetchMapping();
+    },[shelter_id, project_id])
 
     return(
         <IonPage>
-            <Title name={`Assigned Teachers for ${location}`} />
-                <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-teachers`} routerDirection = "none" >
+            <Title name={`Assigned Teachers at ${shelter}`} />
+            <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-teachers`} routerDirection = "none" >
                 <IonButton> Add New Teacher</IonButton>
-                </IonItem>
+            </IonItem>
             <IonContent>
                 <IonList>
                     {(batches.map((batch, index) => {
@@ -63,12 +52,12 @@ const TeacherView = () => {
                                     <IonList>
                                         {(batch.allocations.map((alloc, ind) =>{
                                             return(
-                                             <IonItem key = {ind}> 
-                                             <IonLabel>  
+                                            <IonItem key = {ind}> 
+                                              <IonLabel>  
                                                 <p>Teacher: {alloc.user.name}</p>
-                                                <p>Class:{alloc.level.level_name}</p>
-                                            </IonLabel>
-                                             </IonItem>  
+                                                <p>Class Section: {alloc.level.level_name}</p>
+                                              </IonLabel>
+                                            </IonItem>  
                                             );
                                         }))
                                         }
