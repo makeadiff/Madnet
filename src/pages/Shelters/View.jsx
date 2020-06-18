@@ -78,7 +78,7 @@ const ShelterView = () => {
                         <IonLabel>3 Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/assign-teachers` } routerDirection="none" >
+                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
                         <IonLabel>Assign Teachers</IonLabel>
                     </IonItem>
 
