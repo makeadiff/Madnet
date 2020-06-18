@@ -8,12 +8,8 @@ import './Event.css'
 import MapContainer from '../../components/Map'
 import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
-import UserDetail from '../../components/User';
-import StudentIndex from '../Students/Index';
 
 const EventCreate = () => {
-
-    const { hasPermission } = React.useContext(authContext);
     const { user } = React.useContext(authContext);
     const [ sendEmail, setSendEmail ] = React.useState(false)
     const [ usersList, setUsersList ] = React.useState({}) 
@@ -180,13 +176,13 @@ const EventCreate = () => {
     let inviteUser = e => {      
       let invitee_id = e.target.value;
       let invitees = selectedUsers;
-      if(e.target.checked){
-        if(invitees.indexOf(invitee_id) < 0){
+      if(e.target.checked) {
+        if(invitees.indexOf(invitee_id) < 0) {
           invitees.push(invitee_id);
         }
       }   
-      else{
-        if(invitees.indexOf(invitee_id) >= 0){
+      else {
+        if(invitees.indexOf(invitee_id) >= 0) {
           invitees.splice(invitees.indexOf(invitee_id),1);
         }
       }      
@@ -291,7 +287,7 @@ const EventCreate = () => {
         <Title name="Create Event"/>
 
         <IonContent className="dark">                        
-          <IonCard className="light eventForm">
+          <IonCard className="dark eventForm">{/* This line was <IonCard className="light eventForm"> */}
             <IonCardHeader>
               <IonCardTitle>
                 <IonIcon icon={calendar}></IonIcon>Enter Event Details
