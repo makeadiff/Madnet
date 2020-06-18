@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom"
 import Title from "../../components/Title"
 
 const TeacherView = () => {
-    const {shelter_id, project_id} = useParams()
+    const { shelter_id, project_id } = useParams()
     const { callApi } = React.useContext(dataContext)
     const [ batches , setBatches ] = React.useState([])
     const [ shelter, setShelter ] = React.useState("")
@@ -31,15 +31,20 @@ const TeacherView = () => {
                     }
                 }
               }`, cache: false});
-            setBatches(data.batchSearch)
+            
             setShelter(data.center.name)
+            setBatches(data.batchSearch)
+            
         } 
         fetchMapping();
     },[shelter_id, project_id])
 
+
+    const project_key = {1: "Ed Support", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare"}
+
     return(
         <IonPage>
-            <Title name={`Assigned Teachers at ${shelter}`} />
+            <Title name={`Assigned Teachers at ${shelter} (${project_key[project_id]})`} />
             <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-teachers`} routerDirection = "none" >
                 <IonButton> Add New Teacher</IonButton>
             </IonItem>
@@ -56,6 +61,7 @@ const TeacherView = () => {
                                               <IonLabel>  
                                                 <p>Teacher: {alloc.user.name}</p>
                                                 <p>Class Section: {alloc.level.level_name}</p>
+                                                {(alloc.subject != null) ? <p>Subject: {alloc.subject.name}</p> : [<p>Subject: None </p>]} 
                                               </IonLabel>
                                             </IonItem>  
                                             );

@@ -40,7 +40,7 @@ const TeacherForm = () => {
             setTeacher(data.user)
             setSub(data.subjects)
         }
-        fetchData()
+        fetchData();
 
     }, [shelter_id, project_id, user_id])
 
