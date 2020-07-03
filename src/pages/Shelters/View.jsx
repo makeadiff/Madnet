@@ -50,6 +50,8 @@ const ShelterView = () => {
 
     const project_key = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare"}
 
+    const TR_Wingman_project_id = 5
+
     return (
         <IonPage>
             <Title name={ `Manage ${shelter.name}` } />
@@ -66,14 +68,14 @@ const ShelterView = () => {
                 ): null}                
 
                 <IonList>
-                    {(projectId != "5") ?
+                    {(projectId != TR_Wingman_project_id) ?
                         [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
                             <IonChip className="roles"> { project.batches.length ?? "" } </IonChip>
                          <IonLabel className="shelterList"> Batch(es)</IonLabel>
                         </IonItem>] :[]
                     }
                     
-                    {(projectId != "5") ?
+                    {(projectId != TR_Wingman_project_id) ?
                         [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
                             <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
                             <IonLabel className="shelterList"> Level(s)</IonLabel>
@@ -90,13 +92,13 @@ const ShelterView = () => {
                         <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
 
-                    {(projectId != "5") ?
+                    {(projectId != TR_Wingman_project_id) ?
                         [<IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
                             <IonLabel>Assign Teachers</IonLabel>
                         </IonItem>] :[]
                     }
 
-                    {(projectId == "5") ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel>Assign Wingmen </IonLabel></IonItem> :[]} 
+                    {(projectId == TR_Wingman_project_id) ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel>Assign Wingmen </IonLabel></IonItem> :[]} 
 
                     {/*<IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
