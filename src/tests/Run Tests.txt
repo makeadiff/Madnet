@@ -1,0 +1,6 @@
+Run these commands...
+
+webdriver-manager start
+    If that's giving a access denied error, run 'sudo webdriver-manager update'
+cd /mnt/x/Data/www/MAD/apps/madnet/src/tests
+protractor conf.js

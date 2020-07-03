@@ -32,6 +32,9 @@ import StudentIndex from './pages/Students/Index'
 import StudentForm from './pages/Students/Form'
 import TeacherIndex from './pages/Allocations/Index'
 import TeacherForm from './pages/Allocations/Form'
+import TeacherView from './pages/Allocations/View'
+import WingmanForm from './pages/Wingman/Form'
+import WingmanView from './pages/Wingman/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -53,7 +56,7 @@ const Root = () => {
                         onDidDismiss={ () => setMessage(["", false]) }
                         message={ message[0] }
                         className={ (message[1]) ? message[1] + "-toast" : "" }
-                        duration={2000} />
+                        duration={3000} />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">
@@ -131,7 +134,6 @@ const Root = () => {
                             <Links />
                         </PrivateRoute>
 
-
                         <PrivateRoute path="/profile">
                             <Profile />
                         </PrivateRoute>
@@ -146,6 +148,10 @@ const Root = () => {
                             <Notes item_type="student" />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-teachers" exact={true}>
+                            <TeacherView />
+                        </PrivateRoute>
+
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers" exact={true} >
                             <TeacherIndex />
                         </PrivateRoute>
@@ -153,6 +159,17 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id" exact={true} >
                             <TeacherForm />
                         </PrivateRoute>
+
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-wingmen" exact={true}>
+                            <WingmanView />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact={true}>
+                            <WingmanForm />
+                        </PrivateRoute>
+
+
+                        
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>

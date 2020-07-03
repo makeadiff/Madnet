@@ -35,7 +35,7 @@ const ShelterIndex = () => {
                                 {shelters.map((shelter, index) => {
                                     return (
                                         <IonCol className="menu-item" key={index} size-xs="6" size-md="3">
-                                            <Link to={ "/shelters/" + shelter.id } routerDirection="none">
+                                            <Link to={ "/shelters/" + shelter.id }>
                                                 <div className="box">      
                                                     <IonIcon slot="start" icon={business} /><br />                                                                             
                                                     <IonText className="appTitle">{shelter.name}</IonText>

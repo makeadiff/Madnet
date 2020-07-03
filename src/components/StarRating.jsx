@@ -5,10 +5,14 @@ import './StarRating.css'
 
 const StarRating = ({ min,max,value,onChange,style }) => {
     if(value === undefined) value = 0
-    const [ rating, setRating ] = React.useState(value)
+    const [ rating, setRating ] = React.useState(0)
     let stars = []
     for(let i=0; i<max; i++) stars.push(i+1)
     
+    React.useEffect(() => { // This should ideally go in the React.useState(value) - but that's not working for some reason.
+        setRating(value)
+    }, [value])
+
     React.useEffect(() => {
         if(onChange !== undefined) { // :TODO: Make sure this is a function.
             onChange(rating)

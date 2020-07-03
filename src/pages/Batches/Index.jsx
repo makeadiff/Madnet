@@ -21,7 +21,7 @@ const BatchIndex = () => {
                 }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`})
+            }`, cache: false})
             setShelter(data.center)
             setBatches(data.batchSearch)
             setProject(data.project)

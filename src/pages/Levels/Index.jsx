@@ -19,7 +19,7 @@ const LevelIndex = () => {
                 levels(center_id: ${shelter_id}, project_id: ${project_id}) { id name level_name }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`})
+            }`, cache: false});
             setShelter(data.center)
             setProject(data.project)
             setLevels(data.levels)
