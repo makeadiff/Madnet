@@ -62,7 +62,14 @@ const WingmanView = () => {
                                             <IonItem key = {ind}> 
                                               <IonLabel>  
                                                 <p>Wingman: {alloc.user.name}</p>
-                                                <p>Student: {alloc.level.students.name}</p>
+                                                {(alloc.level.students.map((student, index)=> {
+                                                    return(
+                                                    
+                                                        <IonLabel key={index}>
+                                                            <p>Student:{student.name}</p>
+                                                        </IonLabel>
+                                                  );
+                                                     }))}
                                                 {(alloc.subject != null) ? <p>Subject: {alloc.subject.name}</p> : [<p>Subject: None </p>]} 
                                               </IonLabel>
                                             </IonItem>  
