@@ -12,7 +12,7 @@ import { appContext } from "../../contexts/AppContext"
 
 const BatchForm = () => {
     const { shelter_id, project_id, batch_id } = useParams()
-    const [batch, setBatch] = React.useState({batch_name: "", class_time: "16:00:00", day: 0, project_id: 1, center_id: shelter_id})
+    const [batch, setBatch] = React.useState({batch_name: "", class_time: "16:00:00", day: 0, project_id: project_id, center_id: shelter_id})
 	const [ disable, setDisable ] = React.useState( true )
     const { callApi } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
@@ -21,7 +21,7 @@ const BatchForm = () => {
         async function fetchBatch() {
             const batch_data = await callApi({graphql: `{ batch(id: ${batch_id}) { 
                 id batch_name day class_time project_id
-            }}`})
+            }}`, cache: false})
 
             setBatch(batch_data)
         }

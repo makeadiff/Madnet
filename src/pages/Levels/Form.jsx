@@ -9,8 +9,8 @@ import { dataContext } from "../../contexts/DataContext"
 import { appContext } from "../../contexts/AppContext"
 
 const LevelForm = () => {
-    const { shelter_id, level_id } = useParams()
-    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: 1, center_id: shelter_id})
+    const { shelter_id, level_id, project_id } = useParams()
+    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id})
 	const [ disable, setDisable ] = React.useState( true )
     const { callApi } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
@@ -19,7 +19,7 @@ const LevelForm = () => {
         async function fetchlevel() {
             const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
                 id name grade level_name project_id
-            }}`})
+            }}`, cache: false})
 
             setLevel(level_data)
         }

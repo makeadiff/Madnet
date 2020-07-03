@@ -25,7 +25,7 @@ const ShelterView = () => {
                         levels { id level_name }
                     }
                     students { id }
-                }}`});                
+                }}`, cache:false});                
 
             setShelter(shelter_data)
 
@@ -66,16 +66,19 @@ const ShelterView = () => {
                 ): null}                
 
                 <IonList>
-               
-                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
-                        <IonChip className="roles"> { project.batches.length ?? "" } </IonChip>
-                        <IonLabel className="shelterList"> Batch(es)</IonLabel>
-                    </IonItem>
-                
-                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
-                        <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
-                        <IonLabel className="shelterList"> Level(s)</IonLabel>
-                    </IonItem>
+                    {(projectId != "5") ?
+                        [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
+                            <IonChip className="roles"> { project.batches.length ?? "" } </IonChip>
+                         <IonLabel className="shelterList"> Batch(es)</IonLabel>
+                        </IonItem>] :[]
+                    }
+                    
+                    {(projectId != "5") ?
+                        [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
+                            <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
+                            <IonLabel className="shelterList"> Level(s)</IonLabel>
+                        </IonItem> ] :[]
+                    }
                 
                     <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
                         <IonChip className="roles">{ shelter.students ? shelter.students.length: 0 }</IonChip>
@@ -87,15 +90,19 @@ const ShelterView = () => {
                         <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
 
-                    <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
-                        <IonLabel>Assign Teachers</IonLabel>
-                    </IonItem>
+                    {(projectId != "5") ?
+                        [<IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
+                            <IonLabel>Assign Teachers</IonLabel>
+                        </IonItem>] :[]
+                    }
+
+                    {(projectId == "5") ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel>Assign Wingmen </IonLabel></IonItem> :[]} 
 
                     {/*<IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
                     </IonItem> */}
                 
-                </IonList>
+                    </IonList>
             </IonContent>
         </IonPage>
     );

@@ -33,6 +33,8 @@ import StudentForm from './pages/Students/Form'
 import TeacherIndex from './pages/Allocations/Index'
 import TeacherForm from './pages/Allocations/Form'
 import TeacherView from './pages/Allocations/View'
+import WingmanForm from './pages/Wingman/Form'
+import WingmanView from './pages/Wingman/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -157,6 +159,15 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id" exact={true} >
                             <TeacherForm />
                         </PrivateRoute>
+
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-wingmen" exact={true}>
+                            <WingmanView />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact={true}>
+                            <WingmanForm />
+                        </PrivateRoute>
+
 
                         
 
