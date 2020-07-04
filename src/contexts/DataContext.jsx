@@ -7,6 +7,7 @@ import api from "../utils/API"
 
 export const dataContext = React.createContext({
     unsetLocalCache: () => {},
+    getCacheByKey: () => {},
     callApi: () => {},
     getSurveyForm: () => {},
     setSurveyResponses: () => {},
@@ -24,11 +25,11 @@ export const dataContext = React.createContext({
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
+    const { unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
 
     return (
         <Provider 
-            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
+            value={{ unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
             {children}
         </Provider>
     );
@@ -67,6 +68,16 @@ const useHandler = () => {
             localStorage.removeItem(cache_key)
             return null
         }
+        return item.data
+    }
+
+    const getCacheByKey = (cache_key) => {
+        const itemStr = localStorage.getItem(cache_key)
+        if (!itemStr) {
+            return null
+        }
+
+        const item = JSON.parse(itemStr)
         return item.data
     }
 
@@ -251,7 +262,7 @@ const useHandler = () => {
     }
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, unsetLocalCache, getVerticals, getGroupTypes
+        callApi, getCacheByKey, unsetLocalCache, getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, getVerticals, getGroupTypes
     };
 };
 
