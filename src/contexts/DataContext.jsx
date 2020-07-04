@@ -19,17 +19,19 @@ export const dataContext = React.createContext({
     getEventTypes: () => {},
     deleteUser: () => {},
     getVerticals: () => {},
-    getGroupTypes: () => {}
+    getGroupTypes: () => {},
+    setCache: () => {},
+    cache: {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
+    const { cache,setCache, unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
 
     return (
         <Provider 
-            value={{ unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
+            value={{ cache, setCache, unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
             {children}
         </Provider>
     );
@@ -38,7 +40,14 @@ const DataProvider = ({ children }) => {
 const useHandler = () => {
     const { setLoading, showMessage } = React.useContext(appContext)
     const [error, setError] = React.useState([])
-    const { user } = React.useContext(authContext)    
+    const [cache, setCacheAll] = React.useState({}) // Right now, this is used only to see if the data should be refreshed. There is a duplication here - the data is stored in this variable and in localstorage. For now, this can continue. If memory issues come, rather than storing the entire data, just store a flag. 1/0.
+    const { user } = React.useContext(authContext)
+
+    const setCache = (key, value) => {
+        let new_cache = cache
+        new_cache[key] = value
+        setCacheAll(new_cache)
+    }
 
     const getCacheKey = (type, key_seed, cache_key) => {
         if(cache_key) return cache_key
@@ -87,10 +96,13 @@ const useHandler = () => {
             data: data,
             expiry: now.getTime() + (1000 * 60 * 60 * 24) // Expires in a day
         }
-        window.localStorage.setItem(getCacheKey(type, key_seed, cache_key), JSON.stringify(item))
+        const key = getCacheKey(type, key_seed, cache_key)
+        setCache(key, data)
+        window.localStorage.setItem(key, JSON.stringify(item))
     }
 
     const unsetLocalCache = (cache_key) => {
+        setCache(cache_key, null)
         localStorage.removeItem(cache_key)
     }
 
@@ -262,7 +274,8 @@ const useHandler = () => {
     }
 
     return {
-        callApi, getCacheByKey, unsetLocalCache, getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, getVerticals, getGroupTypes
+        callApi, getCacheByKey, unsetLocalCache, cache, setCache,
+        getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, getVerticals, getGroupTypes
     };
 };
 

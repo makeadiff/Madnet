@@ -9,18 +9,16 @@ export const appContext = React.createContext({
 	data: {},
     setData: () => {},
     notifications: [],
-    addNotification: () => {},
-    cache: {},
-    setCache: () => {}
+    addNotification: () => {}
 });
 
 const { Provider } = appContext;
 
 const AppProvider = ({ children }) => {
-    const { message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification,cache,setCache } = useGlobalHandler();
+    const { message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification } = useGlobalHandler();
 
     return (
-        <Provider value={{ message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification,cache,setCache }}>
+        <Provider value={{ message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification }}>
             {children}
         </Provider>
     );
@@ -31,11 +29,6 @@ const useGlobalHandler = () => {
     const [message, setMessage] = React.useState(["", false])
     const [data] = React.useState([])
     const [notifications, setNotifications] = React.useState([])
-    const [cache, setCacheAll] = React.useState({})
-
-    React.useEffect(() => {
-        console.log(cache)
-    }, [cache])
 
     const showMessage = (message, type) => {
         if(type === undefined) type = "info"
@@ -46,12 +39,6 @@ const useGlobalHandler = () => {
 
     const setData = (key, value) => {
         data[key] = value
-    }
-
-    const setCache = (key, value) => {
-        let new_cache = cache
-        new_cache[key] = value
-        setCacheAll(new_cache)
     }
 
     const addNotification = (new_notification) => {
@@ -67,9 +54,7 @@ const useGlobalHandler = () => {
         data,
         setData,
         notifications,
-        addNotification,
-        cache,
-        setCache
+        addNotification
     }
 }
 

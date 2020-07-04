@@ -4,14 +4,12 @@ import React from 'react'
 import { dataContext } from "../../contexts/DataContext"
 import { useParams } from "react-router-dom"
 import Title from "../../components/Title"
-import { appContext } from '../../contexts/AppContext'
 
 // :TODO: Have a delete assignment option.
 
 const WingmanView = () => {
     const { shelter_id, project_id } = useParams()
-    const { callApi } = React.useContext(dataContext)
-    const { cache, setCache } = React.useContext(appContext)
+    const { callApi, cache } = React.useContext(dataContext)
     const [ batches, setBatches ] = React.useState([])
 
     React.useEffect(() => {
@@ -38,7 +36,6 @@ const WingmanView = () => {
                 }
               }`, cache: true, cache_key: `wingman_view_${shelter_id}_${project_id}`});
 
-            setCache(`wingman_view_${shelter_id}_${project_id}`, data)
             setBatches(data.batchSearch)
         }
         
@@ -46,7 +43,7 @@ const WingmanView = () => {
         if(cache[`wingman_view_${shelter_id}_${project_id}`] === undefined || !cache[`wingman_view_${shelter_id}_${project_id}`]) {
             fetchMapping()
         }
-    },[shelter_id, project_id, cache[`wingman_view_${shelter_id}_${project_id}`]])
+    },[shelter_id, project_id, cache[`wingman_view_${shelter_id}_${project_id}`] ])
 
     return(
         <IonPage>

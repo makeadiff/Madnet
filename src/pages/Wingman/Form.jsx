@@ -9,8 +9,8 @@ import Title from "../../components/Title"
 
 const WingmanForm = () => {
     const { user } = React.useContext(authContext)
-    const { callApi, unsetLocalCache } = React.useContext(dataContext)
-    const { showMessage,setCache,cache } = React.useContext(appContext)
+    const { callApi, unsetLocalCache,setCache,cache } = React.useContext(dataContext)
+    const { showMessage } = React.useContext(appContext)
 
     const { shelter_id , project_id } = useParams()
     const [ batch_id , setBatchId ] = React.useState("")
@@ -69,15 +69,7 @@ const WingmanForm = () => {
         callApi({url:`/batches/${batch_id}/levels/${level_id}/teachers/${wingman_id.id}`, method: 'post', params: subjectField}).then((data)=>{
             showMessage("Saved Wingman Assignment Successfully")
             unsetLocalCache(`wingman_view_${shelter_id}_${project_id}`)
-            setCache(`wingman_view_${shelter_id}_${project_id}`, false)
         })    
-    }
-
-    const unsetCache= () => {
-        console.log("Cache Before", cache)
-        unsetLocalCache(`wingman_view_${shelter_id}_${project_id}`)
-        setCache(`wingman_view_${shelter_id}_${project_id}`, false)
-        console.log("Cache After", cache)
     }
 
     return(
@@ -129,9 +121,6 @@ const WingmanForm = () => {
                     </IonList>
                     <IonItem><IonButton type="submit">Save Assignment</IonButton></IonItem>
                 </form>
-                <IonItem>
-                    <IonButton onClick={ unsetCache } color="light">Unset Cache</IonButton>
-                </IonItem> 
                 <IonItem routerLink= {`/shelters/${shelter_id}/projects/${project_id}/view-wingmen`}  routerDirection="none">
                     <IonButton color="light">&lt; Back</IonButton>
                 </IonItem> 
