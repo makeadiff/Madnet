@@ -94,11 +94,11 @@ const ShelterView = () => {
 
                     {(projectId != TR_Wingman_project_id) ?
                         [<IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
-                            <IonLabel>Assign Teachers</IonLabel>
+                            <IonLabel className="shelterList">Assign Teachers</IonLabel>
                         </IonItem>] :[]
                     }
 
-                    {(projectId == TR_Wingman_project_id) ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel>Assign Wingmen </IonLabel></IonItem> :[]} 
+                    {(projectId == TR_Wingman_project_id) ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel className="shelterList">Assign Wingmen </IonLabel></IonItem> :[]} 
 
                     {/*<IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
