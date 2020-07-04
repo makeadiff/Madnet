@@ -1,4 +1,4 @@
-import { IonPage,IonList,IonItem,IonLabel,IonContent, IonGrid, IonRow, IonCol, IonCard, IonIcon, IonText} from '@ionic/react'
+import { IonPage,IonList,IonLabel,IonContent, IonGrid, IonRow, IonCol, IonCard, IonIcon, IonText} from '@ionic/react'
 import { Link } from 'react-router-dom'
 import { business } from 'ionicons/icons';
 import React from 'react'
@@ -19,9 +19,7 @@ const ShelterIndex = () => {
             setShelters(shelters_data)            
         }
         fetchShelterList()
-    }, [cityId])
-
-    
+    }, [cityId])   
 
     return (
         <IonPage>

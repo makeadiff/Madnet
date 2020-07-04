@@ -1,4 +1,4 @@
-import { apps, link, person, library, wallet, calendar, business, school, people, schoolSharp, businessSharp } from 'ionicons/icons';
+import { apps, link, person, wallet, calendar, business, school, people, schoolSharp, businessSharp } from 'ionicons/icons';
 
 import { SITE_URL } from './Constants';
 
