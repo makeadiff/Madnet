@@ -9,7 +9,7 @@ import Title from "../../components/Title"
 
 const TeacherForm = () => {
     const { shelter_id , project_id, user_id } = useParams()
-    const {callApi} = React.useContext(dataContext)
+    const { callApi, unsetLocalCache } = React.useContext(dataContext)
     const [teacher, setTeacher] = React.useState([])
     const [batches, setBatches] = React.useState([])
     const [levels, setLevels] = React.useState([])
@@ -56,6 +56,7 @@ const TeacherForm = () => {
         e.preventDefault()
         callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', params: subjectField }).then((data)=> {
             showMessage("Saved class assignment successfully")
+            unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
         })
     }
 

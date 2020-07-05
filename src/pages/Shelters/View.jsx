@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
-import './Shelters.css'
+import './Shelters.css';
+import { connect } from 'tls';
 
 const ShelterView = () => {
     const { shelter_id } = useParams()
@@ -45,8 +46,10 @@ const ShelterView = () => {
             }
         });
     }, [projectId])
+    
 
     const project_key = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare"}
+
     const TR_Wingman_project_id = 5
 
     return (
@@ -88,16 +91,6 @@ const ShelterView = () => {
                         <IonChip className="roles">3</IonChip>
                         <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
-
-<<<<<<< HEAD
-                    {(projectId != TR_Wingman_project_id) ?
-                        [<IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
-                            <IonLabel className="shelterList">Assign Teachers</IonLabel>
-                        </IonItem>] :[]
-                    }
-
-                    {(projectId == TR_Wingman_project_id) ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel className="shelterList">Assign Wingmen </IonLabel></IonItem> :[]} 
-=======
                     { (projectId != TR_Wingman_project_id) ?
                         <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" key="assign">
                             <IonLabel className="shelterList">Assign Teachers</IonLabel>
@@ -107,8 +100,6 @@ const ShelterView = () => {
                             <IonLabel className="shelterList">Assign Wingmen</IonLabel>
                         </IonItem>
                     } 
->>>>>>> upstream/develop
-
                     {/*<IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
                     </IonItem> */}
