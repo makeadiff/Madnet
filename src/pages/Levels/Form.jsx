@@ -12,7 +12,7 @@ const LevelForm = () => {
     const { shelter_id, level_id, project_id } = useParams()
     const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id})
 	const [ disable, setDisable ] = React.useState( true )
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, unsetLocalCache} = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
 
     React.useEffect(() => {
@@ -42,6 +42,8 @@ const LevelForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Level Updated Successfully", "success")
+                    unsetLocalCache( `level_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
         } else { // Create new batcch
@@ -49,6 +51,8 @@ const LevelForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Level Created Successfully", "success")
+                    unsetLocalCache( `level_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
         }

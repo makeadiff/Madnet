@@ -12,7 +12,7 @@ const ShelterView = () => {
     const [shelter, setShelter] = React.useState({name: "", projects:[], students: []})
     const [projectId, setProjectId] = React.useState(0)
     const [project, setProject] = React.useState({id:0, name:"", batches:[], levels: []})
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, cache } = React.useContext(dataContext)
 
     React.useEffect(() => {
         async function fetchShelter() {
@@ -25,7 +25,7 @@ const ShelterView = () => {
                         levels { id level_name }
                     }
                     students { id }
-                }}`, cache_key: `shelter_view_${shelter_id}`});                
+                }}`, cache:  true, cache_key: `shelter_view_${shelter_id}`});                
 
             setShelter(shelter_data)
 
@@ -35,8 +35,9 @@ const ShelterView = () => {
                 setProject(shelter_data.projects[0])
             }
         }
-        fetchShelter();
-    }, [shelter_id])
+        if(cache[`shelter_view_${shelter_id}`] === undefined || !cache[`shelter_view_${shelter_id}`]){
+        fetchShelter();}
+    }, [shelter_id, cache[`shelter_view_${shelter_id}`]] )
 
     React.useEffect(() => {
         shelter.projects.forEach(proj => {

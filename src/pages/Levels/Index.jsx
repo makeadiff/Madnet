@@ -7,7 +7,7 @@ import { dataContext } from "../../contexts/DataContext"
 import Title from "../../components/Title"
 
 const LevelIndex = () => {
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, cache } = React.useContext(dataContext)
     const [shelter, setShelter] = React.useState({name: ""})
     const [levels, setLevels] = React.useState([])
     const [project, setProject] = React.useState({id:0, name:""})
@@ -24,8 +24,9 @@ const LevelIndex = () => {
             setProject(data.project)
             setLevels(data.levels)
         }
-        fetchLevelList()
-    }, [shelter_id, project_id])
+        if(cache[`level_view_${shelter_id}`] === undefined || !cache[`level_view_${shelter_id}`]){
+        fetchLevelList()}
+    }, [shelter_id, project_id, cache[`level_view_${shelter_id}`]])
 
     return (
         <IonPage>
