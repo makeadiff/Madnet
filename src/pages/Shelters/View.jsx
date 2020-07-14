@@ -12,7 +12,7 @@ const ShelterView = () => {
     const [shelter, setShelter] = React.useState({name: "", projects:[], students: []})
     const [projectId, setProjectId] = React.useState(0)
     const [project, setProject] = React.useState({id:0, name:"", batches:[], levels: []})
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, cache } = React.useContext(dataContext)
 
     React.useEffect(() => {
         async function fetchShelter() {
@@ -25,7 +25,7 @@ const ShelterView = () => {
                         levels { id level_name }
                     }
                     students { id }
-                }}`, cache:false});                
+                }}`, cache:  true, cache_key: `shelter_view_${shelter_id}`});                
 
             setShelter(shelter_data)
 
@@ -35,8 +35,9 @@ const ShelterView = () => {
                 setProject(shelter_data.projects[0])
             }
         }
-        fetchShelter();
-    }, [shelter_id])
+        if(cache[`shelter_view_${shelter_id}`] === undefined || !cache[`shelter_view_${shelter_id}`]){
+        fetchShelter();}
+    }, [shelter_id, cache[`shelter_view_${shelter_id}`]] )
 
     React.useEffect(() => {
         shelter.projects.forEach(proj => {
@@ -69,37 +70,37 @@ const ShelterView = () => {
 
                 <IonList>
                     {(projectId != TR_Wingman_project_id) ?
-                        [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" >
+                        [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/batches` } routerDirection="none" key="batches">
                             <IonChip className="roles"> { project.batches.length ?? "" } </IonChip>
                          <IonLabel className="shelterList"> Batch(es)</IonLabel>
                         </IonItem>] :[]
                     }
                     
                     {(projectId != TR_Wingman_project_id) ?
-                        [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" >
+                        [<IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/levels` } routerDirection="none" key="levels">
                             <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
                             <IonLabel className="shelterList"> Level(s)</IonLabel>
                         </IonItem> ] :[]
                     }
                 
-                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none" >
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none"  key="students">
                         <IonChip className="roles">{ shelter.students ? shelter.students.length: 0 }</IonChip>
                         <IonLabel className="shelterList"> Students</IonLabel>
                     </IonItem>
 
-                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none" >
+                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none"  key="notes">
                         <IonChip className="roles">3</IonChip>
                         <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
-
-                    {(projectId != TR_Wingman_project_id) ?
-                        [<IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" >
-                            <IonLabel>Assign Teachers</IonLabel>
-                        </IonItem>] :[]
-                    }
-
-                    {(projectId == TR_Wingman_project_id) ? <IonItem routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none"><IonLabel>Assign Wingmen </IonLabel></IonItem> :[]} 
-
+                    { (projectId != TR_Wingman_project_id) ?
+                        <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-teachers` } routerDirection="none" key="assign">
+                            <IonLabel className="shelterList">Assign Teachers</IonLabel>
+                        </IonItem>
+                        : 
+                        <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${projectId}/view-wingmen` } routerDirection="none" key="assign">
+                            <IonLabel className="shelterList">Assign Wingmen</IonLabel>
+                        </IonItem>
+                    } 
                     {/*<IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
                     </IonItem> */}

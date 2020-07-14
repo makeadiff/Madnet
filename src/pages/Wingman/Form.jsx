@@ -9,19 +9,19 @@ import Title from "../../components/Title"
 
 const WingmanForm = () => {
     const { user } = React.useContext(authContext)
-    const {shelter_id , project_id } = useParams()
+    const { callApi, unsetLocalCache,setCache,cache } = React.useContext(dataContext)
+    const { showMessage } = React.useContext(appContext)
+
+    const { shelter_id , project_id } = useParams()
     const [ batch_id , setBatchId ] = React.useState("")
-    const [subjects, setSubjects] = React.useState([])
+    const [ subjects, setSubjects] = React.useState([])
     const [ wingmen , setWingmen ] = React.useState([])
-    const[ students, setStudents] = React.useState([])
-    const { callApi } = React.useContext(dataContext)
-    const [ leveldata ] = React.useState({grade:7, name:"D", center_id:shelter_id, project_id:project_id})
-    const [level_id, setLevelId ] = React.useState("")
+    const [ students, setStudents] = React.useState([])
+    const [ levelData ] = React.useState({grade:7, name:"D", center_id:shelter_id, project_id:project_id})
+    const [ level_id, setLevelId ] = React.useState("")
     const [ student_id, setStudentId ] = React.useState({student_ids: "0"})
     const [ wingman_id, setWingmanId ] = React.useState({id:"0"})
-    const [subjectField, setSubjectField] = React.useState({subject_id:"0"})
-    const {showMessage} = React.useContext(appContext)
-
+    const [ subjectField, setSubjectField] = React.useState({subject_id:"0"})
 
     React.useEffect(() => {
         async function fetchData(){
@@ -38,20 +38,19 @@ const WingmanForm = () => {
                 studentSearch(city_id:${user.city_id}) {
                     id name
                 }
-              }`});
-
+            }`});
 
             setBatchId(data.batchSearch[0].id.toString())
             setSubjects(data.subjects)
             setWingmen(data.userSearch)
             setStudents(data.studentSearch)
-            }
-            fetchData();
+        }
+        fetchData();
     }, [shelter_id, project_id, user.city_id])
 
     const updateStudent = (e) => {
         setStudentId({student_ids:e.target.value})
-        callApi({url: `/levels` , method: 'post', params: leveldata }).then((data)=> {
+        callApi({url: `/levels` , method: 'post', params: levelData }).then((data)=> {
             setLevelId(data.id)
         });
     }
@@ -69,11 +68,9 @@ const WingmanForm = () => {
         callApi({url: `/levels/${level_id}/students`, method: 'post', params: student_id}).then((data)=>{})
         callApi({url:`/batches/${batch_id}/levels/${level_id}/teachers/${wingman_id.id}`, method: 'post', params: subjectField}).then((data)=>{
             showMessage("Saved Wingman Assignment Successfully")
+            unsetLocalCache(`wingman_view_${shelter_id}_${project_id}`)
         })    
     }
-
- 
-
 
     return(
         <IonPage>

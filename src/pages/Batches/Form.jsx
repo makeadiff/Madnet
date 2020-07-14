@@ -14,7 +14,7 @@ const BatchForm = () => {
     const { shelter_id, project_id, batch_id } = useParams()
     const [batch, setBatch] = React.useState({batch_name: "", class_time: "16:00:00", day: 0, project_id: project_id, center_id: shelter_id})
 	const [ disable, setDisable ] = React.useState( true )
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, unsetLocalCache} = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
 
     React.useEffect(() => {
@@ -51,13 +51,17 @@ const BatchForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Batch Updated Successfully", "success")
+                    unsetLocalCache( `batch_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
-        } else { // Create new batcch
+        } else { // Create new batch
             callApi({url: `/batches`, method: "post", params: batch}).then((data) => {
                 if(data) {
                     setDisable( true )
                     showMessage("Batch Created Successfully", "success")
+                    unsetLocalCache( `batch_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
         }
