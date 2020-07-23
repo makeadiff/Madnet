@@ -9,7 +9,7 @@ import Title from "../../components/Title"
 
 const TeacherForm = () => {
     const { shelter_id , project_id, user_id } = useParams()
-    const {callApi} = React.useContext(dataContext)
+    const { callApi, unsetLocalCache } = React.useContext(dataContext)
     const [teacher, setTeacher] = React.useState([])
     const [batches, setBatches] = React.useState([])
     const [levels, setLevels] = React.useState([])
@@ -24,30 +24,23 @@ const TeacherForm = () => {
                 batchSearch(center_id:${shelter_id}, project_id:${project_id}){
                     id batch_name
                 }
-                }`}); 
-            
-            const levels_info = await callApi({graphql:`{
                 levels(center_id:${shelter_id}, project_id:${project_id}){
                     id level_name                               
-                }    
-                }`}); //1                                                
-
-            // const levelsinfo = await callApi({url: "/centers/" + shelter_id + "/levels"});  // 2 (Diff results for 1 and 2. Why?)
-
-            const teacher_name = await callApi({url: "/users/" + user_id});
-            const subject_data = await callApi({graphql:`{
+                }
+                user(id: ${user_id}) {
+                    name
+                }
                 subjects {
                   id name
                 }
               }`});
 
-            setBatches(data)
-            setLevels(levels_info)
-            setTeacher(teacher_name)
-            setSub(subject_data)
-
+            setBatches(data.batchSearch)
+            setLevels(data.levels)
+            setTeacher(data.user)
+            setSub(data.subjects)
         }
-        fetchData()
+        fetchData();
 
     }, [shelter_id, project_id, user_id])
 
@@ -56,14 +49,14 @@ const TeacherForm = () => {
     }
 
     const updateSubField = (e) => {
-        setSubjectField({ id: e.target.value })
+        setSubjectField( {subject_id: e.target.value })
     }
-
 
     const saveAssign = (e) => {
         e.preventDefault()
-        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', param: subjectField }).then((data)=> {
+        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', params: subjectField }).then((data)=> {
             showMessage("Saved class assignment successfully")
+            unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
         })
     }
 
@@ -99,8 +92,8 @@ const TeacherForm = () => {
                     </IonItem>
                     <IonItem>
                     <IonLabel>Subject:</IonLabel>
-                    <IonSelect slot ="end" name = "subject_id" value = {subjectField.id} onIonChange={updateSubField} >
-                    <IonSelectOption key="0" value="0" > None </IonSelectOption>
+                    <IonSelect slot ="end" name = "subject_id" value = {subjectField.subject_id} onIonChange={updateSubField} >
+                    <IonSelectOption key="0" value= "0" > None </IonSelectOption>
                     {sub.map((subject, index) => {
                         return(
                             <IonSelectOption key={index} value ={subject.id.toString()}>
@@ -111,8 +104,11 @@ const TeacherForm = () => {
                     </IonSelect>
                     </IonItem>
                 </IonList>
-                <IonItem><IonButton type="submit">Save</IonButton></IonItem>
+                <IonItem><IonButton type="submit">Save Assignment</IonButton></IonItem>
                 </form>
+                <IonItem routerLink={ `/shelters/${shelter_id}/projects/${project_id}/view-teachers` } routerDirection="none">
+                    <IonButton color="light">&lt; Back</IonButton>
+                </IonItem> 
             </IonContent>
         </IonPage>
     );

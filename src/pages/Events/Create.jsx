@@ -1,6 +1,7 @@
-import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, useIonViewDidEnter, IonList, IonCheckbox, IonListHeader, IonNote} from '@ionic/react';
-import { add, calendar, filter } from 'ionicons/icons'
+import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonListHeader} from '@ionic/react';
+import { calendar, pencil, close } from 'ionicons/icons'
 import React from 'react';
+import { useParams } from "react-router-dom"
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
 
 import Title from "../../components/Title"
@@ -8,14 +9,12 @@ import './Event.css'
 import MapContainer from '../../components/Map'
 import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
-import UserDetail from '../../components/User';
-import StudentIndex from '../Students/Index';
 
 const EventCreate = () => {
 
-    const { hasPermission } = React.useContext(authContext);
+    const { eventId } = useParams();    
     const { user } = React.useContext(authContext);
-    const [ sendEmail, setSendEmail ] = React.useState(false)
+    const [ sendEmail, setSendEmail ] = React.useState(true)
     const [ usersList, setUsersList ] = React.useState({}) 
     const { getEventTypes, getUsers, callApi, getVerticals, getGroupTypes} = React.useContext(dataContext)
     
@@ -36,7 +35,9 @@ const EventCreate = () => {
     const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({});
     
     const [ location, setLocation ] = React.useState({})
+    const [ disable, setDisable ] = React.useState(false);
     const [ shelters, setShelters ] = React.useState({})
+    const [ cities, setCities ] = React.useState({});
     const [ userGroups, setUserGroups ] = React.useState({})
     const [ eventData, setEventData ] = React.useState({
       name: '',
@@ -180,13 +181,13 @@ const EventCreate = () => {
     let inviteUser = e => {      
       let invitee_id = e.target.value;
       let invitees = selectedUsers;
-      if(e.target.checked){
-        if(invitees.indexOf(invitee_id) < 0){
+      if(e.target.checked) {
+        if(invitees.indexOf(invitee_id) < 0) {
           invitees.push(invitee_id);
         }
       }   
-      else{
-        if(invitees.indexOf(invitee_id) >= 0){
+      else {
+        if(invitees.indexOf(invitee_id) >= 0) {
           invitees.splice(invitees.indexOf(invitee_id),1);
         }
       }      
@@ -235,63 +236,100 @@ const EventCreate = () => {
       }
     }
 
-    React.useEffect(() => {
+    React.useEffect(() => {      
 
-      async function fetchEventTypes() {
+      (async function fetchEventTypes() {
         let eventTypesData = [];
 
         eventTypesData = await getEventTypes();        
         if(eventTypesData){
           setEventTypes(eventTypesData);
         }                
-      }
-      fetchEventTypes();
+      })();    
 
-      async function fetchGroupTypes() {
+      (async function fetchGroupTypes() {
         let groupTypesData = [];
 
         groupTypesData = await getGroupTypes();        
         if(groupTypesData){
           setGroupTypes(groupTypesData);
         }
-      }
-      fetchGroupTypes();
+      })();
 
-      async function fetchShelters() {
+      (async function fetchShelters() {
         let shelterData = [];
         shelterData = await callApi({url: "cities/" + user.city_id + "/centers" })
         if(shelterData){
           setShelters(shelterData)
         }
-      }
-      fetchShelters();
+      })();      
 
-      async function fetchUserGroups() {
+      (async function fetchUserGroups() {
         let userGroupData = [];
         userGroupData = await callApi({url: "groups"})
         if(userGroupData){
           setUserGroups(userGroupData) 
         }        
-      }
-      fetchUserGroups();
+      })();      
 
-      async function fetchVerticals(){
+      (async function fetchVerticals(){
         let verticalData = [];
         verticalData = await getVerticals();
         if(verticalData){
           setVerticals(verticalData)
         }
-      }      
-      fetchVerticals();
+      })();      
 
-    }, [user])
+      (async function getCities(){
+        let cityData;
+        cityData = await callApi({url: '/cities'});        
+        if(cityData){
+          setCities(cityData);
+        }
+      })();
+
+      if(eventId !== null){         
+        (async function getEventDetails(){
+          let eventData = await callApi({url: `/events/${eventId}`});
+          console.log(eventData);
+          if(eventData){
+            setEventData(eventData);            
+          }
+        })();
+
+        setDisable(true);
+
+        (async function getUsersInvited(){
+          let userData = await callApi({url: `/events/${eventId}/users`});
+          console.log(userData);
+          if(userData){
+            setUsersList(userData);
+          }
+        })()
+      }
+      else{
+        setDisable(false);
+      }
+      
+
+    }, [user, eventId])
 
     return (      
       <IonPage>
-        <Title name="Create Event"/>
+        { eventId? (
+          <>
+          <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ !disable? "hidden": null }>
+            <IonFabButton><IonIcon icon={pencil}/></IonFabButton>
+          </IonFab>
+          <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ disable? "hidden": null }>
+            <IonFabButton><IonIcon icon={close}/></IonFabButton>
+          </IonFab>
+          </>
+        ): null}
+        <Title name="Create Event"/>       
 
         <IonContent className="dark">                        
-          <IonCard className="light eventForm">
+          <IonCard className="light eventForm">{/* This line was <IonCard className="light eventForm"> */}
             <IonCardHeader>
               <IonCardTitle>
                 <IonIcon icon={calendar}></IonIcon>Enter Event Details
@@ -304,23 +342,23 @@ const EventCreate = () => {
                     <form onSubmit={createEvent}>
                       <IonItem>
                         <IonLabel position="stacked">Event Name</IonLabel>
-                        <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                        <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name" value={eventData.name} disabled={disable}></IonInput>
                       </IonItem>
                       <IonItem>
                         <IonLabel position="stacked">Event Description</IonLabel>
-                        <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?"></IonTextarea>
+                        <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?" value={eventData.description} disabled={disable}></IonTextarea>
                       </IonItem>
                       <IonItem>
                         <IonLabel position="stacked">Event Date</IonLabel>
-                        <IonInput name="starts_on" type="date" required onIonChange={updateField} placeholder="Enter Event Date"></IonInput>
+                        <IonInput name="starts_on" type="date" required onIonChange={updateField} placeholder="Enter Event Date" value={eventData.starts_on ? eventData.starts_on.split(' ')[0] : ''} disabled={disable}></IonInput>
                       </IonItem>
                       <IonItem>
                         <IonLabel position="stacked">Event Time</IonLabel>
-                        <IonInput name="time" type="time" required onIonChange={updateField} placeholder="Enter Event Name"></IonInput>
+                        <IonInput name="time" type="time" required onIonChange={updateField} placeholder="Enter Event Time" value={eventData.starts_on ? eventData.starts_on.split(' ')[1] : ''} disabled={disable}></IonInput>
                       </IonItem>
                       <IonItem>
                         <IonLabel position="stacked">Event Location</IonLabel>
-                        <IonInput name="place" type="text" onIonChange={updateField} placeholder="Enter Event Location Name"></IonInput>
+                        <IonInput name="place" type="text" onIonChange={updateField} placeholder="Enter Event Location Name" value={eventData.place} disabled={disable}></IonInput>
                       </IonItem>
                       <IonItem>
                         <IonCheckbox name="send_email" color="danger" onIonChange={e => setSendEmail(e.target.checked)}/> &nbsp;
@@ -334,6 +372,21 @@ const EventCreate = () => {
                             eventTypes.map((eventType,index) => {
                               return (
                                 <IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>
+                              )
+                            })
+                          }
+                        </IonSelect>
+                        ): null }
+                      </IonItem>
+                      <IonItem>
+                        <IonLabel position="stacked">Event City</IonLabel>
+                        { eventTypes.length ? (
+                        <IonSelect  placeholder="Select City" required interface="alert" name="event_type_id" value={user.city_id} onIonChange={updateField}>
+                          <IonSelectOption value='0'>National</IonSelectOption>
+                          {                                                                                                       
+                            cities.length && cities.map((city,index) => {
+                              return (
+                                <IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>
                               )
                             })
                           }
@@ -363,7 +416,7 @@ const EventCreate = () => {
               </IonGrid>                             
             </IonCardContent>
           </IonCard>              
-          { usersList ? (            
+          { usersList.length ? (            
             <IonCard className="dark">
               <IonCardHeader>
                 <IonCardTitle>
@@ -443,7 +496,7 @@ const EventCreate = () => {
                           <h3 className="no-padding">{user.email} | {user.phone}</h3>
                           <p>
                             {
-                              user.groups.map((group,index) => {
+                              user.groups && user.groups.map((group,index) => {
                                 return (
                                   <span key={index}>{group.name}{(index < user.groups.length - 1) ? ', ': null}</span>
                                 )

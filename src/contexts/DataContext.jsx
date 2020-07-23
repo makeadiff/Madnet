@@ -7,6 +7,7 @@ import api from "../utils/API"
 
 export const dataContext = React.createContext({
     unsetLocalCache: () => {},
+    getCacheByKey: () => {},
     callApi: () => {},
     getSurveyForm: () => {},
     setSurveyResponses: () => {},
@@ -18,17 +19,19 @@ export const dataContext = React.createContext({
     getEventTypes: () => {},
     deleteUser: () => {},
     getVerticals: () => {},
-    getGroupTypes: () => {}
+    getGroupTypes: () => {},
+    setCache: () => {},
+    cache: {}
 });
 
 const { Provider } = dataContext;
 
 const DataProvider = ({ children }) => {
-    const { unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
+    const { cache,setCache, unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes } = useHandler();
 
     return (
         <Provider 
-            value={{ unsetLocalCache, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
+            value={{ cache, setCache, unsetLocalCache, getCacheByKey, callApi,getSurveyForm,setSurveyResponses,getUsers,getAlerts,setDeviceToken,unsetDeviceToken,getEventTypes,updateUser, deleteUser, getVerticals, getGroupTypes}}>
             {children}
         </Provider>
     );
@@ -37,7 +40,14 @@ const DataProvider = ({ children }) => {
 const useHandler = () => {
     const { setLoading, showMessage } = React.useContext(appContext)
     const [error, setError] = React.useState([])
-    const { user } = React.useContext(authContext)    
+    const [cache, setCacheAll] = React.useState({}) // Right now, this is used only to see if the data should be refreshed. There is a duplication here - the data is stored in this variable and in localstorage. For now, this can continue. If memory issues come, rather than storing the entire data, just store a flag. 1/0.
+    const { user } = React.useContext(authContext)
+
+    const setCache = (key, value) => {
+        let new_cache = cache
+        new_cache[key] = value
+        setCacheAll(new_cache)
+    }
 
     const getCacheKey = (type, key_seed, cache_key) => {
         if(cache_key) return cache_key
@@ -70,16 +80,29 @@ const useHandler = () => {
         return item.data
     }
 
+    const getCacheByKey = (cache_key) => {
+        const itemStr = localStorage.getItem(cache_key)
+        if (!itemStr) {
+            return null
+        }
+
+        const item = JSON.parse(itemStr)
+        return item.data
+    }
+
     const setLocalCache = (type, key_seed, data, cache_key) => {
         const now = new Date()
         const item = {
             data: data,
             expiry: now.getTime() + (1000 * 60 * 60 * 24) // Expires in a day
         }
-        window.localStorage.setItem(getCacheKey(type, key_seed, cache_key), JSON.stringify(item))
+        const key = getCacheKey(type, key_seed, cache_key)
+        setCache(key, data)
+        window.localStorage.setItem(key, JSON.stringify(item))
     }
 
     const unsetLocalCache = (cache_key) => {
+        setCache(cache_key, null)
         localStorage.removeItem(cache_key)
     }
 
@@ -161,16 +184,14 @@ const useHandler = () => {
     }
 
     const getSurveyForm = async (survey_id) => {
-        setLoading(true)
-        const survey_response = await api.rest(`surveys/${survey_id}`)
+        const survey_response = await callApi({url: `surveys/${survey_id}`})
 
-        if (survey_response.surveys !== undefined) {
-            let survey = survey_response.surveys
-            const questions_response = await api.rest(`survey_templates/${survey.survey_template_id}/categorized_questions`)
+        if (survey_response !== undefined) {
+            let survey = survey_response
+            const questions_response = await callApi({url: `survey_templates/${survey.survey_template_id}/categorized_questions`})
 
-            if (questions_response.questions !== undefined) {
-                survey['questions'] = questions_response.questions
-                setLoading(false)
+            if (questions_response !== undefined) {
+                survey['questions'] = questions_response
                 return survey
             } else {
                 setError({
@@ -178,7 +199,6 @@ const useHandler = () => {
                     "message": "Survey Questions fetch call failed",
                     "endpoint": `survey_templates/${survey.survey_template_id}/categorized_questions`
                 })
-                setLoading(false)
                 return survey
             }
         } else {
@@ -188,7 +208,6 @@ const useHandler = () => {
                 "endpoint": `surveys/${survey_id}`
             })
         }
-        setLoading(false)
         return false
     }
 
@@ -255,7 +274,8 @@ const useHandler = () => {
     }
 
     return {
-        callApi,getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, unsetLocalCache, getVerticals, getGroupTypes
+        callApi, getCacheByKey, unsetLocalCache, cache, setCache,
+        getSurveyForm, setSurveyResponses, getUsers, updateUser, getAlerts, setDeviceToken, unsetDeviceToken, getEventTypes, deleteUser, getVerticals, getGroupTypes
     };
 };
 

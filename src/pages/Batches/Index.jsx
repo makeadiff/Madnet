@@ -7,7 +7,7 @@ import { dataContext } from "../../contexts/DataContext"
 import Title from "../../components/Title"
 
 const BatchIndex = () => {
-    const { callApi } = React.useContext(dataContext)
+    const { callApi , cache } = React.useContext(dataContext)
     const [shelter, setShelter] = React.useState({name: ""})
     const [batches, setBatches] = React.useState([])
     const [project, setProject] = React.useState({id:0, name:""})
@@ -21,13 +21,14 @@ const BatchIndex = () => {
                 }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`})
+            }`, cache: true, cache_key:`batch_view_${shelter_id}`})
             setShelter(data.center)
             setBatches(data.batchSearch)
             setProject(data.project)
         }
-        fetchBatchList()
-    }, [shelter_id, project_id])
+        if(cache[`batch_view_${shelter_id}`] === undefined || !cache[`batch_view_${shelter_id}`]){
+        fetchBatchList()}
+    }, [shelter_id, project_id, cache[`batch_view_${shelter_id}`]])
 
     return (
         <IonPage>
