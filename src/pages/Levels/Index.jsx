@@ -3,6 +3,7 @@ import { add } from 'ionicons/icons'
 import React from 'react'
 import { useParams } from "react-router-dom"
 
+import { PROJECT_IDS } from "../../utils/Constants"
 import { dataContext } from "../../contexts/DataContext"
 import Title from "../../components/Title"
 
@@ -30,9 +31,12 @@ const LevelIndex = () => {
 
     return (
         <IonPage>
-            <Title name={`Levels in ${shelter.name}(${project.name})`} />
+            {(project_id === PROJECT_IDS.AFTERCARE) ?
+                <Title name="SSGs" />
+                : <Title name={`Class Sections in ${shelter.name}(${project.name})`} />
+            }
       
-            <IonContent>
+            <IonContent className="dark">
                 <IonList>
                     {levels.map((level, index) => {
                         return (

@@ -34,7 +34,7 @@ const BatchIndex = () => {
         <IonPage>
             <Title name={`Batches in ${shelter.name}(${project.name})`} />
       
-            <IonContent>
+            <IonContent className="dark">
                 <IonList>
                     {batches.map((batch, index) => {
                         return (
