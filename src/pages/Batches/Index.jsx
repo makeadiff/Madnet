@@ -21,18 +21,18 @@ const BatchIndex = () => {
                 }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`, cache: true, cache_key:`batch_view_${shelter_id}`})
+            }`, cache: true, cache_key:`shelter_${shelter_id}_batch_index`})
             setShelter(data.center)
             setBatches(data.batchSearch)
             setProject(data.project)
         }
-        if(cache[`batch_view_${shelter_id}`] === undefined || !cache[`batch_view_${shelter_id}`]){
+        if(cache[`shelter_${shelter_id}_batch_index`] === undefined || !cache[`shelter_${shelter_id}_batch_index`]){
         fetchBatchList()}
-    }, [shelter_id, project_id, cache[`batch_view_${shelter_id}`]])
+    }, [shelter_id, project_id, cache[`shelter_${shelter_id}_batch_index`]])
 
     return (
         <IonPage>
-            <Title name={`Batches in ${shelter.name}(${project.name})`} />
+            <Title name={`Batches in ${shelter.name}(${project.name})`} back={`/shelters/${shelter_id}/projects/${project_id}`} />
       
             <IonContent className="dark">
                 <IonList>

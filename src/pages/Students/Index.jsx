@@ -38,7 +38,7 @@ const StudentIndex = () => {
 
     return (
         <IonPage>
-            <Title name={`Students ${location}`} />
+            <Title name={`Students ${location}`} {...(shelter_id ? {back:`/shelters/${shelter_id}`} : {}) } />
       
             <IonContent className="dark">
                 <IonList>

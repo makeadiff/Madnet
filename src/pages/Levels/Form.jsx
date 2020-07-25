@@ -50,7 +50,7 @@ const LevelForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Level Updated Successfully", "success")
-                    unsetLocalCache( `level_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_${shelter_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -59,7 +59,7 @@ const LevelForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Level Created Successfully", "success")
-                    unsetLocalCache( `level_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_${shelter_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
