@@ -20,15 +20,15 @@ const LevelIndex = () => {
                 levels(center_id: ${shelter_id}, project_id: ${project_id}) { id name level_name }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`, cache:  true, cache_key: `shelter_${shelter_id}_level_index`});
+            }`, cache:  true, cache_key: `shelter_${shelter_id}_project_${project_id}_level_index`});
             setShelter(data.center)
             setProject(data.project)
             setLevels(data.levels)
         }
-        if(cache[`shelter_${shelter_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_level_index`]){
+        if(cache[`shelter_${shelter_id}_project_${project_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_project_${project_id}_level_index`]){
             fetchLevelList()
         }
-    }, [shelter_id, project_id, cache[`shelter_${shelter_id}_level_index`]])
+    }, [shelter_id, project_id, cache[`shelter_${shelter_id}_project_${project_id}_level_index`]])
 
     return (
         <IonPage>
