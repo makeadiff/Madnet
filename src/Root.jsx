@@ -128,7 +128,7 @@ const Root = () => {
                         <PrivateRoute path="/events/create" exact={true}>
                             <EventCreate />
                         </PrivateRoute>
-                        <PrivateRoute path="/events/:eventId" exact={true}>
+                        <PrivateRoute path="/events/view/:eventId" exact={true}>
                             <EventCreate />
                         </PrivateRoute>
 

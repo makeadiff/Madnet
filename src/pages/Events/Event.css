@@ -69,10 +69,31 @@ ion-card.dark ion-checkbox{
     --border-color: #FFFFFF;
 }
 
+ion-card.light ion-label.label-stacked,
+ion-card.light ion-label,
+ion-card.light ion-input,
+ion-card.light ion-textarea,
+ion-card.light ion-select,
+ion-card.light ion-select .select-text{
+    --color: #000;
+    color:#000 !important;
+    --placeholder-color: #000; 
+}
+
 h3.no-padding{
     padding: 0;
 }
 
 ion-input.search{
     --background: var(--black)
+}
+
+ion-select.in-item{
+    max-width: 100%;
+}
+
+@media (max-width: 500px){
+    ion-card-content{
+        padding:0;
+    }
 }

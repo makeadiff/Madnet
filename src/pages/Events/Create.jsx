@@ -33,9 +33,9 @@ const EventCreate = () => {
       city_id: user.city_id
     });
     const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({});
-    
     const [ location, setLocation ] = React.useState({})
     const [ disable, setDisable ] = React.useState(false);
+    const [ attendance, setAttendance ] = React.useState(false);
     const [ shelters, setShelters ] = React.useState({})
     const [ cities, setCities ] = React.useState({});
     const [ userGroups, setUserGroups ] = React.useState({})
@@ -53,6 +53,13 @@ const EventCreate = () => {
     });
     const [ errorMessage, setErrorMessage ] = React.useState('');
 
+    const openEdit = () => {
+      setDisable(false);	  
+    }
+
+    const closeEdit = () => {
+      setDisable(true);
+    }
 
     const getUpdatedLocation = (location, address) => {
       let locationData = {
@@ -175,7 +182,18 @@ const EventCreate = () => {
       setEventData({
         ...eventData,
         [e.target.name]: e.target.value
-      })      
+      });
+
+      if(e.target.name == 'city_id'){
+        if(e.target.value != 0){
+          setUserFilterParameter({...userFilterParameter, city_id: e.target.value});
+        }
+        else{
+          let data = userFilterParameter;
+          delete data.city_id;
+          setUserFilterParameter({...data});
+        }
+      }
     }
 
     let inviteUser = e => {      
@@ -203,7 +221,9 @@ const EventCreate = () => {
       }
       else{
         setErrorMessage('');
+        console.log(userFilterParameter);
         let users = await getUsers(userFilterParameter);      
+        console.log(users);
         setUsersList(users);
       }      
     }
@@ -287,25 +307,23 @@ const EventCreate = () => {
           setCities(cityData);
         }
       })();
+      
+      if(eventId !== undefined && !isNaN(eventId)){         
+      
+        (async function getEventsGraphQL(){
+          let event = await callApi({graphql: `{event(id: ${eventId}){
+              id name description place city_id starts_on invitees{ id name phone email mad_email groups {id name}} event_type_id
+            }}`, cache: false});
 
-      if(eventId !== null){         
-        (async function getEventDetails(){
-          let eventData = await callApi({url: `/events/${eventId}`});
-          console.log(eventData);
-          if(eventData){
-            setEventData(eventData);            
+          if(event){            
+            setUsersList(event.invitees);
+            delete event.invitees;
+            setEventData({...event});
           }
+          
         })();
 
         setDisable(true);
-
-        (async function getUsersInvited(){
-          let userData = await callApi({url: `/events/${eventId}/users`});
-          console.log(userData);
-          if(userData){
-            setUsersList(userData);
-          }
-        })()
       }
       else{
         setDisable(false);
@@ -315,17 +333,7 @@ const EventCreate = () => {
     }, [user, eventId])
 
     return (      
-      <IonPage>
-        { eventId? (
-          <>
-          <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ !disable? "hidden": null }>
-            <IonFabButton><IonIcon icon={pencil}/></IonFabButton>
-          </IonFab>
-          <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ disable? "hidden": null }>
-            <IonFabButton><IonIcon icon={close}/></IonFabButton>
-          </IonFab>
-          </>
-        ): null}
+      <IonPage>        
         <Title name="Create Event"/>       
 
         <IonContent className="dark">                        
@@ -361,27 +369,24 @@ const EventCreate = () => {
                         <IonInput name="place" type="text" onIonChange={updateField} placeholder="Enter Event Location Name" value={eventData.place} disabled={disable}></IonInput>
                       </IonItem>
                       <IonItem>
-                        <IonCheckbox name="send_email" color="danger" onIonChange={e => setSendEmail(e.target.checked)}/> &nbsp;
-                        <IonLabel>Send Invitation by Email</IonLabel>                      
-                      </IonItem>                      
-                      <IonItem>
-                        <IonLabel position="stacked">Event Type</IonLabel>
-                        { eventTypes.length ? (
-                        <IonSelect  placeholder="Select Event Type" required interface="alert" name="event_type_id" value={eventData.event_type_id} onIonChange={updateField}>
-                          {                                                                                                       
-                            eventTypes.map((eventType,index) => {
-                              return (
-                                <IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>
-                              )
-                            })
-                          }
-                        </IonSelect>
-                        ): null }
+                        <IonCheckbox  mode="md" name="send_email" color="danger" onIonChange={e => setSendEmail(e.target.checked)}/> &nbsp;
+                        <IonLabel color="light">Send Invitation by Email</IonLabel>                      
+                      </IonItem>                   
+                      <IonItem>                        
+                        <IonLabel position="stacked">Event Type</IonLabel>                        
+                          <IonSelect disabled={disable} mode="md"  placeholder="Select Event Type" required interface="alert" name="event_type_id" value={eventData.event_type_id} onIonChange={updateField}>
+                            {                                                                                                       
+                              eventTypes.length && eventTypes.map((eventType,index) => {
+                                return (
+                                  <IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>
+                                )
+                              })
+                            }
+                          </IonSelect>                                               
                       </IonItem>
                       <IonItem>
-                        <IonLabel position="stacked">Event City</IonLabel>
-                        { eventTypes.length ? (
-                        <IonSelect  placeholder="Select City" required interface="alert" name="event_type_id" value={user.city_id} onIonChange={updateField}>
+                        <IonLabel position="stacked">Event City</IonLabel>                        
+                        <IonSelect disabled={disable} mode="md" placeholder="Select City" required interface="alert" name="city_id" value={eventData.city_id ? eventData.city_id: user.city_id} onIonChange={updateField}>
                           <IonSelectOption value='0'>National</IonSelectOption>
                           {                                                                                                       
                             cities.length && cities.map((city,index) => {
@@ -390,8 +395,7 @@ const EventCreate = () => {
                               )
                             })
                           }
-                        </IonSelect>
-                        ): null }
+                        </IonSelect>                        
                       </IonItem>
                       {errorMessage? (
                         <IonLabel color="danger">{errorMessage}</IonLabel>
@@ -421,56 +425,75 @@ const EventCreate = () => {
               <IonCardHeader>
                 <IonCardTitle>
                   Select Users to Invite to Event.
-                  <IonItem>
-                  {shelters.length? (
-                    <IonSelect placeholder="Select Shelter" interface="alert" name="shelter_id" value={selectedShelter} onIonChange={filterUser}>
-                      {
-                        shelters.map((shelter,index) => {
-                          return (
-                            <IonSelectOption key={index} value={shelter.id}>{shelter.name}</IonSelectOption>
-                          )
-                        })
-                      }
-                    </IonSelect>
-                  ):null}
-
-                  {verticals.length? (
-                    <IonSelect placeholder="Select Verical" interface="alert" name="vertical_id" value={selectedVertical} onIonChange={filterUser}>
-                      {
-                        verticals.map((vertical,index) => {
-                          return (
-                            <IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>
-                          )
-                        })
-                      }
-                    </IonSelect>
-                  ):null}
-
-                  {groupTypes.length? (
-                    <IonSelect placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUser} multiple>
-                      {
-                        groupTypes.map((groupType,index) => {
-                          return (
-                            <IonSelectOption key={index} value={groupType.type}>{groupType.type}</IonSelectOption>
-                          )
-                        })
-                      }
-                    </IonSelect>
-                  ):null}
-
-                  {userGroups.length? (
-                    <IonSelect placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
-                      {
-                        userGroups.map((group,index) => {
-                          return (
-                            <IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>
-                          )
-                        })
-                      }
-                    </IonSelect>
-                  ):null}
-                  <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filter(s)</IonButton>
-                </IonItem>
+                  {!disable? (
+                    <>
+                    <IonRow>
+                      <IonCol size-xs="12" size-md="3">
+                        <IonItem>
+                          {shelters.length? (
+                            <IonSelect mode="md" placeholder="Select Shelter" interface="alert" name="shelter_id" value={selectedShelter} onIonChange={filterUser}>
+                              {
+                                shelters.map((shelter,index) => {
+                                  return (
+                                    <IonSelectOption key={index} value={shelter.id}>{shelter.name}</IonSelectOption>
+                                  )
+                                })
+                              }
+                            </IonSelect>
+                          ):null}
+                        </IonItem>
+                      </IonCol>
+                      <IonCol size-xs="12" size-md="3">
+                        <IonItem>
+                          {verticals.length? (
+                            <IonSelect mode="md" placeholder="Select Verical" interface="alert" name="vertical_id" value={selectedVertical} onIonChange={filterUser}>
+                              {
+                                verticals.map((vertical,index) => {
+                                  return (
+                                    <IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>
+                                  )
+                                })
+                              }
+                            </IonSelect>
+                          ):null}
+                        </IonItem>
+                      </IonCol>
+                      <IonCol size-xs="12" size-md="3">
+                          <IonItem>                  
+                            {groupTypes.length? (
+                              <IonSelect mode="md" placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUser} multiple>
+                                {
+                                  groupTypes.map((groupType,index) => {
+                                    return (
+                                      <IonSelectOption key={index} value={groupType.type}>{groupType.type}</IonSelectOption>
+                                    )
+                                  })
+                                }
+                              </IonSelect>
+                            ):null}
+                          </IonItem>
+                      </IonCol>
+                      <IonCol size-xs="12" size-md="3">
+                        <IonItem>
+                          {userGroups.length? (
+                            <IonSelect mode="md" placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
+                              {
+                                userGroups.map((group,index) => {
+                                  return (
+                                    <IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>
+                                  )
+                                })
+                              }
+                            </IonSelect>
+                          ):null}
+                        </IonItem>
+                      </IonCol>
+                    </IonRow>                  
+                    <IonItem>
+                      <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filter(s)</IonButton>
+                    </IonItem>
+                    </>
+                  ): null }
                 </IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
@@ -488,9 +511,11 @@ const EventCreate = () => {
                   {usersList.map((user,index) => {
                     return(                      
                       <IonItem key={index}>
-                        <IonAvatar slot="start">  
-                          <IonCheckbox name="user_id" value={user.id} checked={checkAll} onIonChange={inviteUser}></IonCheckbox>                        
-                        </IonAvatar>
+                        {!disable? (
+                          <IonAvatar slot="start">                          
+                              <IonCheckbox name="user_id" value={user.id} checked={checkAll} onIonChange={inviteUser}></IonCheckbox>                                                                         
+                          </IonAvatar>
+                        ): null}
                         <IonLabel>
                           <h2>{user.name}</h2>
                           <h3 className="no-padding">{user.email} | {user.phone}</h3>
@@ -504,11 +529,19 @@ const EventCreate = () => {
                             }
                           </p>
                         </IonLabel>
+                        <IonAvatar slot="start">
+                          {attendance? (
+                            <IonCheckbox name="user_id" value={user.id} checked={checkAll}></IonCheckbox>                        
+                          ): null}
+                        </IonAvatar>                        
                       </IonItem>                                            
                     );
                   })}
                   </IonList>
-                  <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>   
+                  <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>
+                  {eventId && !disable? (
+                    <IonButton color="primary" size="default" onClick={setAttendance(true)}>Mark Attendance</IonButton>
+                  ): null} 
                   </>                   
                 ):(
                   <IonLabel>No Users in the selected filter.</IonLabel>
@@ -517,6 +550,18 @@ const EventCreate = () => {
             </IonCard>              
           ):null}
         </IonContent>
+        
+        { eventId? (
+          <>
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton onClick={openEdit}><IonIcon icon={pencil}/></IonFabButton>
+          </IonFab>
+          <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ disable ? "hidden": "" }>
+            <IonFabButton onClick={closeEdit}> <IonIcon icon={close}/></IonFabButton>
+          </IonFab>   
+          </>
+        ):null }     
+        
       </IonPage>      
     );
 };

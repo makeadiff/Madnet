@@ -222,10 +222,16 @@ const useHandler = () => {
 
     const getUsers = async (params) => {
         let query_parts = []
-        for(let param in params) {
-            query_parts.push(`${param}=${params[param]}`)
+        console.log(params.length);
+        if(params.length === 0 || params.length === undefined){
+            return await callApi({url: 'users'});
         }
-        return await callApi({url:`users?${query_parts.join("&")}`})
+        else{
+            for(let param in params) {
+                query_parts.push(`${param}=${params[param]}`)
+            }
+            return await callApi({url:`users?${query_parts.join("&")}`})
+        }
     }
 
     const updateUser = async (user_id, params) => {                        

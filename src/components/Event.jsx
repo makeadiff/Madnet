@@ -19,7 +19,7 @@ const EventDetail = ({event, index, segment}) => {
         
     </IonPopover> */}
     <IonCard class="light list" key={index}>
-      <Link to={`/events/${event.id}`}>
+      <Link to={`/events/view/${event.id}`}>
         <IonCardHeader className="noPadding">
           <IonCardTitle>          
               <p>
