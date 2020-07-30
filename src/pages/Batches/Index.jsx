@@ -26,8 +26,9 @@ const BatchIndex = () => {
             setBatches(data.batchSearch)
             setProject(data.project)
         }
-        if(cache[`shelter_${shelter_id}_batch_index`] === undefined || !cache[`shelter_${shelter_id}_batch_index`]){
-        fetchBatchList()}
+        if(cache[`shelter_${shelter_id}_batch_index`] === undefined || !cache[`shelter_${shelter_id}_batch_index`]) {
+            fetchBatchList()
+        }
     }, [shelter_id, project_id, cache[`shelter_${shelter_id}_batch_index`]])
 
     return (
