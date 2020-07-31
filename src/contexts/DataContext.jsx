@@ -75,8 +75,11 @@ const useHandler = () => {
         if (now.getTime() > item.expiry) {
             // If the item is expired, delete the item from storage and return null
             localStorage.removeItem(cache_key)
+            setCache(cache_key, null)
             return null
         }
+
+        setCache(cache_key, item.data)
         return item.data
     }
 
@@ -87,6 +90,7 @@ const useHandler = () => {
         }
 
         const item = JSON.parse(itemStr)
+        setCache(cache_key, item.data)
         return item.data
     }
 

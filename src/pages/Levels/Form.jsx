@@ -3,6 +3,7 @@ import { IonPage, IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButto
 import { pencil, close } from 'ionicons/icons'
 import React from 'react'
 import { useParams } from "react-router-dom"
+import { PROJECT_IDS } from "../../utils/Constants"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
@@ -15,6 +16,8 @@ const LevelForm = () => {
     const { callApi, unsetLocalCache} = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
 
+    let level_label = "Class Section"
+
     React.useEffect(() => {
         async function fetchlevel() {
             const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
@@ -26,7 +29,12 @@ const LevelForm = () => {
         if(level_id !== "0") fetchlevel()
         else {
             setDisable(false)
-            setLevel({ ...level, level_name: "New Level"})
+            if(project_id == PROJECT_IDS.AFTERCARE) {
+                level_label = "SSG"
+                setLevel({ ...level, level_name: "New SSG", grade: 13})
+            } else {
+                setLevel({ ...level, level_name: "New Class Section"})
+            }
         }
     }, [level_id])
 
@@ -42,7 +50,7 @@ const LevelForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Level Updated Successfully", "success")
-                    unsetLocalCache( `level_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -51,7 +59,7 @@ const LevelForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Level Created Successfully", "success")
-                    unsetLocalCache( `level_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -63,11 +71,13 @@ const LevelForm = () => {
 
     return (
         <IonPage>
-            <Title name={ `Level: ${level.level_name}` } />
+            <Title name={ `${level_label}: ${level.level_name}` } />
 
-            <IonContent>
+            <IonContent class="dark">
                 <IonList>
                     <form onSubmit={ savelevel }>
+
+                    {(project_id === PROJECT_IDS.AFTERCARE) ? 
                     <IonItem>
                         <IonLabel>Class</IonLabel>
                         <IonSelect name="grade" value={ level.grade } onIonChange={ updateField } disabled={disable}>
@@ -77,8 +87,8 @@ const LevelForm = () => {
                                 )
                             })}
                         </IonSelect>
-                    </IonItem>
-
+                    </IonItem> : null }
+                    
                     <IonItem>
                         <IonLabel>Section</IonLabel>
                         <IonSelect name="name" value={ level.name } onIonChange={ updateField } disabled={disable}>

@@ -51,7 +51,7 @@ const BatchForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Batch Updated Successfully", "success")
-                    unsetLocalCache( `batch_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_batch_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -60,7 +60,7 @@ const BatchForm = () => {
                 if(data) {
                     setDisable( true )
                     showMessage("Batch Created Successfully", "success")
-                    unsetLocalCache( `batch_view_${shelter_id}`)
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_batch_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })

@@ -95,6 +95,9 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:item_id/notes" exact={true} >
                             <Notes item_type="center" />
                         </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:param_project_id" exact={true} >
+                            <ShelterView />
+                        </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id" exact={true} >
                             <ShelterView />
                         </PrivateRoute>
