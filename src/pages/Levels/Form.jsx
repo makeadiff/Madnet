@@ -11,24 +11,26 @@ import { appContext } from "../../contexts/AppContext"
 
 const LevelForm = () => {
     const { shelter_id, level_id, project_id } = useParams()
-    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id})
+    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id, students: []})
     const [ disable, setDisable ] = React.useState( true )
     const { callApi, unsetLocalCache} = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
-    const [labels, setLabels]  = React.useState({level: "Class Section"})
+    const [labels, setLabels]  = React.useState({level: "Class Section", student: "Student"})
 
     React.useEffect(() => {
         async function fetchlevel() {
             const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
                 id name grade level_name project_id
-            }}`, cache: false})
+                students {
+                    id name
+                }
+            }}`, cache: true, cache_key: `level_${level_id}`})
 
-            console.log(level_data)
             setLevel(level_data)
         }
 
         if(project_id == PROJECT_IDS.AFTERCARE) {
-            setLabels({level: "SSG"})
+            setLabels({level: "SSG", student:"Youth"})
         }
 
         if(level_id !== "0") fetchlevel()
@@ -57,8 +59,8 @@ const LevelForm = () => {
             callApi({url: `/levels/${level_id}`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
-                    showMessage("Level Updated Successfully", "success")
-                    unsetLocalCache( `shelter_${shelter_id}_level_index`)
+                    showMessage(labels.level + " Updated Successfully", "success")
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -66,8 +68,8 @@ const LevelForm = () => {
             callApi({url: `/levels`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
-                    showMessage("Level Created Successfully", "success")
-                    unsetLocalCache( `shelter_${shelter_id}_level_index`)
+                    showMessage(labels.level + " Created Successfully", "success")
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -109,6 +111,21 @@ const LevelForm = () => {
                         </IonItem>
                         { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
                     </form>
+
+                    <IonItem class="title"><IonLabel>{labels.student}s</IonLabel></IonItem>
+                    { (level.students.map((student, index) => {
+                        return ( 
+                            <IonItem key={index} className="striped">
+                                <IonLabel>{student.name}</IonLabel>
+                            </IonItem>
+                        )
+                    })) }
+
+                    { disable ? null :
+                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
+                            Add/Remove {labels.student}s from this {labels.level}
+                        </IonButton></IonItem>
+                    }
                 </IonList>
 
                 { disable ?

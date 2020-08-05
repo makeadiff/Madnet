@@ -64,58 +64,58 @@ const EventRSVP = () => {
             <IonContent className="dark">
                 <IonGrid>
                     <IonRow>
-                    { event.starts_on ? 
-                        (<IonCol size-xs="3" size-md="1">
-                            <div className="date-number">{ moment(event.starts_on).format("D") }</div>
-                            <div className="month-name">{ moment(event.starts_on).format("MMM") }</div>
-                        </IonCol>) : null }
+                        { event.starts_on ? 
+                            (<IonCol size-xs="3" size-md="1">
+                                <div className="date-number">{ moment(event.starts_on).format("D") }</div>
+                                <div className="month-name">{ moment(event.starts_on).format("MMM") }</div>
+                            </IonCol>) : null }
                         <IonCol size-xs="9" size-md="11">
                             <div className="event-name">{ event.name }</div>
                             <div className="event-type">{ event.event_type }</div>
                         </IonCol>
                     </IonRow>
-                        <IonCol size-md="6">
-                            <IonCard className="light">
-                                <IonCardHeader>
-                                    <IonCardTitle>
+                    <IonCol size-md="6">
+                        <IonCard className="light">
+                            <IonCardHeader>
+                                <IonCardTitle>
                                         RSVP for {event.name}
-                                    </IonCardTitle>
-                                </IonCardHeader>
-                                <IonCardContent>
-                                    <IonRow className="actions">
-                                        <IonCol className={`ion-text-center going ${rsvp === 'going' ? 'selected' : null }`}
-                                            onClick={e => saveRsvp('going')} size-xs="4" size-md="2" size-lg="1">
-                                            <IonIcon icon={ checkmarkOutline } /><br />
-                                            <IonLabel>I'm Going</IonLabel>
-                                        </IonCol>
-                                        <IonCol className={`ion-text-center cant_go ${rsvp === 'cant_go' ? 'selected' : null }`}
-                                            onClick={e => { saveRsvp('cant_go') }} size-xs="4" size-md="2" size-lg="1">
-                                            <IonIcon icon={ closeOutline } /><br />
-                                            <IonLabel>I can't go</IonLabel>
-                                        </IonCol>
-                                        <IonCol className={`ion-text-center maybe ${rsvp === 'maybe' ? 'selected' : null }`}
-                                            onClick={e => saveRsvp('maybe')} size-xs="4" size-md="2" size-lg="1">
-                                            <IonIcon icon={ helpOutline } /><br />
-                                            <IonLabel>Not Sure</IonLabel>
-                                        </IonCol>
-                                    </IonRow>
+                                </IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                <IonRow className="actions">
+                                    <IonCol className={`ion-text-center going ${rsvp === 'going' ? 'selected' : null }`}
+                                        onClick={e => saveRsvp('going')} size-xs="4" size-md="2" size-lg="1">
+                                        <IonIcon icon={ checkmarkOutline } /><br />
+                                        <IonLabel>I'm Going</IonLabel>
+                                    </IonCol>
+                                    <IonCol className={`ion-text-center cant_go ${rsvp === 'cant_go' ? 'selected' : null }`}
+                                        onClick={e => { saveRsvp('cant_go') }} size-xs="4" size-md="2" size-lg="1">
+                                        <IonIcon icon={ closeOutline } /><br />
+                                        <IonLabel>I can't go</IonLabel>
+                                    </IonCol>
+                                    <IonCol className={`ion-text-center maybe ${rsvp === 'maybe' ? 'selected' : null }`}
+                                        onClick={e => saveRsvp('maybe')} size-xs="4" size-md="2" size-lg="1">
+                                        <IonIcon icon={ helpOutline } /><br />
+                                        <IonLabel>Not Sure</IonLabel>
+                                    </IonCol>
+                                </IonRow>
+                                <IonRow>
+                                    <IonCol offset-xs="1" offset-md="0">
+                                        <IonIcon icon={ timeOutline } className="icon-medium" />
+                                        <IonLabel> { moment(event.starts_on).format("MMM Do, hh:mm A") }</IonLabel>
+                                    </IonCol>
+                                </IonRow>
+                                { event.place? (
                                     <IonRow>
-                                        <IonCol offset-xs="1" offset-md="0">
-                                            <IonIcon icon={ timeOutline } className="icon-medium" />
-                                            <IonLabel> { moment(event.starts_on).format("MMM Do, hh:mm A") }</IonLabel>
+                                        <IonCol offset-xs="1" offset-md="0" className="ion-align-self-center">
+                                            <IonIcon icon={ locationOutline } className="icon-medium" />
+                                            <IonLabel> { event.place }</IonLabel>
                                         </IonCol>
                                     </IonRow>
-                                    { event.place? (
-                                        <IonRow>
-                                            <IonCol offset-xs="1" offset-md="0" className="ion-align-self-center">
-                                                <IonIcon icon={ locationOutline } className="icon-medium" />
-                                                <IonLabel> { event.place }</IonLabel>
-                                            </IonCol>
-                                        </IonRow>
-                                    ): null }
-                                </IonCardContent>
-                            </IonCard>
-                        </IonCol>                                        
+                                ): null }
+                            </IonCardContent>
+                        </IonCard>
+                    </IonCol>                                        
                     <IonRow>
                         <IonCol offset-xs="1" offset-md="0">
                             <p>{ event.description }</p>

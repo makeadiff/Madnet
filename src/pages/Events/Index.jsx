@@ -19,11 +19,11 @@ const EventIndex = () => {
             <IonContent className="dark">
                 {/* This is working code  */}
                 {/* { hasPermission('event_add') ? ( */}
-                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                        <IonFabButton routerLink="/events/create">
-                            <IonIcon icon={add} />
-                        </IonFabButton>
-                    </IonFab> 
+                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                    <IonFabButton routerLink="/events/create">
+                        <IonIcon icon={add} />
+                    </IonFabButton>
+                </IonFab> 
                 {/* ) : null }  */}
 
                 <IonSegment value={segment} onIonChange={e => setSegment(e.detail.value)}>
