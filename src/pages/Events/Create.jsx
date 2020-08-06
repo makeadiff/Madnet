@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
 
 import Title from "../../components/Title"
+import Paginator from "../../components/Paginator"
 import './Event.css'
 import MapContainer from '../../components/Map'
 import { authContext } from "../../contexts/AuthContext";
@@ -15,7 +16,9 @@ const EventCreate = () => {
     const { eventId } = useParams();    
     const { user } = React.useContext(authContext);
     const [ sendEmail, setSendEmail ] = React.useState(true)
-    const [ usersList, setUsersList ] = React.useState({}) 
+    const [ usersList, setUsersList ] = React.useState({})
+
+    const [ userSelectable, setUserSelectable ] = React.useState(false);
     const { getEventTypes, getUsers, callApi, getVerticals, getGroupTypes} = React.useContext(dataContext)
     
     const [ eventTypes, setEventTypes ] = React.useState({})
@@ -39,14 +42,27 @@ const EventCreate = () => {
     const [ shelters, setShelters ] = React.useState({})
     const [ cities, setCities ] = React.useState({});
     const [ userGroups, setUserGroups ] = React.useState({})
+    // const [ eventData, setEventData ] = React.useState({
+    //   name: '',
+    //   description: '',
+    //   starts_on: '',
+    //   time: '',
+    //   place: '',
+    //   city_id: user.city_id,
+    //   event_type_id: 0,      
+    //   created_by_user_id: user.id,
+    //   latitude: 0,
+    //   longitude: 0,   
+    // });
+
     const [ eventData, setEventData ] = React.useState({
-      name: '',
-      description: '',
-      starts_on: '',
-      time: '',
-      place: '',
+      name: 'Test Event',
+      description: 'Test Desc',
+      starts_on: '2020-08-10 10:10',
+      time: '10:10',
+      place: 'Test',
       city_id: user.city_id,
-      event_type_id: 0,      
+      event_type_id: 2,      
       created_by_user_id: user.id,
       latitude: 0,
       longitude: 0,   
@@ -77,7 +93,7 @@ const EventCreate = () => {
       setLocation(locationData);
       setEventData({...eventData, latitude: locationData.lat, longitude: locationData.lng})
     }
-
+    
     const filterUser = async (e) => {
       let filter_name = e.target.name;
       let filterParameters = userFilterParameter;
@@ -116,12 +132,11 @@ const EventCreate = () => {
         if(filter_name=== 'group_types' || filter_name === 'vertical_id'){
           let userGroupData = [];
           let apiUrl = `groups/?`;
-          console.log(userGroupFilterParameter);
+          
           Object.keys(userGroupFilterParameter).map((key,index)=> {
             apiUrl += key+'='+userGroupFilterParameter[key]+'&'
           });
-
-          console.log(apiUrl);
+         
           userGroupData = await callApi({url: apiUrl})          
 
           if(userGroupData){
@@ -133,12 +148,11 @@ const EventCreate = () => {
             setSelectedGroups([]);
           }
         }
-
-        console.log(filterParameters);
+        
         setUserFilterParameter(filterParameters);
 
         let users = await getUsers(userFilterParameter);
-        setUsersList(users);
+        setUsersList(users);        
       }
     }
 
@@ -220,12 +234,20 @@ const EventCreate = () => {
         setErrorMessage('Select Event Type');        
       }
       else{
-        setErrorMessage('');
+        setErrorMessage(null);
         console.log(userFilterParameter);
         let users = await getUsers(userFilterParameter);      
         console.log(users);
-        setUsersList(users);
+        setUsersList(users);        
+        setUserSelectable(true);
       }      
+    }
+
+    let moveToPage = async (toPage) => {
+      setUserFilterParameter({...userFilterParameter,page: toPage});
+      let users = await getUsers(userFilterParameter);
+      setUsersList(users);
+      setUserSelectable(true);
     }
 
     let submitForm = async () => {
@@ -319,6 +341,7 @@ const EventCreate = () => {
             setUsersList(event.invitees);
             delete event.invitees;
             setEventData({...event});
+            setUserSelectable(true);
           }
           
         })();
@@ -420,7 +443,7 @@ const EventCreate = () => {
               </IonGrid>                             
             </IonCardContent>
           </IonCard>              
-          { usersList.length ? (            
+          { userSelectable ? (            
             <IonCard className="dark">
               <IonCardHeader>
                 <IonCardTitle>
@@ -497,18 +520,18 @@ const EventCreate = () => {
                 </IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
-                {usersList.length? (                               
+                {usersList.total? (                               
                   <>
                   <IonList>
                     <IonListHeader>
                       <IonItem>
                       <IonCheckbox name="check_all" onIonChange={toggleCheckAll} />&nbsp;
-                      <IonLabel>Select All Users [{usersList.length}]</IonLabel>
+                      <IonLabel>Select All Users [{usersList.total ? usersList.total : usersList.data.length}]</IonLabel>
                       </IonItem>                                         
                       {/* <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput> */}                                            
                     </IonListHeader>
                     <IonButton size="default" onClick={submitForm}>Invite Users</IonButton>
-                  {usersList.map((user,index) => {
+                  {usersList.data.map((user,index) => {
                     return(                      
                       <IonItem key={index}>
                         {!disable? (
@@ -529,15 +552,16 @@ const EventCreate = () => {
                             }
                           </p>
                         </IonLabel>
-                        <IonAvatar slot="start">
-                          {attendance? (
-                            <IonCheckbox name="user_id" value={user.id} checked={checkAll}></IonCheckbox>                        
-                          ): null}
-                        </IonAvatar>                        
+                      {attendance? (
+                        <IonAvatar slot="start">                          
+                            <IonCheckbox name="user_id" value={user.id} checked={checkAll}></IonCheckbox>                                                  
+                        </IonAvatar>
+                      ): null}
                       </IonItem>                                            
                     );
                   })}
                   </IonList>
+                  <Paginator data={usersList} pageHandler={moveToPage} />
                   <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>
                   {eventId && !disable? (
                     <IonButton color="primary" size="default" onClick={setAttendance(true)}>Mark Attendance</IonButton>

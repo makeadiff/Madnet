@@ -3,6 +3,7 @@ import { add } from 'ionicons/icons'
 import React from 'react'
 import { useParams } from "react-router-dom"
 
+import { PROJECT_IDS } from "../../utils/Constants"
 import { dataContext } from "../../contexts/DataContext"
 import Title from "../../components/Title"
 
@@ -19,24 +20,28 @@ const LevelIndex = () => {
                 levels(center_id: ${shelter_id}, project_id: ${project_id}) { id name level_name }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`, cache: false});
+            }`, cache:  true, cache_key: `shelter_${shelter_id}_level_index`});
             setShelter(data.center)
             setProject(data.project)
             setLevels(data.levels)
         }
-        if(cache[`level_view_${shelter_id}`] === undefined || !cache[`level_view_${shelter_id}`]){
-        fetchLevelList()}
-    }, [shelter_id, project_id, cache[`level_view_${shelter_id}`]])
+        if(cache[`shelter_${shelter_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_level_index`]){
+            fetchLevelList()
+        }
+    }, [shelter_id, project_id, cache[`shelter_${shelter_id}_level_index`]])
 
     return (
         <IonPage>
-            <Title name={`Levels in ${shelter.name}(${project.name})`} />
+            {(project_id == PROJECT_IDS.AFTERCARE) ?
+                <Title name="SSGs" back={`/shelters/${shelter_id}/projects/${project_id}`} />
+                : <Title name={`Class Sections in ${shelter.name}(${project.name})`} back={`/shelters/${shelter_id}/projects/${project_id}`} />
+            }
       
-            <IonContent>
+            <IonContent className="dark">
                 <IonList>
                     {levels.map((level, index) => {
                         return (
-                            <IonItem key={index} routerLink={ `/shelters/${shelter.id}/projects/${project_id}/levels/${level.id}` } routerDirection="none" >
+                            <IonItem key={index} routerLink={ `/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}` } routerDirection="none" >
                                 <IonLabel>{level.level_name}</IonLabel>
                             </IonItem>
                         )
@@ -44,7 +49,7 @@ const LevelIndex = () => {
                 </IonList>
 
                 <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton routerLink={ `/shelters/${shelter.id}/projects/${project_id}/levels/0` }><IonIcon icon={ add }/></IonFabButton>
+                    <IonFabButton routerLink={ `/shelters/${shelter_id}/projects/${project_id}/levels/0` }><IonIcon icon={ add }/></IonFabButton>
                 </IonFab>
             </IonContent>
         </IonPage>

@@ -75,8 +75,11 @@ const useHandler = () => {
         if (now.getTime() > item.expiry) {
             // If the item is expired, delete the item from storage and return null
             localStorage.removeItem(cache_key)
+            setCache(cache_key, null)
             return null
         }
+
+        setCache(cache_key, item.data)
         return item.data
     }
 
@@ -87,6 +90,7 @@ const useHandler = () => {
         }
 
         const item = JSON.parse(itemStr)
+        setCache(cache_key, item.data)
         return item.data
     }
 
@@ -146,7 +150,7 @@ const useHandler = () => {
         setLoading(true)        
         try {            
             if(args.type === "rest") {                
-                call_response = await api.rest(args.url, args.method, args.params)                
+                call_response = await api.rest(args.url, args.method, args.params)                          
             } else if(args.type === "graphql") {
                 call_response = await api.graphql(args.graphql, args.graphql_type)
             } else console.log("Dev Error: Unsupported type given in callApi({args.type})")
@@ -222,15 +226,16 @@ const useHandler = () => {
 
     const getUsers = async (params) => {
         let query_parts = []
-        console.log(params.length);
-        if(params.length === 0 || params.length === undefined){
-            return await callApi({url: 'users'});
+
+        if(!params){
+            console.log('here');
+            return await callApi({url: '/users_paginated'});
         }
         else{
             for(let param in params) {
                 query_parts.push(`${param}=${params[param]}`)
-            }
-            return await callApi({url:`users?${query_parts.join("&")}`})
+            }            
+            return await callApi({url:`/users_paginated?${query_parts.join("&")}`})
         }
     }
 
