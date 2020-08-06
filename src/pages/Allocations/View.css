@@ -1,0 +1,5 @@
+.batch-area {
+    border-bottom: 2px solid var(--ion-title-background-color);
+    margin-bottom: 10px;
+    width:100%;
+}

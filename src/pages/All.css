@@ -1,5 +1,5 @@
 ion-toolbar.md {
-  --background: #242537;
+  --background: var(--ion-title-background-color);
 }
 
 ion-content.dark{
@@ -9,5 +9,5 @@ ion-list ion-item.striped:nth-child(even), ion-list.striped ion-item:nth-child(e
   --background: var(--ion-background-color-alt);
 }
 ion-item.title {
-  --background: #242537;
+  --background: var(--ion-title-background-color);
 }

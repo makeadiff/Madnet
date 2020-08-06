@@ -22,22 +22,22 @@ const TeacherIndex= () => {
             // const user_data = await callApi({url:"cities/" + cityId + "/teachers"})  // 2 (Diff values. Why?)
             const city_name = await callApi({url: "cities/" + cityId });
                
-            if(user_data)
-                { 
+            if(user_data) { 
                 setTeachers(user_data)
                 setLocation(city_name.name)
-                }
-            else 
+            }
+            else {
                 showMessage("No teachers in city")
+            }
         }
-    fetchTeacherList()}
-    ,[ cityId])
+        fetchTeacherList()
+    }, [ cityId ])
 
 
     return (
         <IonPage>
-            <Title name={`Teachers in ${location}`} />
-                <IonContent>
+            <Title name={`Teachers in ${location}`} back={ `/shelters/${shelter_id}/projects/${project_id}/view-teachers` } />
+            <IonContent className="dark">
                 <IonList>
                     {(teachers.map((teacher, index) => {
                         return (
