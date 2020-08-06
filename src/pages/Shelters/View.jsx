@@ -40,6 +40,8 @@ const ShelterView = () => {
 
         if(project_id == PROJECT_IDS.AFTERCARE) {
             setLabels({student: "Youth", level: "SSG(s)"})
+        } else {
+            setLabels({student: "Students", level: "Class Section(s)"})
         }
 
         // Some unknown cache related issue was messing with back button functonality - hence the lot of OR cases.
@@ -60,13 +62,13 @@ const ShelterView = () => {
 
     return (
         <IonPage>
-            <Title name={ `Manage ${shelter.name}` } back={`/shelters`} />
+            <Title name={ `Manage ${shelter.name}` } back={ `/shelters` } />
 
             <IonContent className="dark">
                 { (shelter.projects.length > 1) ? (
                     <IonSegment value={ project_id } onIonChange={e => setProjectId(e.detail.value)}>
-                        { shelter.projects.map(( proj, index) => {
-                            return (<IonSegmentButton value={ proj.id } key={index}>
+                        { shelter.projects.map((proj, index) => {
+                            return (<IonSegmentButton value={ proj.id } key={ index }>
                                 <IonLabel>{ PROJECT_KEYS[proj.id] }</IonLabel>
                             </IonSegmentButton>)
                         })}

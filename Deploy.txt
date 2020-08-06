@@ -1,5 +1,5 @@
 Build using the command...
-ionic serve
+npm run build
 
 Command to deploy the build folder to testing.makeadiff.in/madnet...
 rsync -avze ssh "/mnt/x/Data/www/MAD/apps/madnet/build/" makeadiff@makeadiff.in:"/home/makeadiff/domains/testing.makeadiff.in/public_html/madnet/"
