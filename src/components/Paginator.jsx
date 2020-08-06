@@ -1,10 +1,11 @@
-import React, { useLayoutEffect } from 'react';
-import { IonItem, IonButton, IonIcon, IonLabel } from '@ionic/react';
+import React from 'react';
+import { IonItem, IonButton, IonIcon } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, caretBackOutline, caretForwardOutline} from 'ionicons/icons'
 
+import "./Paginator.css"
+
 const Paginator = ({data, pageHandler}) => {
-  const [ currentPage, setCurrentPage ] = React.useState();  
-  
+    
   let callPage = async (e) => {
     let url = e.target.value;
     if(url !== null){      
@@ -15,8 +16,8 @@ const Paginator = ({data, pageHandler}) => {
 
   return (
     <>
-    <h3 className="ion-text-center" position="stacked">{data.from} - {(data.from + 49) > data.total ? data.total : (data.from + 49)} of {data.total}</h3>
-    <IonItem className="ion-text-center">      
+    <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {(data.from + 49) > data.total ? data.total : (data.from + 49)} of {data.total}</h3>
+    <IonItem text-center className="ion-text-center pageinateItem">      
       <IonButton shape="round" title="First" color="dark" onClick={callPage} value={data.first_page_url} disabled={data.from > 1 ? false: true } >
         <IonIcon icon={caretBackOutline}></IonIcon>
       </IonButton>

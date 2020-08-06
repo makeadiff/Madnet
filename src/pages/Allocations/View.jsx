@@ -43,28 +43,29 @@ const TeacherView = () => {
             
         } 
         if(cache[`teacher_view_${shelter_id}_${project_id}`] === undefined || !cache[`teacher_view_${shelter_id}_${project_id}`]){
-        fetchMapping()
-    }
+            fetchMapping()
+        }
     },[shelter_id, project_id, cache[`teacher_view_${shelter_id}_${project_id}`]])
 
 
     const deleteMapping = (x) => {
         callApi({url:`/batches/${batch_id[x]}/levels/${level_id[x]}/teachers/${teacher_id[x]}`, method: 'delete'}).then((data)=>{
-           showMessage("Deleted")
-           unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
+            showMessage("Deleted")
+            unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
         })
-   }
+    }
 
 
     const project_key = {1: "Ed Support", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare"}
 
     return(
         <IonPage>
-            <Title name={`Assigned Teachers at ${shelter} (${project_key[project_id]})`} />
-            <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-teachers`} routerDirection = "none" >
-                <IonButton> Add New Teacher</IonButton>
-            </IonItem>
-            <IonContent>
+            <Title name={`Assigned Teachers at ${shelter} (${project_key[project_id]})`} back={ `/shelters/${shelter_id}/projects/${project_id}` }  />
+            <IonContent className="dark">
+                <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-teachers`} routerDirection = "none" >
+                    <IonButton> Add New Teacher</IonButton>
+                </IonItem>
+
                 <IonList>
                     {(batches.map((batch, index) => {
                         return( 
@@ -76,18 +77,18 @@ const TeacherView = () => {
                                             teacher_id[ind] = alloc.user.id
                                             level_id[ind] = alloc.level.id
                                             return(
-                                            <IonItem key = {ind}> 
-                                              <IonLabel>  
-                                                <p>Teacher: {alloc.user.name}</p>
-                                                <p>Class Section: {alloc.level.level_name}</p>
-                                                {(alloc.subject != null) ? <p>Subject: {alloc.subject.name}</p> : [<p>Subject: None </p>]} 
-                                              </IonLabel>
-                                              <IonButton slot = "end" onClick = {()=>deleteMapping(ind)}> Delete </IonButton>
-                                            </IonItem>  
+                                                <IonItem key = {ind}> 
+                                                    <IonLabel>  
+                                                        <p>Teacher: {alloc.user.name}</p>
+                                                        <p>Class Section: {alloc.level.level_name}</p>
+                                                        {(alloc.subject != null) ? <p>Subject: {alloc.subject.name}</p> : [<p>Subject: None </p>]} 
+                                                    </IonLabel>
+                                                    <IonButton slot = "end" onClick = {()=>deleteMapping(ind)}> Delete </IonButton>
+                                                </IonItem>  
                                             );
                                         }))
                                         }
-                                        </IonList>
+                                    </IonList>
                                 </IonLabel> 
                             </IonItem>
                         );

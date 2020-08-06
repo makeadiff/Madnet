@@ -1,4 +1,4 @@
-import { IonPage,IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButton } from '@ionic/react'
+import { IonPage,IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButton,IonChip } from '@ionic/react'
 import { add } from 'ionicons/icons'
 import React from 'react'
 import { useParams } from "react-router-dom"
@@ -17,18 +17,23 @@ const LevelIndex = () => {
     React.useEffect(() => {
         async function fetchLevelList() {
             const data = await callApi({graphql: `{
-                levels(center_id: ${shelter_id}, project_id: ${project_id}) { id name level_name }
+                levels(center_id: ${shelter_id}, project_id: ${project_id}) { 
+                    id name level_name 
+                    students {
+                        id
+                    }
+                }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
-            }`, cache:  true, cache_key: `shelter_${shelter_id}_level_index`});
+            }`, cache:  true, cache_key: `shelter_${shelter_id}_project_${project_id}_level_index`});
             setShelter(data.center)
             setProject(data.project)
             setLevels(data.levels)
         }
-        if(cache[`shelter_${shelter_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_level_index`]){
+        if(cache[`shelter_${shelter_id}_project_${project_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_project_${project_id}_level_index`]){
             fetchLevelList()
         }
-    }, [shelter_id, project_id, cache[`shelter_${shelter_id}_level_index`]])
+    }, [shelter_id, project_id, cache[`shelter_${shelter_id}_project_${project_id}_level_index`]])
 
     return (
         <IonPage>
@@ -43,6 +48,7 @@ const LevelIndex = () => {
                         return (
                             <IonItem key={index} routerLink={ `/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}` } routerDirection="none" >
                                 <IonLabel>{level.level_name}</IonLabel>
+                                <IonChip className="roles">{ level.students ? level.students.length: 0 } Student(s)</IonChip>
                             </IonItem>
                         )
                     })}

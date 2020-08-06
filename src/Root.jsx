@@ -16,7 +16,7 @@ import BatchForm from './pages/Batches/Form'
 import BatchIndex from './pages/Batches/Index'
 import LevelForm from './pages/Levels/Form'
 import LevelIndex from './pages/Levels/Index'
-
+import LevelAddStudent from './pages/Levels/AddStudent'
 import EventIndex from './pages/Events/Index'
 import EventCreate from './pages/Events/Create'
 import EventRSVP from './pages/Events/RSVP'
@@ -85,6 +85,9 @@ const Root = () => {
                         </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact={true} >
                             <BatchIndex />
+                        </PrivateRoute>
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id/add-student">
+                            <LevelAddStudent />
                         </PrivateRoute>
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id">
                             <LevelForm />

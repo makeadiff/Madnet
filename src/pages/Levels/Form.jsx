@@ -1,5 +1,5 @@
 import { IonPage, IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButton,
-            IonSelect,IonSelectOption, IonButton } from '@ionic/react'
+    IonSelect,IonSelectOption, IonButton } from '@ionic/react'
 import { pencil, close } from 'ionicons/icons'
 import React from 'react'
 import { useParams } from "react-router-dom"
@@ -11,26 +11,32 @@ import { appContext } from "../../contexts/AppContext"
 
 const LevelForm = () => {
     const { shelter_id, level_id, project_id } = useParams()
-    const [ level, setLevel ] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id})
-	const [ disable, setDisable ] = React.useState( true )
-    const { callApi, unsetLocalCache } = React.useContext(dataContext)
+    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id, students: []})
+    const [ disable, setDisable ] = React.useState( true )
+    const { callApi, unsetLocalCache} = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
-
-    let level_label = "Class Section"
+    const [labels, setLabels]  = React.useState({level: "Class Section", student: "Student"})
 
     React.useEffect(() => {
         async function fetchlevel() {
             const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
                 id name grade level_name project_id
-            }}`, cache: false})
+                students {
+                    id name
+                }
+            }}`, cache: true, cache_key: `level_${level_id}`})
 
             setLevel(level_data)
         }
+
+        if(project_id == PROJECT_IDS.AFTERCARE) {
+            setLabels({level: "SSG", student:"Youth"})
+        }
+
         if(level_id !== "0") fetchlevel()
         else {
             setDisable(false)
             if(project_id == PROJECT_IDS.AFTERCARE) {
-                level_label = "SSG"
                 setLevel({ ...level, level_name: "New SSG", grade: 13})
             } else {
                 setLevel({ ...level, level_name: "New Class Section"})
@@ -45,21 +51,25 @@ const LevelForm = () => {
     const savelevel = (e) => {
         e.preventDefault()
 
+        if(project_id == PROJECT_IDS.AFTERCARE) {
+            level.grade = 13
+        }
+
         if(level_id !== "0") { // Edit
             callApi({url: `/levels/${level_id}`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
-                    showMessage("Level Updated Successfully", "success")
-                    unsetLocalCache( `shelter_${shelter_id}_level_index`)
+                    showMessage(labels.level + " Updated Successfully", "success")
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
-        } else { // Create new batcch
+        } else { // Create new batch
             callApi({url: `/levels`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
-                    showMessage("Level Created Successfully", "success")
-                    unsetLocalCache( `shelter_${shelter_id}_level_index`)
+                    showMessage(labels.level + " Created Successfully", "success")
+                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
@@ -71,36 +81,51 @@ const LevelForm = () => {
 
     return (
         <IonPage>
-            <Title name={ `${level_label}: ${level.level_name}` } />
+            <Title name={ `${labels.level}: ${level.level_name}` } back={`/shelters/${shelter_id}/projects/${project_id}/levels`} />
 
             <IonContent class="dark">
                 <IonList>
                     <form onSubmit={ savelevel }>
 
-                    {(project_id === PROJECT_IDS.AFTERCARE) ? 
-                    <IonItem>
-                        <IonLabel>Class</IonLabel>
-                        <IonSelect name="grade" value={ level.grade } onIonChange={ updateField } disabled={disable}>
-                            { all_grades.map((grade, index) => {
-                                return (
-                                    <IonSelectOption key={ index } value={ grade }>{ (grade === "13" ? "Aftercare" : grade) }</IonSelectOption>
-                                )
-                            })}
-                        </IonSelect>
-                    </IonItem> : null }
+                        {(project_id != PROJECT_IDS.AFTERCARE) ? 
+                            <IonItem>
+                                <IonLabel>Class</IonLabel>
+                                <IonSelect name="grade" value={ level.grade } onIonChange={ updateField } disabled={disable}>
+                                    { all_grades.map((grade, index) => {
+                                        return (
+                                            <IonSelectOption key={ index } value={ grade }>{ (grade === "13" ? "Aftercare" : grade) }</IonSelectOption>
+                                        )
+                                    })}
+                                </IonSelect>
+                            </IonItem> : null }
                     
-                    <IonItem>
-                        <IonLabel>Section</IonLabel>
-                        <IonSelect name="name" value={ level.name } onIonChange={ updateField } disabled={disable}>
-                            { grade_names.map((name, index) => {
-                                return (
-                                    <IonSelectOption key={ index } value={ name }>{ name }</IonSelectOption>
-                                )
-                            })}
-                        </IonSelect>
-                    </IonItem>
-                    { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
+                        <IonItem>
+                            <IonLabel>Section</IonLabel>
+                            <IonSelect name="name" value={ level.name } onIonChange={ updateField } disabled={disable}>
+                                { grade_names.map((name, index) => {
+                                    return (
+                                        <IonSelectOption key={ index } value={ name }>{ name }</IonSelectOption>
+                                    )
+                                })}
+                            </IonSelect>
+                        </IonItem>
+                        { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
                     </form>
+
+                    <IonItem class="title"><IonLabel>{labels.student}s</IonLabel></IonItem>
+                    { (level.students.map((student, index) => {
+                        return ( 
+                            <IonItem key={index} className="striped">
+                                <IonLabel>{student.name}</IonLabel>
+                            </IonItem>
+                        )
+                    })) }
+
+                    { disable ? null :
+                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
+                            Add/Remove {labels.student}s from this {labels.level}
+                        </IonButton></IonItem>
+                    }
                 </IonList>
 
                 { disable ?

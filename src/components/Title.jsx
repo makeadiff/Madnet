@@ -27,13 +27,13 @@ const Title = ({ name, back }) => {
 
                     { (back) ? 
                         (back === "history") ? 
-                        <IonButton onClick={() => history.goBack()} >
-                            <IonIcon icon={ chevronBack } size="large" />
-                        </IonButton>
-                        : <IonButton routerLink={back} >
-                            <IonIcon icon={ chevronBack } size="large" />
-                        </IonButton>
-                    : null}
+                            <IonButton onClick={() => history.goBack()} >
+                                <IonIcon icon={ chevronBack } size="large" />
+                            </IonButton>
+                            : <IonButton routerLink={back} >
+                                <IonIcon icon={ chevronBack } size="large" />
+                            </IonButton>
+                        : null}
                 </IonButtons>
 
                 <IonTitle>{ name }</IonTitle>

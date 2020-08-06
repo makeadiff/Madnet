@@ -13,6 +13,8 @@ const ShelterView = () => {
     const [project_id, setProjectId] = React.useState(param_project_id ? param_project_id : 0)
     const [project, setProject] = React.useState({id:0, name:"", batches:[], levels: []})
     const { callApi, cache } = React.useContext(dataContext)
+    // Custom text labels for specific projects.
+    const [labels, setLabels] = React.useState({student: "Students", level: "Class Section(s)"})
 
     React.useEffect(() => {
         async function fetchShelter() {
@@ -27,7 +29,6 @@ const ShelterView = () => {
                     students { id }
                 }}`, cache:  true, cache_key: `shelter_view_${shelter_id}`});                
             
-            console.log(shelter_data, shelter_id)
             setShelter(shelter_data)
 
             // First project is set as the default project. :TODO: This should default to current user's vertical.
@@ -37,8 +38,14 @@ const ShelterView = () => {
             }
         }
 
+        if(project_id == PROJECT_IDS.AFTERCARE) {
+            setLabels({student: "Youth", level: "SSG(s)"})
+        } else {
+            setLabels({student: "Students", level: "Class Section(s)"})
+        }
+
         // Some unknown cache related issue was messing with back button functonality - hence the lot of OR cases.
-        if(cache[`shelter_view_${shelter_id}`] === undefined || !cache[`shelter_view_${shelter_id}`] || !shelter.name || shelter_id != shelter.id){
+        if(cache[`shelter_view_${shelter_id}`] === undefined || !cache[`shelter_view_${shelter_id}`] || !shelter.name || shelter_id != shelter.id) {
             fetchShelter()
         }
         
@@ -52,24 +59,16 @@ const ShelterView = () => {
             }
         });
     }, [project_id])
-    
-    // Custom text labels for specific projects.
-    let student_label = "Students"
-    let level_label = "Class Section(s)"
-    if(project_id == PROJECT_IDS.AFTERCARE) {
-        student_label = "Youth"
-        level_label = "SSG(s)"
-    }
 
     return (
         <IonPage>
-            <Title name={ `Manage ${shelter.name}` } back={`/shelters`} />
+            <Title name={ `Manage ${shelter.name}` } back={ `/shelters` } />
 
             <IonContent className="dark">
                 { (shelter.projects.length > 1) ? (
                     <IonSegment value={ project_id } onIonChange={e => setProjectId(e.detail.value)}>
-                        { shelter.projects.map(( proj, index) => {
-                            return (<IonSegmentButton value={ proj.id } key={index}>
+                        { shelter.projects.map((proj, index) => {
+                            return (<IonSegmentButton value={ proj.id } key={ index }>
                                 <IonLabel>{ PROJECT_KEYS[proj.id] }</IonLabel>
                             </IonSegmentButton>)
                         })}
@@ -87,13 +86,13 @@ const ShelterView = () => {
                     {(project_id != PROJECT_IDS.TR_WINGMAN) ?
                         <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${project_id}/levels` } routerDirection="none" key="levels">
                             <IonChip className="roles"> { project.levels.length ?? "" } </IonChip>
-                            <IonLabel className="shelterList"> { level_label }</IonLabel>
+                            <IonLabel className="shelterList"> { labels.level }</IonLabel>
                         </IonItem> : null
                     }
                 
                     <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/students` } routerDirection="none"  key="students">
                         <IonChip className="roles">{ shelter.students ? shelter.students.length: 0 }</IonChip>
-                        <IonLabel className="shelterList"> { student_label }</IonLabel>
+                        <IonLabel className="shelterList"> { labels.student }</IonLabel>
                     </IonItem>
 
                     <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none"  key="notes">

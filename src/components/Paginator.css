@@ -1,0 +1,14 @@
+.pageInfo{
+  font-size: 15px;
+  text-align: center;
+  color: #FFF;
+}
+
+.pageinateItem{
+  display: flex;
+  align-items: center;
+}
+
+.pageinateItem ion-button{
+  text-align: center;
+}
