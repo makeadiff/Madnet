@@ -4,9 +4,16 @@
   color: #FFF;
 }
 
-.pageinateItem{
-  display: flex;
-  align-items: center;
+.paginateContainer{
+  position: relative;
+  height: 50px;
+}
+
+
+.pageinateItem{  
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .pageinateItem ion-button{

@@ -1,4 +1,4 @@
-import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonListHeader} from '@ionic/react';
+import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonListHeader, IonToggle} from '@ionic/react';
 import { calendar, pencil, close } from 'ionicons/icons'
 import React from 'react';
 import { useParams } from "react-router-dom"
@@ -10,6 +10,7 @@ import './Event.css'
 import MapContainer from '../../components/Map'
 import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
+import { deepStrictEqual } from 'assert';
 
 const EventCreate = () => {
 
@@ -49,10 +50,10 @@ const EventCreate = () => {
     //   time: '',
     //   place: '',
     //   city_id: user.city_id,
-    //   event_type_id: 0,      
+    //   event_type_id: undefined,      
     //   created_by_user_id: user.id,
-    //   latitude: 0,
-    //   longitude: 0,   
+    //   latitude: undefined,
+    //   longitude: undefined,   
     // });
 
     const [ eventData, setEventData ] = React.useState({
@@ -67,6 +68,7 @@ const EventCreate = () => {
       latitude: 0,
       longitude: 0,   
     });
+    
     const [ errorMessage, setErrorMessage ] = React.useState('');
 
     const openEdit = () => {
@@ -223,7 +225,24 @@ const EventCreate = () => {
           invitees.splice(invitees.indexOf(invitee_id),1);
         }
       }      
+      setSelectedUsers(invitees);      
+    }
+
+    let markAttendance = e => {
+      let attendee_id = e.target.value;
+      let invitees = selectedUsers;
+      if(e.target.checked) {
+        if(invitees.indexOf(attendee_id) < 0) {
+          invitees.push(attendee_id);
+        }
+      }   
+      else {
+        if(invitees.indexOf(attendee_id) >= 0) {
+          invitees.splice(invitees.indexOf(attendee_id),1);
+        }
+      }      
       setSelectedUsers(invitees);
+      console.log(invitees);
     }
 
     let createEvent = async (e) => {
@@ -251,30 +270,34 @@ const EventCreate = () => {
     }
 
     let submitForm = async () => {
-      let event = eventData;
-      event.starts_on +=  ' '+event.time;
-      delete event.time;
 
-      let response = await callApi({url: 'events', params: event, method: 'post'});
-      // console.log(response);
+      if(!eventId){
+        let event = eventData;
+        event.starts_on +=  ' '+event.time;
+        delete event.time;
 
-      if(response){
-        let event_id = response.id;
-        let email = 0
-        if(sendEmail){
-          email = 1;
-        }
+        let response = await callApi({url: 'events', params: event, method: 'post'});
+        // console.log(response);
 
-        let sendInvites = await callApi({
-          url: `events/${event_id}/users`,
-          method: `post`,
-          params: {
-            invite_user_ids: selectedUsers.join(','),
-            send_invite_emails: email
+        if(response){        
+          let event_id = response.id;
+          let email = 0
+          if(sendEmail){
+            email = 1;
           }
-        });
-
-        // console.log(sendInvites);
+          
+          let sendInvites = await callApi({
+            url: `events/${event_id}/users`,
+            method: `post`,
+            params: {
+              invite_user_ids: selectedUsers.join(','),
+              send_invite_emails: email
+            }
+          });
+        }
+      }        
+      else{
+        console.log(selectedUsers);
       }
     }
 
@@ -338,21 +361,19 @@ const EventCreate = () => {
             }}`, cache: false});
 
           if(event){            
-            setUsersList(event.invitees);
+            setUsersList({data: event.invitees});
             delete event.invitees;
-            setEventData({...event});
+            setEventData({...event});            
             setUserSelectable(true);
-          }
-          
+          }          
         })();
-
         setDisable(true);
       }
       else{
         setDisable(false);
       }
       
-
+      console.log(eventData);
     }, [user, eventId])
 
     return (      
@@ -360,7 +381,7 @@ const EventCreate = () => {
         <Title name="Create Event"/>       
 
         <IonContent className="dark">                        
-          <IonCard className="light eventForm">{/* This line was <IonCard className="light eventForm"> */}
+          <IonCard className="light eventForm">
             <IonCardHeader>
               <IonCardTitle>
                 <IonIcon icon={calendar}></IonIcon>Enter Event Details
@@ -370,6 +391,7 @@ const EventCreate = () => {
               <IonGrid>
                 <IonRow>
                   <IonCol size-md="6" size-xs="12">
+                    {/* Form to capture event details and/or show once the user opens an event  */}
                     <form onSubmit={createEvent}>
                       <IonItem>
                         <IonLabel position="stacked">Event Name</IonLabel>
@@ -397,7 +419,10 @@ const EventCreate = () => {
                       </IonItem>                   
                       <IonItem>                        
                         <IonLabel position="stacked">Event Type</IonLabel>                        
-                          <IonSelect disabled={disable} mode="md"  placeholder="Select Event Type" required interface="alert" name="event_type_id" value={eventData.event_type_id} onIonChange={updateField}>
+                          <IonSelect disabled={disable} mode="md"  placeholder="Select Event Type" required interface="alert" name="event_type_id" 
+                            value={eventData.event_type_id} 
+                            onIonChange={updateField}
+                          >
                             {                                                                                                       
                               eventTypes.length && eventTypes.map((eventType,index) => {
                                 return (
@@ -409,7 +434,10 @@ const EventCreate = () => {
                       </IonItem>
                       <IonItem>
                         <IonLabel position="stacked">Event City</IonLabel>                        
-                        <IonSelect disabled={disable} mode="md" placeholder="Select City" required interface="alert" name="city_id" value={eventData.city_id ? eventData.city_id: user.city_id} onIonChange={updateField}>
+                        <IonSelect disabled={disable} mode="md" placeholder="Select City" required interface="alert" name="city_id" 
+                          value={eventData.city_id ? eventData.city_id: user.city_id} 
+                          onIonChange={updateField}
+                        >
                           <IonSelectOption value='0'>National</IonSelectOption>
                           {                                                                                                       
                             cities.length && cities.map((city,index) => {
@@ -423,9 +451,12 @@ const EventCreate = () => {
                       {errorMessage? (
                         <IonLabel color="danger">{errorMessage}</IonLabel>
                       ):null}
-                      <IonItem>
-                          <IonButton type="submit" size="default">Save</IonButton>
-                      </IonItem>   
+
+                      {!disable ? (
+                        <IonItem>
+                          <IonButton type="submit" size="default">Create Event &amp; Invite Users</IonButton>
+                        </IonItem>   
+                      ): null}                      
                     </form>
                   </IonCol>
                   <IonCol size-md="6" size-xs="12">
@@ -447,7 +478,9 @@ const EventCreate = () => {
             <IonCard className="dark">
               <IonCardHeader>
                 <IonCardTitle>
-                  Select Users to Invite to Event.
+
+                  {!disable? ( <>Select Users to Invite to Event</>) : (<>Mark Attendees for the {eventData.name}</>) }
+
                   {!disable? (
                     <>
                     <IonRow>
@@ -519,24 +552,33 @@ const EventCreate = () => {
                   ): null }
                 </IonCardTitle>
               </IonCardHeader>
+
               <IonCardContent>
-                {usersList.total? (                               
+                {(usersList.total || usersList.data.length)? (                               
                   <>
                   <IonList>
+                    {usersList.total? (
+                      <Paginator data={usersList} pageHandler={moveToPage} />
+                    ): null}
                     <IonListHeader>
                       <IonItem>
-                      <IonCheckbox name="check_all" onIonChange={toggleCheckAll} />&nbsp;
-                      <IonLabel>Select All Users [{usersList.total ? usersList.total : usersList.data.length}]</IonLabel>
+                        <IonCheckbox name="check_all" onIonChange={toggleCheckAll} />&nbsp;
+                        <IonLabel>Select All Users [{usersList.total ? usersList.total : usersList.data.length}]</IonLabel>                      
                       </IonItem>                                         
                       {/* <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput> */}                                            
                     </IonListHeader>
-                    <IonButton size="default" onClick={submitForm}>Invite Users</IonButton>
+
+                    {!disable ? (
+                      <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>
+                    ): (
+                      <IonButton color="primary" size="default" onClick={submitForm}>Save Attendance</IonButton>
+                    )}
                   {usersList.data.map((user,index) => {
                     return(                      
                       <IonItem key={index}>
-                        {!disable? (
+                        {!disable && !eventId? (
                           <IonAvatar slot="start">                          
-                              <IonCheckbox name="user_id" value={user.id} checked={checkAll} onIonChange={inviteUser}></IonCheckbox>                                                                         
+                              <IonCheckbox name="user_id" value={user.id} checked={(checkAll || (selectedUsers.indexOf(user.id) > 0))? true: false} onIonChange={inviteUser}></IonCheckbox>                                                                         
                           </IonAvatar>
                         ): null}
                         <IonLabel>
@@ -552,20 +594,27 @@ const EventCreate = () => {
                             }
                           </p>
                         </IonLabel>
-                      {attendance? (
-                        <IonAvatar slot="start">                          
-                            <IonCheckbox name="user_id" value={user.id} checked={checkAll}></IonCheckbox>                                                  
-                        </IonAvatar>
+                      {eventId && disable? (
+                        <IonToggle slot="end" mode="md" 
+                          value={user.id} checked={(checkAll || (selectedUsers.indexOf(user.id) > 0))? true: false} 
+                          onIonChange={markAttendance}
+                        >
+                        </IonToggle>
                       ): null}
                       </IonItem>                                            
                     );
                   })}
                   </IonList>
-                  <Paginator data={usersList} pageHandler={moveToPage} />
-                  <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>
-                  {eventId && !disable? (
-                    <IonButton color="primary" size="default" onClick={setAttendance(true)}>Mark Attendance</IonButton>
-                  ): null} 
+                  {usersList.total? (
+                    <Paginator data={usersList} pageHandler={moveToPage} />
+                  ): null}
+
+                  {!disable ? (
+                    <IonButton color="primary" size="default" onClick={submitForm}>Invite Users</IonButton>
+                  ): (
+                    <IonButton color="primary" size="default" onClick={submitForm}>Save Attendance</IonButton>
+                  )}
+                  
                   </>                   
                 ):(
                   <IonLabel>No Users in the selected filter.</IonLabel>
@@ -575,6 +624,7 @@ const EventCreate = () => {
           ):null}
         </IonContent>
         
+        {/* If Event ID exists, i.e for Viewing existing events, show an enable/disable edit Button  */}
         { eventId? (
           <>
           <IonFab vertical="bottom" horizontal="end" slot="fixed">
