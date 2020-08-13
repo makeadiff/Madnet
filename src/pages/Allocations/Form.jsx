@@ -5,10 +5,12 @@ import { dataContext } from "../../contexts/DataContext"
 import { appContext } from "../../contexts/AppContext"
 import { useParams } from "react-router-dom"
 import Title from "../../components/Title"
+import { PROJECT_IDS } from "../../utils/Constants"
 
 // :TODO: Edit for this ?
 const TeacherForm = () => {
-    const { shelter_id , project_id, user_id } = useParams()
+    const { shelter_id , project_id, user_id, new_level_id } = useParams()
+    const [ level_id ] = React.useState(new_level_id ? new_level_id : 0)
     const { callApi, unsetLocalCache } = React.useContext(dataContext)
     const [teacher, setTeacher] = React.useState([])
     const [batches, setBatches] = React.useState([])
@@ -40,9 +42,18 @@ const TeacherForm = () => {
             setTeacher(data.user)
             setSub(data.subjects)
         }
+        if(level_id) {
+            setCombo({ ...combo, ["level_id"]: level_id })
+        }
         fetchData();
 
     }, [shelter_id, project_id, user_id])
+
+    React.useEffect(() => {
+        if(project_id === PROJECT_IDS.AFTERCARE && batches.length) {
+            setCombo({ ...combo, ["batch_id"]: batches[0].id }) // If aftercare project, just set the first batch as the preselected batch. There should be only one batch in the shelter.
+        }
+    }, [batches])
 
     const updateField = (e) => {
         setCombo({ ...combo, [e.target.name]: e.target.value })
@@ -54,32 +65,35 @@ const TeacherForm = () => {
 
     const saveAssign = (e) => {
         e.preventDefault()
-        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', params: subjectField }).then((data)=> {
+        callApi({url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}` , method: 'post', params: subjectField }).then(()=> {
             showMessage("Saved class assignment successfully")
             unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
+            unsetLocalCache(`level_${level_id}`)
         })
     }
 
     return (
         <IonPage>
-            <Title name={`Edit details for ${teacher.name}`} back={ `/shelters/${shelter_id}/projects/${project_id}` } />
+            <Title name={`Assign ${teacher.name} to...`} back={ `/shelters/${shelter_id}/projects/${project_id}` } />
             <IonContent className="dark">
                 <form onSubmit={ saveAssign }>
                     <IonList>
+                        { project_id === PROJECT_IDS.AFTERCARE ? null : 
+                            <IonItem>
+                                <IonLabel>Batch:</IonLabel>
+                                <IonSelect slot="end" name = "batch_id" value={combo.batch_id} onIonChange={updateField} required = "true"  >
+                                    {batches.map((batch, index) => {
+                                        return(
+                                            <IonSelectOption key={index} value={batch.id.toString()}>
+                                                {batch.batch_name}
+                                            </IonSelectOption>
+                                        )   
+                                    })}
+                                </IonSelect>
+                            </IonItem>
+                        }
                         <IonItem>
-                            <IonLabel>Batch:</IonLabel>
-                            <IonSelect slot="end" name = "batch_id" value={combo.batch_id} onIonChange={updateField} required = "true"  >
-                                {batches.map((batch, index) => {
-                                    return(
-                                        <IonSelectOption key={index} value={batch.id.toString()}>
-                                            {batch.batch_name}
-                                        </IonSelectOption>
-                                    )   
-                                })}
-                            </IonSelect>
-                        </IonItem>
-                        <IonItem>
-                            <IonLabel>Level:</IonLabel>
+                            <IonLabel>{ project_id === PROJECT_IDS.AFTERCARE ? "SSG" : "Level" }:</IonLabel>
                             <IonSelect slot="end" name="level_id" value={combo.level_id} onIonChange={updateField} required="true" >
                                 {levels.map((level, index) => {
                                     return(
@@ -90,19 +104,21 @@ const TeacherForm = () => {
                                 })}
                             </IonSelect>
                         </IonItem>
-                        <IonItem>
-                            <IonLabel>Subject:</IonLabel>
-                            <IonSelect slot ="end" name = "subject_id" value = {subjectField.subject_id} onIonChange={updateSubField} >
-                                <IonSelectOption key="0" value="0">None</IonSelectOption>
-                                {sub.map((subject, index) => {
-                                    return(
-                                        <IonSelectOption key={index} value={subject.id.toString()}>
-                                            {subject.name}
-                                        </IonSelectOption>
-                                    )
-                                })}
-                            </IonSelect>
-                        </IonItem>
+                        { project_id === PROJECT_IDS.AFTERCARE ? null : 
+                            <IonItem>
+                                <IonLabel>Subject:</IonLabel>
+                                <IonSelect slot ="end" name = "subject_id" value = {subjectField.subject_id} onIonChange={updateSubField} >
+                                    <IonSelectOption key="0" value="0">None</IonSelectOption>
+                                    {sub.map((subject, index) => {
+                                        return(
+                                            <IonSelectOption key={index} value={subject.id.toString()}>
+                                                {subject.name}
+                                            </IonSelectOption>
+                                        )
+                                    })}
+                                </IonSelect>
+                            </IonItem>
+                        }
                     </IonList>
                     <IonItem><IonButton type="submit">Save Assignment</IonButton></IonItem>
                 </form>

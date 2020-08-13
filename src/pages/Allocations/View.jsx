@@ -50,7 +50,7 @@ const TeacherView = () => {
 
 
     const deleteMapping = (x) => {
-        callApi({url:`/batches/${batch_id[x]}/levels/${level_id[x]}/teachers/${teacher_id[x]}`, method: 'delete'}).then((data)=>{
+        callApi({url:`/batches/${batch_id[x]}/levels/${level_id[x]}/teachers/${teacher_id[x]}`, method: 'delete'}).then(()=>{
             showMessage("Deleted")
             unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
         })

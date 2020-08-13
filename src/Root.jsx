@@ -36,8 +36,6 @@ import TeacherForm from './pages/Allocations/Form'
 import TeacherView from './pages/Allocations/View'
 import WingmanForm from './pages/Allocations/Wingman/Form'
 import WingmanView from './pages/Allocations/Wingman/View'
-import SSGIndex from './pages/Allocations/SSG/Index'
-import SSGView from './pages/Allocations/SSG/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -165,6 +163,14 @@ const Root = () => {
                             <TeacherIndex />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers/level/:new_level_id" exact={true} >
+                            <TeacherIndex  />
+                        </PrivateRoute>
+
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id/level/:new_level_id" exact={true} >
+                            <TeacherForm />
+                        </PrivateRoute>
+
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id" exact={true} >
                             <TeacherForm />
                         </PrivateRoute>
@@ -175,14 +181,6 @@ const Root = () => {
 
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact={true}>
                             <WingmanForm />
-                        </PrivateRoute>
-
-                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/ssg-assignments" exact={true}>
-                            <SSGIndex />
-                        </PrivateRoute>
-                        
-                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/ssg/:ssg_id" exact={true}>
-                            <SSGView />
                         </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />

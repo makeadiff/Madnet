@@ -20,7 +20,7 @@ export const API_BASE_URL = current_api_base_url
 export const API_REST_URL = API_BASE_URL + "v1/"
 export const API_AUTH = {"username" : "data.simulation@makeadiff.in", "password" : "pass", "base64": "ZGF0YS5zaW11bGF0aW9uQG1ha2VhZGlmZi5pbjpwYXNz" }
 export const DEFAULT_USER_AUTH = { "id" : 0, "email": "", "name": "", "phone": "" }
-export const PROJECT_IDS = { "ED": 1, "FP": 2, "TR_ASV": 4, "TR_WINGMAN": 5, "AFTERCARE": 6 }
+export const PROJECT_IDS = { "ED": "1", "FP": "2", "TR_ASV": "4", "TR_WINGMAN": "5", "AFTERCARE": "6" }
 export const PROJECT_KEYS = {1: "Ed", 2: "FP", 4: "TR ASV", 5: "TR Wingman", 6: "Aftercare" }
 
 export const CITY_COORDINATES = {

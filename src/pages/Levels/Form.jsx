@@ -143,7 +143,7 @@ const LevelForm = () => {
                     }) }
 
                     { disable ? null :
-                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/0/levels/${level_id}`}>
+                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/level/${level_id}`}>
                             Add/Remove {labels.teachers} from this {labels.level}
                         </IonButton></IonItem>
                     }

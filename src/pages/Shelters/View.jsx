@@ -108,10 +108,6 @@ const ShelterView = () => {
                         <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${project_id}/view-wingmen` } routerDirection="none" key="assign">
                             <IonLabel className="shelterList">Assign Wingmen</IonLabel>
                         </IonItem> : null }
-                    { (project_id == PROJECT_IDS.AFTERCARE ) ?
-                        <IonItem routerLink={ `/shelters/${shelter.id}/projects/${project_id}/ssg-assignments` } routerDirection="none" >
-                            <IonLabel>Assign SSG Volunteers</IonLabel>
-                        </IonItem> : null }
 
                     {/* <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
