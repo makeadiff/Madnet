@@ -19,15 +19,17 @@ const LevelForm = () => {
 
     React.useEffect(() => {
         async function fetchLevel() {
-            const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
-                id name grade level_name project_id
-                students {
-                    id name
+            const level_data = await callApi({graphql: `{ 
+                level(id: ${level_id}) { 
+                    id name grade level_name project_id
+                    students {
+                        id name
+                    }
+                    teachers {
+                        id name
+                    }
                 }
-                teachers {
-                    id name
-                }
-            }}`, cache: true, cache_key: `level_${level_id}`})
+            }`, cache: true, cache_key: `level_${level_id}`})
 
             setLevel(level_data)
         }
@@ -39,6 +41,8 @@ const LevelForm = () => {
         if(level_id !== "0") {
             if(cache[`level_${level_id}`] === undefined || !cache[`level_${level_id}`]){
                 fetchLevel()
+            } else {
+                setLevel(cache[`level_${level_id}`])
             }
         } else {
             setDisable(false)

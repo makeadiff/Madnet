@@ -23,6 +23,9 @@ const LevelIndex = () => {
                     students {
                         id
                     }
+                    teachers {
+                        id
+                    }
                 }
                 project(id: ${project_id}) { id name }
                 center(id: ${shelter_id}) { id name }
@@ -31,9 +34,11 @@ const LevelIndex = () => {
             setProject(data.project)
             setLevels(data.levels)
         }
-        
-        if(project_id == PROJECT_IDS.AFTERCARE) {
+
+        if(project_id === PROJECT_IDS.AFTERCARE) {
             setLabels({level: "SSG", students:"Youth", teachers: "Volunteers"})
+        } else {
+            setLabels({level: "Class Section", students: "Students", teachers: "Teachers"})
         }
 
         if(cache[`shelter_${shelter_id}_project_${project_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_project_${project_id}_level_index`]){
@@ -55,6 +60,7 @@ const LevelIndex = () => {
                             <IonItem key={index} routerLink={ `/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}` } routerDirection="none" >
                                 <IonLabel>{level.level_name}</IonLabel>
                                 <IonChip className="roles">{ level.students ? level.students.length: 0 } {labels.students}(s)</IonChip>
+                                <IonChip className="roles">{ level.teachers ? level.teachers.length: 0 } {labels.teachers}(s)</IonChip>
                             </IonItem>
                         )
                     })}
