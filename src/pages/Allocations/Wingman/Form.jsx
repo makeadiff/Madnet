@@ -1,11 +1,11 @@
 import { IonPage,IonList,IonItem,IonLabel,IonContent, IonSelect, IonSelectOption, IonButton, IonPopover } from '@ionic/react'
 import React from 'react'
 
-import { authContext } from "../../contexts/AuthContext"
-import { dataContext } from "../../contexts/DataContext"
-import { appContext } from "../../contexts/AppContext"
+import { authContext } from "../../../contexts/AuthContext"
+import { dataContext } from "../../../contexts/DataContext"
+import { appContext } from "../../../contexts/AppContext"
 import { useParams } from "react-router-dom"
-import Title from "../../components/Title"
+import Title from "../../../components/Title"
 
 const WingmanForm = () => {
     const { user } = React.useContext(authContext)

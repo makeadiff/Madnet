@@ -100,19 +100,22 @@ const ShelterView = () => {
                         <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
                     </IonItem>
 
-                    { (project_id != PROJECT_IDS.TR_WINGMAN) ?
+                    { (project_id == PROJECT_IDS.ED || project_id == PROJECT_IDS.FP || project_id == PROJECT_IDS.TR_ASV) ?
                         <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${project_id}/view-teachers` } routerDirection="none" key="assign">
                             <IonLabel className="shelterList">Assign Teachers</IonLabel>
-                        </IonItem>
-                        : 
+                        </IonItem> : null }
+                    { (project_id == PROJECT_IDS.TR_WINGMAN ) ?
                         <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${project_id}/view-wingmen` } routerDirection="none" key="assign">
                             <IonLabel className="shelterList">Assign Wingmen</IonLabel>
-                        </IonItem>
-                    } 
-                    {/*<IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
+                        </IonItem> : null }
+                    { (project_id == PROJECT_IDS.AFTERCARE ) ?
+                        <IonItem routerLink={ `/shelters/${shelter.id}/projects/${project_id}/ssg-assignments` } routerDirection="none" >
+                            <IonLabel>Assign SSG Volunteers</IonLabel>
+                        </IonItem> : null }
+
+                    {/* <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
                         <IonLabel>Edit { shelter.name } Details</IonLabel>
                     </IonItem> */}
-                
                     </IonList>
             </IonContent>
         </IonPage>

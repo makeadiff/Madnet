@@ -13,6 +13,7 @@ const LevelIndex = () => {
     const [levels, setLevels] = React.useState([])
     const [project, setProject] = React.useState({id:0, name:""})
     const { shelter_id, project_id } = useParams()
+    const [labels, setLabels]  = React.useState({level: "Class Section", students: "Students", teachers: "Teachers"})
 
     React.useEffect(() => {
         async function fetchLevelList() {
@@ -30,6 +31,11 @@ const LevelIndex = () => {
             setProject(data.project)
             setLevels(data.levels)
         }
+        
+        if(project_id == PROJECT_IDS.AFTERCARE) {
+            setLabels({level: "SSG", students:"Youth", teachers: "Volunteers"})
+        }
+
         if(cache[`shelter_${shelter_id}_project_${project_id}_level_index`] === undefined || !cache[`shelter_${shelter_id}_project_${project_id}_level_index`]){
             fetchLevelList()
         }
@@ -48,7 +54,7 @@ const LevelIndex = () => {
                         return (
                             <IonItem key={index} routerLink={ `/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}` } routerDirection="none" >
                                 <IonLabel>{level.level_name}</IonLabel>
-                                <IonChip className="roles">{ level.students ? level.students.length: 0 } Student(s)</IonChip>
+                                <IonChip className="roles">{ level.students ? level.students.length: 0 } {labels.students}(s)</IonChip>
                             </IonItem>
                         )
                     })}

@@ -11,17 +11,20 @@ import { appContext } from "../../contexts/AppContext"
 
 const LevelForm = () => {
     const { shelter_id, level_id, project_id } = useParams()
-    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id, students: []})
+    const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id, students: [], teachers: []})
     const [ disable, setDisable ] = React.useState( true )
-    const { callApi, unsetLocalCache} = React.useContext(dataContext)
+    const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
-    const [labels, setLabels]  = React.useState({level: "Class Section", student: "Student"})
+    const [labels, setLabels]  = React.useState({level: "Class Section", students: "Students", teachers: "Teachers"})
 
     React.useEffect(() => {
-        async function fetchlevel() {
+        async function fetchLevel() {
             const level_data = await callApi({graphql: `{ level(id: ${level_id}) { 
                 id name grade level_name project_id
                 students {
+                    id name
+                }
+                teachers {
                     id name
                 }
             }}`, cache: true, cache_key: `level_${level_id}`})
@@ -30,11 +33,14 @@ const LevelForm = () => {
         }
 
         if(project_id == PROJECT_IDS.AFTERCARE) {
-            setLabels({level: "SSG", student:"Youth"})
+            setLabels({level: "SSG", students:"Youth", teachers: "Volunteers"})
         }
 
-        if(level_id !== "0") fetchlevel()
-        else {
+        if(level_id !== "0") {
+            if(cache[`level_${level_id}`] === undefined || !cache[`level_${level_id}`]){
+                fetchLevel()
+            }
+        } else {
             setDisable(false)
             if(project_id == PROJECT_IDS.AFTERCARE) {
                 setLevel({ ...level, level_name: "New SSG", grade: 13})
@@ -42,7 +48,7 @@ const LevelForm = () => {
                 setLevel({ ...level, level_name: "New Class Section"})
             }
         }
-    }, [level_id])
+    }, [level_id, cache[`level_${level_id}`]])
 
     const updateField = (e) => {
         setLevel({ ...level, [e.target.name]: e.target.value })
@@ -64,7 +70,7 @@ const LevelForm = () => {
                     unsetLocalCache( `shelter_view_${shelter_id}`)
                 }
             })
-        } else { // Create new batch
+        } else { // Create new level
             callApi({url: `/levels`, method: "post", params: level}).then((data) => {
                 if(data) {
                     setDisable( true )
@@ -112,18 +118,33 @@ const LevelForm = () => {
                         { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
                     </form>
 
-                    <IonItem class="title"><IonLabel>{labels.student}s</IonLabel></IonItem>
-                    { (level.students.map((student, index) => {
+                    <IonItem class="title"><IonLabel>{labels.students}</IonLabel></IonItem>
+                    { level.students.map((student, index) => {
                         return ( 
                             <IonItem key={index} className="striped">
                                 <IonLabel>{student.name}</IonLabel>
                             </IonItem>
                         )
-                    })) }
+                    }) }
 
                     { disable ? null :
                         <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
-                            Add/Remove {labels.student}s from this {labels.level}
+                            Add/Remove {labels.students} from this {labels.level}
+                        </IonButton></IonItem>
+                    }
+
+                    <IonItem class="title"><IonLabel>{labels.teachers}</IonLabel></IonItem>
+                    { level.teachers.map((teacher, index) => {
+                        return ( 
+                            <IonItem key={index} className="striped">
+                                <IonLabel>{teacher.name}</IonLabel>
+                            </IonItem>
+                        )
+                    }) }
+
+                    { disable ? null :
+                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/0/levels/${level_id}`}>
+                            Add/Remove {labels.teachers} from this {labels.level}
                         </IonButton></IonItem>
                     }
                 </IonList>

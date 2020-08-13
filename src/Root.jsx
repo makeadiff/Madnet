@@ -34,8 +34,10 @@ import StudentForm from './pages/Students/Form'
 import TeacherIndex from './pages/Allocations/Index'
 import TeacherForm from './pages/Allocations/Form'
 import TeacherView from './pages/Allocations/View'
-import WingmanForm from './pages/Wingman/Form'
-import WingmanView from './pages/Wingman/View'
+import WingmanForm from './pages/Allocations/Wingman/Form'
+import WingmanView from './pages/Allocations/Wingman/View'
+import SSGIndex from './pages/Allocations/SSG/Index'
+import SSGView from './pages/Allocations/SSG/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
@@ -175,8 +177,13 @@ const Root = () => {
                             <WingmanForm />
                         </PrivateRoute>
 
-
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/ssg-assignments" exact={true}>
+                            <SSGIndex />
+                        </PrivateRoute>
                         
+                        <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/ssg/:ssg_id" exact={true}>
+                            <SSGView />
+                        </PrivateRoute>
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>
