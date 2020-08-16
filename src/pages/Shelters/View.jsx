@@ -32,7 +32,7 @@ const ShelterView = () => {
             setShelter(shelter_data)
 
             // First project is set as the default project. :TODO: This should default to current user's vertical.
-            if(shelter_data.projects && shelter_data.projects.length) {
+            if(shelter_data.projects && shelter_data.projects.length && project_id === 0) {
                 setProjectId(shelter_data.projects[0].id)
                 setProject(shelter_data.projects[0])
             }
@@ -95,10 +95,10 @@ const ShelterView = () => {
                         <IonLabel className="shelterList"> { labels.student }</IonLabel>
                     </IonItem>
 
-                    <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none"  key="notes">
+                    {/* <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none"  key="notes">
                         <IonChip className="roles">3</IonChip>
                         <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
-                    </IonItem>
+                    </IonItem> */}
 
                     { (project_id == PROJECT_IDS.ED || project_id == PROJECT_IDS.FP || project_id == PROJECT_IDS.TR_ASV) ?
                         <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/projects/${project_id}/view-teachers` } routerDirection="none" key="assign">

@@ -81,87 +81,56 @@ const StudentForm = () => {
     return (
         <IonPage>
             <Title name={"View/Edit " + student.name } />
-            <IonContent>
+            <IonContent className="dark">
                 <form onSubmit={e => saveStudent(e)}>
-                <IonList>
-                    <IonItem>
-                        <IonLabel position="stacked">Name</IonLabel>
-                        <IonInput id="name" type="text" value={ student.name } 
-                                required={true} minlength="2" maxlength="70" pattern="[A-Za-z\-' ]{1,60}"
-                                autocapitalize={true} disabled={ disable } onChange={ updateField } />
-                        { errors.name ? <p className="error-message">{ errors.name }</p> : null }
-                    </IonItem>
-
-                    <IonItem>
-                        <IonLabel position="stacked">Description</IonLabel>
-                        <IonTextarea id="description" type="text" value={ student.description } 
-                                disabled={ disable } onIonChange={ updateField }  />
-                    </IonItem>
-                    <IonItem>
-                        <IonLabel position="stacked">Birthday</IonLabel>
-                        <IonInput id="birthday" type="date" value={ student.birthday } max={ (moment().year()-5) + "-01-01" }
-                                disabled={ disable } onIonChange={ updateField  } />
-                        { errors.birthday ? <p className="error-message">{ errors.birthday }</p> : null }
-                    </IonItem>
-
-                    <IonRadioGroup id="sex" value={ student.sex } onIonChange={ updateField }>
-                        <IonListHeader>
-                            <IonLabel>Sex</IonLabel>
-                        </IonListHeader>
-
+                    <IonList>
                         <IonItem>
                             <IonLabel position="stacked">Name</IonLabel>
                             <IonInput id="name" type="text" value={ student.name } 
-                                    required={true} minlength="2" maxlength="70" pattern="[A-Za-z\-' ]{1,60}"
-                                    autocapitalize={true} disabled={ disable } onIonChange={ updateField } />
+                                required={true} minlength="2" maxlength="70" pattern="[A-Za-z\-' ]{1,60}"
+                                autocapitalize={true} disabled={ disable } onChange={ updateField } />
                             { errors.name ? <p className="error-message">{ errors.name }</p> : null }
                         </IonItem>
 
                         <IonItem>
                             <IonLabel position="stacked">Description</IonLabel>
                             <IonTextarea id="description" type="text" value={ student.description } 
-                                    disabled={ disable } onIonChange={ updateField }  />
+                                disabled={ disable } onIonChange={ updateField }  />
                         </IonItem>
                         <IonItem>
                             <IonLabel position="stacked">Birthday</IonLabel>
                             <IonInput id="birthday" type="date" value={ student.birthday } max={ (moment().year()-5) + "-01-01" }
-                                    disabled={ disable } onIonChange={ updateField  } />
+                                disabled={ disable } onIonChange={ updateField  } />
                             { errors.birthday ? <p className="error-message">{ errors.birthday }</p> : null }
                         </IonItem>
-                    </IonRadioGroup>
-                    <IonRadioGroup id="sex" value={ student.sex } onIonChange={ updateField }>
-                        <IonListHeader>
-                            <IonLabel>Sex</IonLabel>
-                        </IonListHeader>
 
-                        <IonItem>
-                            <IonLabel>Male</IonLabel>
-                            <IonRadio mode="ios" name="sex" slot="start" value="m" disabled={disable} />
-                        </IonItem>
+                        <IonRadioGroup id="sex" value={ student.sex } onIonChange={ updateField }>
+                            <IonListHeader>
+                                <IonLabel>Sex</IonLabel>
+                            </IonListHeader>
 
-                        <IonItem>
-                            <IonLabel>Female</IonLabel>
-                            <IonRadio mode="ios" name="sex" slot="start" value="f" disabled={disable} />
-                        </IonItem>
-                    </IonRadioGroup>
-                    { disable ? null : <IonItem><IonButton size="default" type="submit">Save</IonButton></IonItem> }
-                {/* </IonList>
-                {/* </form>
-            </IonCardContent> */} */}
-        {/* </IonCard> */}
-                                   
-                    
+                            <IonItem>
+                                <IonLabel>Male</IonLabel>
+                                <IonRadio mode="ios" name="sex" slot="start" value="m" disabled={disable} />
+                            </IonItem>
 
-                    {/* <IonItemDivider><IonLabel>Other Actions</IonLabel></IonItemDivider>
+                            <IonItem>
+                                <IonLabel>Female</IonLabel>
+                                <IonRadio mode="ios" name="sex" slot="start" value="f" disabled={disable} />
+                            </IonItem>
+                        </IonRadioGroup>
+                        { disable ? null : <IonItem><IonButton size="default" type="submit">Save</IonButton></IonItem> }
+
+                        {/* <IonItemDivider><IonLabel>Other Actions</IonLabel></IonItemDivider>
 
                     <IonItem>
                         // :TODO:
                         Mark Student as Alumni
                     </IonItem> */}
 
-                    <IonItem routerLink={ `/students/${student_id}/notes` } routerDirection="none">
-                        <IonLabel>{student.comments.length} note(s) on {student.name}</IonLabel>
-                    </IonItem>
+                        <IonItem routerLink={ `/students/${student_id}/notes` } routerDirection="none">
+                            <IonLabel>{student.comments.length} note(s) on {student.name}</IonLabel>
+                        </IonItem>
 
                     </IonList>
                 </form>
@@ -175,7 +144,7 @@ const StudentForm = () => {
                         (<IonFab onClick={() => { setDisable(true) }} vertical="bottom" horizontal="end" slot="fixed">
                             <IonFabButton><IonIcon icon={close}/></IonFabButton>
                         </IonFab>) 
-                    ) : null }
+                ) : null }
             </IonContent>
         </IonPage>
     )

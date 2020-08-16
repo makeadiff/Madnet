@@ -30,18 +30,19 @@ const LevelAddStudent = () => {
                 }
             }`, cache: true, cache_key: `shelter_${shelter_id}_level_${level_id}_students`})
 
-            setLevel(data.level)
-            setStudents(data.studentSearch)
-
-            // Students in the level should be preselected
-            if(data.level.students.length > 0) {
-                let sel = {}
-                for(var i in data.level.students) {
-                    let stu = data.level.students[i]
-                    sel[stu.id] = true
+            if(data.level) { // If new level, this will be null.
+                setLevel(data.level)
+                // Students in the level should be preselected
+                if(data.level.students.length > 0) {
+                    let sel = {}
+                    for(var i in data.level.students) {
+                        let stu = data.level.students[i]
+                        sel[stu.id] = true
+                    }
+                    setSelected(sel)
                 }
-                setSelected(sel)
             }
+            if(data.studentSearch) setStudents(data.studentSearch)
         }
         fetchLevel()
 

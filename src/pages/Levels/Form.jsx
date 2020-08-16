@@ -9,9 +9,12 @@ import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
 import { appContext } from "../../contexts/AppContext"
 
+// :TODO: Delete Levels.
+
 const LevelForm = () => {
-    const { shelter_id, level_id, project_id } = useParams()
+    const { shelter_id, param_level_id, project_id } = useParams()
     const [level, setLevel] = React.useState({level_name: "", grade: "5", name:"A", project_id: project_id, center_id: shelter_id, students: [], teachers: []})
+    const [level_id, setLevelId] = React.useState(param_level_id)
     const [ disable, setDisable ] = React.useState( true )
     const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
@@ -54,7 +57,7 @@ const LevelForm = () => {
         }
     }, [level_id, cache[`level_${level_id}`]])
 
-    const updateField = (e) => {
+    const updateField = (e) => { 
         setLevel({ ...level, [e.target.name]: e.target.value })
     }
 
@@ -68,7 +71,6 @@ const LevelForm = () => {
         if(level_id !== "0") { // Edit
             callApi({url: `/levels/${level_id}`, method: "post", params: level}).then((data) => {
                 if(data) {
-                    setDisable( true )
                     showMessage(labels.level + " Updated Successfully", "success")
                     unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
@@ -77,7 +79,10 @@ const LevelForm = () => {
         } else { // Create new level
             callApi({url: `/levels`, method: "post", params: level}).then((data) => {
                 if(data) {
-                    setDisable( true )
+                    data.students = []
+                    data.teachers = []
+                    setLevel(data)
+                    setLevelId(data.id)
                     showMessage(labels.level + " Created Successfully", "success")
                     unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_level_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
@@ -122,35 +127,38 @@ const LevelForm = () => {
                         { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
                     </form>
 
-                    <IonItem class="title"><IonLabel>{labels.students}</IonLabel></IonItem>
-                    { level.students.map((student, index) => {
-                        return ( 
-                            <IonItem key={index} className="striped">
-                                <IonLabel>{student.name}</IonLabel>
-                            </IonItem>
-                        )
-                    }) }
+                    { (level_id != "0") ?
+                        <>
+                            <IonItem class="title"><IonLabel>{labels.students}</IonLabel></IonItem>
+                            { level.students.map((student, index) => {
+                                return ( 
+                                    <IonItem key={index} className="striped">
+                                        <IonLabel>{student.name}</IonLabel>
+                                    </IonItem>
+                                )
+                            })}
 
-                    { disable ? null :
-                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
-                            Add/Remove {labels.students} from this {labels.level}
-                        </IonButton></IonItem>
-                    }
+                            { disable ? null :
+                                <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
+                                Add/Remove {labels.students} from this {labels.level}
+                                </IonButton></IonItem>
+                            }
 
-                    <IonItem class="title"><IonLabel>{labels.teachers}</IonLabel></IonItem>
-                    { level.teachers.map((teacher, index) => {
-                        return ( 
-                            <IonItem key={index} className="striped">
-                                <IonLabel>{teacher.name}</IonLabel>
-                            </IonItem>
-                        )
-                    }) }
+                            <IonItem class="title"><IonLabel>{labels.teachers}</IonLabel></IonItem>
+                            { level.teachers.map((teacher, index) => {
+                                return ( 
+                                    <IonItem key={index} className="striped">
+                                        <IonLabel>{teacher.name}</IonLabel>
+                                    </IonItem>
+                                )
+                            })}
 
-                    { disable ? null :
-                        <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/level/${level_id}`}>
-                            Add/Remove {labels.teachers} from this {labels.level}
-                        </IonButton></IonItem>
-                    }
+                            { disable ? null :
+                                <IonItem><IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/level/${level_id}`}>
+                                Add/Remove {labels.teachers} from this {labels.level}
+                                </IonButton></IonItem>
+                            }
+                        </> : null }
                 </IonList>
 
                 { disable ?

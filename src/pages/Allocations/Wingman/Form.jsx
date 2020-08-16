@@ -75,7 +75,7 @@ const WingmanForm = () => {
     return(
         <IonPage>
             <Title name = "Assign Wingman"/>
-            <IonContent>
+            <IonContent className="dark">
                 <form onSubmit = {saveAssign}>
                     <IonList>
                         <IonItem>

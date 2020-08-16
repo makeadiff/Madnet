@@ -59,12 +59,13 @@ const WingmanView = () => {
 
     return(
         <IonPage>
-            <Title name={`Assigned Wingmen `} />
-            <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-wingmen`} routerDirection = "none" >
-                <IonButton> Add New Wingman</IonButton>
-            </IonItem>
-            <IonContent> 
+            <Title name={`Assigned Wingmen `} back={ `/shelters/${shelter_id}/projects/${project_id}` } />
+            <IonContent className="dark"> 
                 <IonList>
+                    <IonItem routerLink = {`/shelters/${shelter_id}/projects/${project_id}/assign-wingmen`} routerDirection = "none" >
+                        <IonButton> Add New Wingman</IonButton>
+                    </IonItem>
+
                     {(batches.map((batch, index) => {    
                         return(
                             <IonItem key = {index}>
