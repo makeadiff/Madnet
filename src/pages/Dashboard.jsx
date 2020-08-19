@@ -1,4 +1,4 @@
-import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonItem, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/react';
+import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/react';
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom'
 

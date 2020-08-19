@@ -1,4 +1,4 @@
-import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonNote,IonThumbnail,IonImg,IonAvatar, IonAlert} from '@ionic/react'
+import { IonContent,IonIcon,IonItem,IonLabel,IonList,IonListHeader,IonMenu,IonMenuToggle,IonImg,IonAvatar, IonAlert} from '@ionic/react'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 
@@ -6,7 +6,7 @@ import './Menu.css';
 import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import { volunteer_pages, fellow_pages } from "../utils/Menu"
-import { personOutline, logOutOutline } from 'ionicons/icons'
+import { logOutOutline } from 'ionicons/icons'
 
 const Menu = () => {
     const [ confirmLogout, setConfirmLogout ] = React.useState(false)

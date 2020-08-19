@@ -1,7 +1,7 @@
-import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonListHeader, IonDatetime, IonPopover, IonText, IonNote, IonChip} from '@ionic/react';
+import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonHeader, IonDatetime, IonModal, IonText, IonNote, IonChip, IonToolbar} from '@ionic/react';
 import { calendar, pencil, close } from 'ionicons/icons'
 import React from 'react';
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
 
 import Title from "../../components/Title"
@@ -28,17 +28,17 @@ const EventCreate = () => {
     });
     
     const [ disable, setDisable ] = React.useState(false);
-    const [ showPopover, setShowPopover] = React.useState(false);                    
+    const [ showPopover, setShowPopover] = React.useState(false);
     const [ eventData, setEventData ] = React.useState({});
+    let history = useHistory();
 
     const openEdit = () => {
-      setDisable(false);	  
+      setDisable(false);
     }
 
     const closeEdit = () => {
       setDisable(true);
-    }
-        
+    }        
 
     const getEventUsers = async (params) => {
       setUserFilterParameter({...userFilterParameter,...params});
@@ -74,43 +74,41 @@ const EventCreate = () => {
       console.log(invitees);
     }    
 
-    let moveToPage = React.useCallback(async (toPage) => {
-      setUserFilterParameter({...userFilterParameter,page: toPage});
-      let users = await getUsers(userFilterParameter);
+    let moveToPage = async (toPage) => {
+      console.log(toPage);
+      let filters = {...userFilterParameter,page: toPage}
+      setUserFilterParameter(filters);
+      let users = await getUsers(filters);
       setUsersList(users);
       setUserSelectable(true);
-    })
+    }    
 
-    let selectAllUser = async () => {
-      console.log(usersList);
+    let selectAllUsers = async () => {      
       let selectUserList = [];
       let currentPage = 0;
-      let usersListTemp = usersList;
+      let usersListTemp = usersList;      
       do{
         usersListTemp.data.forEach(user => {
           selectUserList.push(user.id)
         });
         currentPage = usersListTemp.current_page;
-        console.log(selectUserList);
-        usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1});
+        if(usersList.last_page!== 1)
+          usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1});
       }
-      while(currentPage !== usersList.last_page)              
-      console.log(selectUserList);
+      while(currentPage !== usersList.last_page)
       return selectUserList;
     }
-
+  
     let submitForm = async () => {
 
       if(!eventId){
         let event = eventData;
-        console.log(event);                  
-
-        setShowPopover(true)
+        console.log(event);                          
         let response = await callApi({url: 'events', params: event, method: 'post'});
-        // console.log(response);
 
         if(response){
           let event_id = response.id;
+          
           let email = 0
           if(sendEmail){
             email = 1;
@@ -124,6 +122,27 @@ const EventCreate = () => {
               send_invite_emails: email
             }
           });
+
+          let recurring = false;
+          
+          if(event.frequency!=='none'){
+            let recurring = await callApi({
+              url: `events/${event_id}/recur`,
+              method: 'post',
+              params:{
+                frequency: event.frequency,
+                repeat_until: event.repeat_until
+              }
+            })
+          }
+          else{
+            recurring = true;
+          }          
+
+          if(sendInvites && recurring){
+            setShowPopover(false);            
+            history.push(`/events/view/${event_id}`);
+          }
         }
       }        
       else{
@@ -154,7 +173,7 @@ const EventCreate = () => {
         setDisable(false);
       }
             
-    }, [eventId])
+    }, [eventId])    
 
     return (      
       <IonPage>        
@@ -207,7 +226,8 @@ const EventCreate = () => {
                     setShowPopover = {setShowPopover}                    
                     markAttendance={markAttendance}                  
                     city_id={eventData.city_id}
-                    selectAllUsers = {selectAllUser}
+                    selectAllUsers = {selectAllUsers}
+                    setInvitees = {setSelectedUsers}
                   />
                 </IonList>
                 {usersList.total? (
@@ -239,19 +259,38 @@ const EventCreate = () => {
           </>
         ):null }
 
-        <IonPopover isOpen={showPopover} mode="md"> 
-            <IonText>
-              <h4>Confirm Event Details</h4>
-              <hr/>
-              <p>Name: <strong>{eventData.name}</strong></p>
-              <p>Event Type:<strong></strong></p>
-              <p>Starts On: <strong>{eventData.starts_on}</strong></p>
-              <p>Place/Zoom ID: <strong>{eventData.place}</strong></p>
-              <p>Users Invited: <strong>{selectedUsers.length}</strong></p>              
-            </IonText>            
-            <IonButton color="dark" onClick={setShowPopover}>Dismiss</IonButton>
-            <IonButton color="primary" onClick={submitForm}>Confirm</IonButton>                      
-        </IonPopover>
+        <IonModal isOpen={showPopover} mode="ios" swipeToClose={true}>
+          <IonHeader>
+            <IonToolbar>Confirm Event Details.</IonToolbar>            
+          </IonHeader>
+          <IonContent>
+            <IonItem>
+              <IonText>
+                <hr/>
+                <p>Name: <strong>{eventData.name}</strong></p>
+                <p>Event Type:<strong></strong></p>
+                <p>Starts On: <strong>{eventData.starts_on}</strong></p>
+                <p>Place/Zoom ID: <strong>{eventData.place}</strong></p>
+                <p>Users Invited: <strong>{selectedUsers.length}</strong></p>
+                {eventData.frequency !== 'none' ? (
+                  <>
+                  <p>Event Frequency: <strong>{eventData.frequency}</strong></p>
+                  <p>Repeats Until: <strong>{eventData.repeat_until}</strong></p>
+                  </>
+                ): null}
+                <ul>
+                  {usersList!==null && usersList.data.filter(user => selectedUsers.indexOf(user.id) >= 0).map(user => {
+                    return(
+                      <li key={user.id}>{user.name}</li>
+                    )
+                  })}
+                </ul>
+              </IonText>
+            </IonItem>
+          </IonContent>
+          <IonButton color="primary" onClick={submitForm}>Confirm</IonButton>
+          
+        </IonModal>
         
       </IonPage>      
     );
@@ -291,12 +330,16 @@ const EventUserList = React.memo((props) => {
     //     invitees.splice(invitees.indexOf(invitee_id),1);
     //   }
     // }
-    setSelectedUsers(invitees);
-    // console.log(invitees); 
+    setSelectedUsers(invitees);    
+  }
+
+  let confirmEvent = async (e) => {  
+    props.setInvitees(selectedUsers);  
+    props.setShowPopover(true);
   }
 
   React.useEffect(() => {
-    console.log('Users List Loaded');
+    
   },[props.usersList]);
 
   React.useEffect(() => {
@@ -310,7 +353,7 @@ const EventUserList = React.memo((props) => {
       <IonCheckbox name="check_all" onIonChange={toggleCheckAll} value={checkAll} />&nbsp;
       <IonLabel>Select All Users [{props.usersList.total ? props.usersList.total : props.usersList.data.length}]</IonLabel>                      
     </IonItem>
-    <IonButton color="primary" size="default">Invite Users</IonButton>
+    <IonButton color="primary" size="default" onClick={confirmEvent}>Invite Users</IonButton>
     {props.usersList.data.map((user,index) => {
       return (
       <IonItem key={index}>

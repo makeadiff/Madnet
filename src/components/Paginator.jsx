@@ -6,11 +6,11 @@ import "./Paginator.css"
 
 const Paginator = React.memo(({data, pageHandler}) => {
     
-  let callPage = async (e) => {
+  let callPage = (e) => {    
     let url = e.target.value;
     if(url !== null){      
       let pageNumber = url.split('page=')[1];      
-      await pageHandler(pageNumber);
+      pageHandler(pageNumber);
     }    
   }
   
