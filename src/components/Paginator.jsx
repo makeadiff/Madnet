@@ -16,7 +16,7 @@ const Paginator = React.memo(({data, pageHandler}) => {
   
   return (
     <>
-    <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {(data.from + 49) > data.total ? data.total : (data.from + 49)} of {data.total}</h3>
+    <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {data.to} of {data.total}</h3>
     <div className="paginateContainer">
       <IonItem text-center className="ion-text-center pageinateItem">      
         <IonButton shape="round" title="First" color="dark" onClick={callPage} value={data.first_page_url} disabled={data.first_page_url !== null ? false: true } >

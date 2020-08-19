@@ -48,9 +48,10 @@ const EventCreate = () => {
     }
 
     const filterUserList = async (params) => {
-      console.log(params);
-      setUserFilterParameter({...userFilterParameter, ...params})
-      let users = await getUsers(userFilterParameter);
+      console.log(params);      
+      let filterParams = {...userFilterParameter, ...params};
+      setUserFilterParameter(filterParams)
+      let users = await getUsers(filterParams);
       if(users){
         setUsersList(users);
       }
@@ -79,6 +80,24 @@ const EventCreate = () => {
       setUsersList(users);
       setUserSelectable(true);
     })
+
+    let selectAllUser = async () => {
+      console.log(usersList);
+      let selectUserList = [];
+      let currentPage = 0;
+      let usersListTemp = usersList;
+      do{
+        usersListTemp.data.forEach(user => {
+          selectUserList.push(user.id)
+        });
+        currentPage = usersListTemp.current_page;
+        console.log(selectUserList);
+        usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1});
+      }
+      while(currentPage !== usersList.last_page)              
+      console.log(selectUserList);
+      return selectUserList;
+    }
 
     let submitForm = async () => {
 
@@ -188,6 +207,7 @@ const EventCreate = () => {
                     setShowPopover = {setShowPopover}                    
                     markAttendance={markAttendance}                  
                     city_id={eventData.city_id}
+                    selectAllUsers = {selectAllUser}
                   />
                 </IonList>
                 {usersList.total? (
@@ -247,9 +267,11 @@ const EventUserList = React.memo((props) => {
   const [ checkAll, setCheckAll ] = React.useState(false);
   const [ selectedUsers, setSelectedUsers ] = React.useState([]);
   
-  const toggleCheckAll = e => {
+  const toggleCheckAll = async (e) => {
     if(e.target.checked){
       setCheckAll(true);
+      let inviteUsers = await props.selectAllUsers();
+      setSelectedUsers(inviteUsers);
     }
     else{
       setCheckAll(false);
@@ -258,7 +280,7 @@ const EventUserList = React.memo((props) => {
 
   let inviteUser = e => {      
     let invitee_id = e.target.value;
-    let invitees = selectedUsers;
+    let invitees = selectedUsers;            
     if(e.target.checked) {
       if(invitees.indexOf(invitee_id) < 0) {
         invitees.push(invitee_id);
@@ -268,9 +290,9 @@ const EventUserList = React.memo((props) => {
     //   if(invitees.indexOf(invitee_id) >= 0) {
     //     invitees.splice(invitees.indexOf(invitee_id),1);
     //   }
-    // }      
+    // }
     setSelectedUsers(invitees);
-    console.log(invitees); 
+    // console.log(invitees); 
   }
 
   React.useEffect(() => {
@@ -298,7 +320,7 @@ const EventUserList = React.memo((props) => {
           </IonAvatar>
         ): null}
         <IonLabel>
-          <h2>{user.name}{props.city_id == 0? ', '+(CITY_COORDINATES[user.city_id]): null}</h2>
+          <h2>{user.name}{props.city_id == 0? ', '+(CITY_COORDINATES[user.city_id].name): null}</h2>
           <h3 className="no-padding">{user.mad_email ? user.mad_email : user.email} | {user.phone}</h3>
           <p>
             {
@@ -383,16 +405,16 @@ const EventForm = React.memo((props) => {
       }
       else{
         // If City is National, remove City Filter from the User Filter Parameters 
-        let data = userFilterParameter;
-        delete data.city_id;
-        setUserFilterParameter({...data});
+        let tempFilter = userFilterParameter;
+        delete tempFilter.city_id;
+        setUserFilterParameter({...tempFilter});
       }
     }
     else if(e.target.name === 'event_type_id'){
       let selectedType = eventTypes.filter(type => type.id == e.target.value);
       if(selectedType[0] && selectedType[0].vertical_id){
         // setSelectedVertical(selectedType[0].vertical_id);
-        setUserFilterParameter({...userFilterParameter, vertical_id: selectedType[0].vertical_id});
+        // setUserFilterParameter({...userFilterParameter, vertical_id: selectedType[0].vertical_id});
       }
     }
     else if(e.target.name === 'frequency'){
@@ -620,15 +642,16 @@ const UserDataFilter = React.memo((props) => {
   const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({});    
 
   const filterUser = async (e) => {
+    let tempFilter = filters;
     if(e.target.name === 'group_id'){
       setSelectedGroups(e.target.value);
-      setFilters({...filters, group_in: e.target.value.join(',')})
+      tempFilter = {...tempFilter, groups_in: e.target.value.join(',')}
     }
     else{
-      setFilters({...filters, [e.target.name]: e.target.value});
+      tempFilter = {...filters, [e.target.name]: e.target.value};
     }
-
-    props.filterUserList(filters);
+    setFilters(tempFilter);
+    props.filterUserList(tempFilter);
   }
 
   const getUserGroups = async(e) => {
