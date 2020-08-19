@@ -84,6 +84,10 @@ h3.no-padding{
     padding: 0;
 }
 
+.popover-content{
+    padding: 10px;
+}
+
 ion-input.search{
     --background: var(--black)
 }
@@ -96,4 +100,13 @@ ion-select.in-item{
     ion-card-content{
         padding:0;
     }
+}
+
+ion-chip.selected{
+    background: #ED1849;
+    color: #FFF
+}
+
+.pl-20{
+    padding-left: 20px !important;
 }

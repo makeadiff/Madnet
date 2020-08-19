@@ -4,7 +4,7 @@ import { chevronBackOutline, chevronForwardOutline, caretBackOutline, caretForwa
 
 import "./Paginator.css"
 
-const Paginator = ({data, pageHandler}) => {
+const Paginator = React.memo(({data, pageHandler}) => {
     
   let callPage = async (e) => {
     let url = e.target.value;
@@ -13,7 +13,7 @@ const Paginator = ({data, pageHandler}) => {
       await pageHandler(pageNumber);
     }    
   }
-
+  
   return (
     <>
     <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {(data.from + 49) > data.total ? data.total : (data.from + 49)} of {data.total}</h3>
@@ -37,7 +37,7 @@ const Paginator = ({data, pageHandler}) => {
     </>
   )
 
-}
+});
 
 
 export default Paginator;

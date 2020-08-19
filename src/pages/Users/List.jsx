@@ -1,4 +1,4 @@
-import { IonList,IonItem,IonLabel, IonCard, IonGrid, IonRow, IonCol, IonText } from '@ionic/react'
+import { IonList,IonItem,IonLabel } from '@ionic/react'
 import React from 'react'
 
 import UserSearch from "./Search"

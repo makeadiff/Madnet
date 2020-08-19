@@ -1,9 +1,8 @@
 ion-menu {
 	width: 300px;
 }
-ion-content.dark ion-label {
-	color: #fff !important;
-}
+
+ion-content.dark ion-label,
 ion-content.dark ion-select {
 	color: #fff !important;
 }
@@ -11,4 +10,10 @@ ion-content.dark ion-select {
 ion-card.light ion-select,
 ion-card.light ion-label {
 	color: #000 !important;
+}
+
+
+ion-card.dark ion-select,
+ion-card.dark ion-label {
+	color: #FFF !important;
 }
