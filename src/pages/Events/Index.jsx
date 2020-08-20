@@ -26,7 +26,7 @@ const EventIndex = () => {
                 </IonFab> 
                 {/* ) : null }  */}
 
-                <IonSegment value={segment} onIonChange={e => setSegment(e.detail.value)}>
+                <IonSegment mode="md" value={segment} onIonChange={e => setSegment(e.detail.value)}>
                     <IonSegmentButton value="invitations">
                         <IonLabel>Invitations</IonLabel>
                     </IonSegmentButton>

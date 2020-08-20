@@ -110,3 +110,19 @@ ion-chip.selected{
 .pl-20{
     padding-left: 20px !important;
 }
+
+ion-icon.no_data{
+    color: red;
+}
+
+ion-icon.going{
+    color: green;
+}
+
+ion-icon.maybe{
+    color: yellow;
+}
+
+ion-icon.cant_go{
+    color: red
+}

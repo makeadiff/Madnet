@@ -10,14 +10,14 @@ const EventDetail = ({event, index, segment}) => {
 
   return (
     <>
-    {/* <IonPopover
+    <IonPopover
         isOpen={showOptions}
         onDidDismiss={e => setShowOptions(false)}
     >
-      <IonItem button> More </IonItem>
+      <Link to={`events/${event.id}/rsvp`}><IonItem> RSVP </IonItem></Link>
       <IonItem button>Alumni</IonItem>      
         
-    </IonPopover> */}
+    </IonPopover>
     <IonCard class="light list" key={index}>
       <Link to={`/events/view/${event.id}`}>
         <IonCardHeader className="noPadding">
@@ -39,10 +39,12 @@ const EventDetail = ({event, index, segment}) => {
                 </IonCol>
                 <IonCol size-md="6" size-xs="6">                                       
                     <p><IonIcon icon={location}></IonIcon>{ event.place } </p>                    
-                </IonCol>                
-                {/* <IonCol size-md="6" size-xs="6">
-                  <IonButton  size="small" fill="clear" slots="icon-only" color="light" className="userEditButton" onClick={() => setShowOptions(true)}><IonIcon icon={ellipsisVertical}></IonIcon></IonButton>
-                </IonCol> */}
+                </IonCol>
+                {segment === 'invitations'? (
+                  <IonCol size-md="6" size-xs="6">
+                    <IonButton  size="small" fill="clear" slots="icon-only" color="light" className="userEditButton" onClick={() => setShowOptions(true)}><IonIcon icon={ellipsisVertical}></IonIcon></IonButton>
+                  </IonCol>
+                ): null}
             </IonRow>
         </IonGrid>
       </IonCardContent>

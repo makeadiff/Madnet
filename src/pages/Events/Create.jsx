@@ -1,5 +1,5 @@
 import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonHeader, IonDatetime, IonModal, IonText, IonNote, IonChip, IonToolbar} from '@ionic/react';
-import { calendar, pencil, close } from 'ionicons/icons'
+import { calendar, pencil, close, checkmarkCircle, closeCircle, ellipse} from 'ionicons/icons'
 import React from 'react';
 import { useParams, useHistory } from "react-router-dom"
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
@@ -56,24 +56,7 @@ const EventCreate = () => {
         setUsersList(users);
       }
     }
-
-    let markAttendance = e => {
-      let attendee_id = e.target.value;
-      let invitees = selectedUsers;
-      if(e.target.checked) {
-        if(invitees.indexOf(attendee_id) < 0) {
-          invitees.push(attendee_id);
-        }
-      }   
-      else {
-        if(invitees.indexOf(attendee_id) >= 0) {
-          invitees.splice(invitees.indexOf(attendee_id),1);
-        }
-      }      
-      setSelectedUsers(invitees);
-      console.log(invitees);
-    }    
-
+        
     let moveToPage = async (toPage) => {
       console.log(toPage);
       let filters = {...userFilterParameter,page: toPage}
@@ -102,8 +85,7 @@ const EventCreate = () => {
     let submitForm = async () => {
 
       if(!eventId){
-        let event = eventData;
-        console.log(event);                          
+        let event = eventData;        
         let response = await callApi({url: 'events', params: event, method: 'post'});
 
         if(response){
@@ -114,6 +96,7 @@ const EventCreate = () => {
             email = 1;
           }
           
+          console.log(selectedUsers);
           let sendInvites = await callApi({
             url: `events/${event_id}/users`,
             method: `post`,
@@ -126,7 +109,7 @@ const EventCreate = () => {
           let recurring = false;
           
           if(event.frequency!=='none'){
-            let recurring = await callApi({
+            recurring = await callApi({
               url: `events/${event_id}/recur`,
               method: 'post',
               params:{
@@ -152,20 +135,13 @@ const EventCreate = () => {
 
     React.useEffect(() => {      
    
-      if(eventId !== undefined && !isNaN(eventId)){         
-      
-        (async function getEventsGraphQL(){
-
-          let event = await callApi({url: `events/${eventId}`});          
-          if(event){ 
-            
-            let users = await callApi({url: `events/${eventId}/users`});
-            console.log(users);
-            setUsersList({data: users});            
-            
-            setEventData({...event});
+      if(eventId !== undefined && !isNaN(eventId)){      
+        (async function getEventsData(){
+          let users = await callApi({url: `events/${eventId}/users`});
+          if(users){
+            setUsersList({data: users});
             setUserSelectable(true);
-          }          
+          }
         })();
         setDisable(true);
       }
@@ -191,16 +167,49 @@ const EventCreate = () => {
             <IonCardHeader>
               <IonCardTitle>
                 {/* Component to Display the Filter View on the User Selection View */}
-                {!disable? ( 
+                {!disable && !eventId ? (
                 <>
                   <UserDataFilter filterUserList={filterUserList} city_id = {eventData.city_id ? eventData.city_id: user.city_id}/>
                   <p>Select Users to Invite to Event</p>
                 </> 
                 ) : (
                 <>
-                  Mark Attendees for the {eventData.name}
+                  Mark Attendees for the {eventData.name}                  
                 </>
                 )}
+                {eventId? (
+                  <IonRow>
+                    <IonCol className="ion-text-center">
+                      <IonItem>
+                        <IonLabel position="stacked">Invited Users</IonLabel>
+                        <IonText><h2>{usersList !== null ? usersList.data.length: ''}</h2></IonText>
+                      </IonItem>
+                    </IonCol>
+                    <IonCol className="ion-text-center">
+                      <IonItem>
+                        <IonLabel position="stacked">RSVPed Users</IonLabel>
+                        <IonText><h2>{usersList !== null ? usersList.data.filter(user => user.rvsp === 'going').length: ''}</h2></IonText>
+                      </IonItem>
+                    </IonCol>
+                    <IonCol className="ion-text-center">
+                      <IonItem>
+                        <IonLabel position="stacked">Present Users</IonLabel>
+                        <IonText><h2>{(usersList !== null ? usersList.data.filter(user => user.present === 1).length + selectedUsers.length: '')}</h2></IonText>
+                      </IonItem>
+                    </IonCol>
+                    <IonCol size="12">
+                      {!disable ? (
+                        <>
+                        <IonItem>
+                          <IonLabel position="stacked">Invite User(s)</IonLabel>
+                          <IonInput type="email" placeholder="Invite Users by Email"></IonInput>                      
+                        </IonItem>
+                        <IonButton>Invite</IonButton>
+                        </>
+                      ): null}
+                    </IonCol>
+                  </IonRow>                  
+                ):null}
               </IonCardTitle>
             </IonCardHeader>                              
             <IonCardContent>
@@ -212,19 +221,13 @@ const EventCreate = () => {
                   ): null}
                   {/*<IonListHeader>                    
                     <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput>
-                  </IonListHeader>
+                  </IonListHeader> */}
 
-                  {!disable ? (
-                    <IonButton color="primary" size="default" onClick={setShowPopover(true)}>Invite Users</IonButton>
-                  ): (
-                    <IonButton color="primary" size="default" onClick={submitForm}>Save Attendance</IonButton>
-                  )} */}
                   <EventUserList 
                     usersList={usersList}
                     eventId={eventId}
-                    disable={disable}                    
-                    setShowPopover = {setShowPopover}                    
-                    markAttendance={markAttendance}                  
+                    disable={disable}
+                    setShowPopover = {setShowPopover}                                  
                     city_id={eventData.city_id}
                     selectAllUsers = {selectAllUsers}
                     setInvitees = {setSelectedUsers}
@@ -233,12 +236,6 @@ const EventCreate = () => {
                 {usersList.total? (
                   <Paginator data={usersList} pageHandler={moveToPage} />
                 ): null}
-
-                {/*{!disable ? (
-                  <IonButton color="primary" size="default" onClick={setShowPopover(true)}>Invite Users</IonButton>
-                ): (
-                  <IonButton color="primary" size="default" onClick={submitForm}>Save Attendance</IonButton>
-                )}                 */}
                 </>
               ):(
                 <IonLabel>No Users in the selected filter.</IonLabel>
@@ -263,7 +260,7 @@ const EventCreate = () => {
           <IonHeader>
             <IonToolbar>Confirm Event Details.</IonToolbar>            
           </IonHeader>
-          <IonContent>
+          <IonContent className="dark">
             <IonItem>
               <IonText>
                 <hr/>
@@ -287,8 +284,8 @@ const EventCreate = () => {
                 </ul>
               </IonText>
             </IonItem>
-          </IonContent>
-          <IonButton color="primary" onClick={submitForm}>Confirm</IonButton>
+            <IonButton color="primary" onClick={submitForm}>Confirm</IonButton>
+          </IonContent>          
           
         </IonModal>
         
@@ -305,6 +302,7 @@ const EventUserList = React.memo((props) => {
   // usersList = props.usersList;
   const [ checkAll, setCheckAll ] = React.useState(false);
   const [ selectedUsers, setSelectedUsers ] = React.useState([]);
+  const { callApi } = React.useContext(dataContext);
   
   const toggleCheckAll = async (e) => {
     if(e.target.checked){
@@ -317,30 +315,47 @@ const EventUserList = React.memo((props) => {
     }
   }
 
-  let inviteUser = e => {      
+  let inviteUser = e => {
     let invitee_id = e.target.value;
     let invitees = selectedUsers;            
     if(e.target.checked) {
       if(invitees.indexOf(invitee_id) < 0) {
         invitees.push(invitee_id);
       }
-    }   
-    // else {
-    //   if(invitees.indexOf(invitee_id) >= 0) {
-    //     invitees.splice(invitees.indexOf(invitee_id),1);
-    //   }
-    // }
+    }
+    else {
+      if(invitees.indexOf(invitee_id) >= 0) {
+        invitees.splice(invitees.indexOf(invitee_id),1);
+      }
+    }
     setSelectedUsers(invitees);    
   }
 
+  let markAttendance = async () => {
+    console.log(selectedUsers);
+    let response = await callApi({
+      url: `events/${props.eventId}/attended`,
+      method: 'post',
+      params: {
+        attendee_user_ids: selectedUsers.join(',')
+      }
+    })
+
+    console.log(response);
+    if(response){
+      console.log('Attendance Marked');
+      props.setInvitees(selectedUsers);
+    }
+  }
+
   let confirmEvent = async (e) => {  
+    // console.log(selectedUsers);
     props.setInvitees(selectedUsers);  
     props.setShowPopover(true);
   }
 
-  React.useEffect(() => {
-    
-  },[props.usersList]);
+  // React.useEffect(() => {    
+  // },[props.usersList]);
 
   React.useEffect(() => {
     console.log('UserList rendered');
@@ -353,7 +368,12 @@ const EventUserList = React.memo((props) => {
       <IonCheckbox name="check_all" onIonChange={toggleCheckAll} value={checkAll} />&nbsp;
       <IonLabel>Select All Users [{props.usersList.total ? props.usersList.total : props.usersList.data.length}]</IonLabel>                      
     </IonItem>
-    <IonButton color="primary" size="default" onClick={confirmEvent}>Invite Users</IonButton>
+    {props.disable? (
+      <IonButton color="primary" size="default" onClick={markAttendance}>Mark Attendance</IonButton>      
+    ): (
+      <IonButton color="primary" size="default" onClick={confirmEvent}>Invite Users</IonButton>
+    )}
+
     {props.usersList.data.map((user,index) => {
       return (
       <IonItem key={index}>
@@ -375,10 +395,15 @@ const EventUserList = React.memo((props) => {
             }
           </p>
         </IonLabel>
+      {props.eventId && props.disable && user.rsvp? (
+        <>
+        RSVP: <IonIcon icon={user.rsvp === 'going' || user.rsvp === 'maybe' ? checkmarkCircle: (user.rsvp === 'cant_go' ? closeCircle: ellipse)} className={user.rsvp}></IonIcon>
+        </>
+      ):null}
       {props.eventId && props.disable? (
         <IonCheckbox slot="end" mode="md" 
           value={user.id} checked={( user.present || checkAll || (selectedUsers.indexOf(user.id.toString()) >= 0))? true: false} 
-          onIonChange={props.markAttendance}
+          onIonChange={inviteUser}
         >
         </IonCheckbox>
       ): null}
@@ -394,7 +419,7 @@ const EventUserList = React.memo((props) => {
 
 const EventForm = React.memo((props) => {
   
-  const [ disable, setDisable ] = React.useState(props.disable);
+  let disable = props.disable;
   
   const [ location, setLocation ] = React.useState({})
 
@@ -522,26 +547,16 @@ const EventForm = React.memo((props) => {
 
   React.useEffect(() => {
     let eventId = props.eventId;
-    if(eventId !== undefined && !isNaN(eventId)){         
-      
+    if(eventId !== undefined && !isNaN(eventId)){               
       (async function getEventsGraphQL(){
 
         let event = await callApi({url: `events/${eventId}`});          
-        if(event){ 
-          
-          // let users = await callApi({url: `events/${eventId}/users`});
-          // console.log(users);
-          // setUsersList({data: users});            
-          
+        if(event){                  
           setEventData({...event});
-          // setUserSelectable(true);
+          props.sendEventData({...event});
         }          
-      })();
-      setDisable(true);
-    }
-    else{
-      setDisable(false);
-    }
+      })();      
+    }    
   }, [props.eventId])
     
   let setSendEmail = props.setSendEmail;
@@ -592,8 +607,8 @@ const EventForm = React.memo((props) => {
                 <IonItem>
                   <IonLabel position="stacked">Event Location</IonLabel>
                   <IonInput name="place" type="text" onIonChange={updateField} placeholder="Zoom Call ID/Location Name" value={eventData.place} disabled={disable}></IonInput>
-                </IonItem>
-                <IonItem>
+                </IonItem>                
+                <IonItem className={disable? 'hidden': ''}>
                   <IonCheckbox  mode="md" name="send_email" color="danger" onIonChange={e => setSendEmail(e.target.checked)}/> &nbsp;
                   <IonLabel color="light">Send Invitation by Email</IonLabel>                      
                 </IonItem>                                         
