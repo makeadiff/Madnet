@@ -1,4 +1,4 @@
-import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonLabel, IonIcon, IonText, IonImg} from '@ionic/react'
+import { IonButton, IonInput, IonPage, IonList, IonItem, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonLabel, IonIcon, IonText, IonImg} from '@ionic/react'
 import React from 'react'
 import * as validator from "validator"
 import { useHistory } from 'react-router-dom'
@@ -20,7 +20,6 @@ import './Login.css'
 */
 
 function Login() {
-    const [init, setInit] = React.useState(false)
     const [userEmail, setUserEmail] = React.useState("")
     const [userPassword, setUserPassword] = React.useState("")
     const { loading, setLoading, message, showMessage, addNotification } = React.useContext(appContext)
@@ -28,19 +27,15 @@ function Login() {
     const history = useHistory()
     
     React.useEffect(() => { // Run on load - just once.
-        if(init) return
-
         firebase.auth().getRedirectResult().then(function(result) {
             if(!result.user) return false
 
             let user = result.user // The signed-in user info.
             setLoading(true)
-            api.rest(`users?email=${user.email}`, "get").then(loginUser)
+            api.rest(`users?identifier=${user.email}`, "get").then(loginUser)
 
         }).catch(e => showMessage(e.message, "error"));
-
-        setInit(true)
-    }, [init])
+    }, [])
 
     const loginUser = (user_data, method) => {
         if(method === undefined) method = "google"
@@ -81,7 +76,7 @@ function Login() {
 
     const authHandler = () => {
         setLoading(true);
-        api.rest(`users/login?email=${userEmail}&password=${userPassword}`, "get")
+        api.rest(`users/login?identifier=${userEmail}&password=${userPassword}`, "get")
             .then(user_data => loginUser(user_data, "api"))
             .catch(err => {
                 setLoading(false);
@@ -106,8 +101,8 @@ function Login() {
             return false;
         }
 
-        // Validate email
-        if (!validator.isEmail(email)) {
+        // Validate that the field is either a email OR a phone number
+        if (!validator.isEmail(email) && !validator.isMobilePhone(email)) {
             showMessage("Please enter a valid email address.", "error");
             return false;
         }
@@ -125,19 +120,19 @@ function Login() {
                     </IonItem>                    
                     <IonCardHeader>                                                                 
                         <IonCardTitle>Login to MADNet</IonCardTitle>
-                        {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
                     </IonCardHeader>
                     <IonCardContent>
                         <IonList>
                             <form onSubmit={ handleSubmit } >
                                 <IonItem>
                                     <IonLabel position="stacked">Email/Phone</IonLabel>
-                                    <IonInput type="email" name="email" id="email" required="true" value={userEmail} placeholder="Enter your registered email or phone" onIonChange={e => setUserEmail(e.target.value) } />
+                                    <IonInput name="email" id="email" required="true" value={userEmail} 
+                                        placeholder="Enter your registered email or phone" onIonChange={e => setUserEmail(e.target.value) } />
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel position="stacked">Password</IonLabel>
-                                    <IonInput type="password" id="password" name="password" requried="true" value={userPassword}
-                                        placeholder="*****" onIonChange={e => setUserPassword(e.target.value)} />
+                                    <IonInput type="password" id="password" name="password" requried="true" value={userPassword} 
+                                        onIonChange={e => setUserPassword(e.target.value)} />
                                 </IonItem>                                
                                 <IonButton type="submit" id="login" expand="full" disabled={loading} block={true} size="default">
                                     {loading ? "Loading..." : "Sign In"}

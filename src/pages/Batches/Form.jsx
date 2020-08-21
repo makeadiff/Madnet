@@ -14,23 +14,30 @@ const BatchForm = () => {
     const { shelter_id, project_id, batch_id } = useParams()
     const [batch, setBatch] = React.useState({batch_name: "", class_time: "16:00:00", day: 0, project_id: project_id, center_id: shelter_id})
     const [ disable, setDisable ] = React.useState( true )
-    const { callApi, unsetLocalCache} = React.useContext(dataContext)
+    const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
 
     React.useEffect(() => {
         async function fetchBatch() {
             const batch_data = await callApi({graphql: `{ batch(id: ${batch_id}) { 
                 id batch_name day class_time project_id
-            }}`, cache: false})
+            }}`, cache: true, cache_key: `batch_${batch_id}`})
 
             setBatch(batch_data)
         }
-        if(batch_id !== "0") fetchBatch()
-        else {
+
+        if(batch_id !== "0") {
+            if(cache[`batch_${batch_id}`] === undefined || !cache[`batch_${batch_id}`]){
+                fetchBatch()
+            } else {
+                setBatch(cache[`batch_${batch_id}`])
+            }
+
+        } else {
             setDisable(false)
             setBatch({ ...batch, batch_name: "New Batch"})
         }
-    }, [batch_id])
+    }, [batch_id,  cache[`batch_${batch_id}`]])
 
     const updateField = (e) => {
         setBatch({ ...batch, [e.target.name]: e.target.value })
@@ -53,6 +60,7 @@ const BatchForm = () => {
                     showMessage("Batch Updated Successfully", "success")
                     unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_batch_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
+                    unsetLocalCache( `batch_${batch_id}`)
                 }
             })
         } else { // Create new batch
@@ -62,6 +70,7 @@ const BatchForm = () => {
                     showMessage("Batch Created Successfully", "success")
                     unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_batch_index`)
                     unsetLocalCache( `shelter_view_${shelter_id}`)
+                    unsetLocalCache( `batch_${batch_id}`)
                 }
             })
         }
@@ -72,7 +81,8 @@ const BatchForm = () => {
 
     return (
         <IonPage>
-            <Title name={ `Batch: ${batch.batch_name}` } back={`/shelters/${shelter_id}/projects/${project_id}/batches`} />
+            <Title name={ `Batch: ${day_options[batch.day]} ${ moment("2020-04-29 " + batch.class_time).format("hh:mm A")}` } // This should have been just batch.batch_name - but some bug caches previous view ka data in that variable.
+                back={`/shelters/${shelter_id}/projects/${project_id}/batches`} />
 
             <IonContent class="dark">
                 <IonList>

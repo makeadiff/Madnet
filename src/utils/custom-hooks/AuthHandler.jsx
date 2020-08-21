@@ -15,7 +15,11 @@ const useAuthHandler = (initialState) => {
     const unsetCurrentUser = () => {
         const user_data = getStoredUser()
         window.localStorage.clear()
-        api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete") // Some wierd issue happening when calling unsetDeviceToken
+        try {
+            api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete") // Some wierd issue happening when calling unsetDeviceToken
+        } catch(e) {
+            console.log(e)
+        }
         
         setUser(DEFAULT_USER_AUTH)
     };
@@ -33,7 +37,7 @@ const useAuthHandler = (initialState) => {
         return false
     }
 
-    const hasPermission = (permission, redirect) => {
+    const hasPermission = (permission) => {
         if (!user.id || user.permissions === undefined) return false;
         const valid = user.permissions.includes(permission)
 
