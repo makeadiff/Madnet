@@ -15,7 +15,7 @@ const EventDetail = ({event, index, segment}) => {
         onDidDismiss={e => setShowOptions(false)}
     >
       <Link to={`events/${event.id}/rsvp`}><IonItem> RSVP </IonItem></Link>
-      <IonItem button>Alumni</IonItem>      
+      <IonItem button>Delete Event</IonItem>      
         
     </IonPopover>
     <IonCard class="light list" key={index}>
@@ -37,11 +37,11 @@ const EventDetail = ({event, index, segment}) => {
                 <IonCol size-md="6" size-xs="6">                    
                     <p>Event Date: <br/>{ event.starts_on } </p>                 
                 </IonCol>
-                <IonCol size-md="6" size-xs="6">                                       
+                <IonCol size-md="5" size-xs="5">                                       
                     <p><IonIcon icon={location}></IonIcon>{ event.place } </p>                    
                 </IonCol>
                 {segment === 'invitations'? (
-                  <IonCol size-md="6" size-xs="6">
+                  <IonCol size-md="1" size-xs="1">
                     <IonButton  size="small" fill="clear" slots="icon-only" color="light" className="userEditButton" onClick={() => setShowOptions(true)}><IonIcon icon={ellipsisVertical}></IonIcon></IonButton>
                   </IonCol>
                 ): null}

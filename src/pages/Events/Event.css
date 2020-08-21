@@ -126,3 +126,8 @@ ion-icon.maybe{
 ion-icon.cant_go{
     color: red
 }
+
+ion-modal ion-content.dark p,
+ion-modal ion-content.dark ul li{
+    color: #FFF;
+}

@@ -79,6 +79,7 @@ const EventCreate = () => {
           usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1});
       }
       while(currentPage !== usersList.last_page)
+      console.log(selectUserList);
       return selectUserList;
     }
   
@@ -256,7 +257,7 @@ const EventCreate = () => {
           </>
         ):null }
 
-        <IonModal isOpen={showPopover} mode="ios" swipeToClose={true}>
+        <IonModal isOpen={showPopover} mode="md" onWillDismiss={e => setShowPopover(false)}>
           <IonHeader>
             <IonToolbar>Confirm Event Details.</IonToolbar>            
           </IonHeader>
@@ -284,9 +285,8 @@ const EventCreate = () => {
                 </ul>
               </IonText>
             </IonItem>
-            <IonButton color="primary" onClick={submitForm}>Confirm</IonButton>
-          </IonContent>          
-          
+            <IonButton color="primary" onClick={submitForm} size="default" expand="full">Confirm</IonButton>
+          </IonContent>                    
         </IonModal>
         
       </IonPage>      
