@@ -471,33 +471,33 @@ const EventForm = React.memo((props) => {
 
   const { getEventTypes, callApi } = React.useContext(dataContext)
 
-  const [ eventData, setEventData ] = React.useState({
-    name: 'Test Event',
-    description: 'Test Desc',
-    starts_on: '2020-08-10 10:10',      
-    place: 'Test',
-    city_id: user.city_id,
-    event_type_id: 1,      
-    created_by_user_id: user.id,
-    latitude: 0,
-    longitude: 0,
-    frequency: 'none',
-    repeat_until: null,
-  });
-
   // const [ eventData, setEventData ] = React.useState({
-  //   name: '',
-  //   description: '',
-  //   starts_on: '',
-  //   place: '',
+  //   name: 'Test Event',
+  //   description: 'Test Desc',
+  //   starts_on: '2020-08-10 10:10',      
+  //   place: 'Test',
   //   city_id: user.city_id,
-  //   event_type_id: 0,
+  //   event_type_id: 1,      
   //   created_by_user_id: user.id,
   //   latitude: 0,
   //   longitude: 0,
   //   frequency: 'none',
   //   repeat_until: null,
   // });
+
+  const [ eventData, setEventData ] = React.useState({
+    name: '',
+    description: '',
+    starts_on: '',
+    place: '',
+    city_id: user.city_id,
+    event_type_id: 0,
+    created_by_user_id: user.id,
+    latitude: 0,
+    longitude: 0,
+    frequency: 'none',
+    repeat_until: null,
+  });
     
   const [ userFilterParameter, setUserFilterParameter ] = React.useState({
     city_id: user.city_id
