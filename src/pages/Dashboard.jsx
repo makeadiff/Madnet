@@ -27,7 +27,7 @@ const Dashboard = () => {
                                 <IonCardContent>
                                     <IonGrid>
                                         <IonRow>
-                                            <IonCol size="3">
+                                            <IonCol size-md="3" size-xs="4">
                                                 <IonText className="centerAlign">
                                                     <p>Credits</p>
                                                 </IonText>
@@ -77,7 +77,7 @@ const AppGrid = ({ apps }) => {
                 {apps.map((app, index) => {
                     if(app.title === "Dashboard") return null
                     return (
-                        <IonCol className="menu-item" key={index} size-xs="4" size-md="4">                            
+                        <IonCol className="menu-item" key={index} size-xs="6" size-md="4">                            
                             <Link to={app.url}>
                                 <div className="box">
                                     <IonIcon slot="start" icon={app.iosIcon} /><br />

@@ -25,19 +25,20 @@ const UserList = ({ segment }) => {
             } else if(segment === "all") {
                 user_data = await getUsers({city_id: user.city_id });                 
             }
-            if(user_data) {
+            if(user_data) {                
                 setUsers(user_data)
             } else {
                 showMessage("User List fetch call failed.", "error")
             }            
-        })();
+        })();        
 
     }, [segment])
 
     let moveToPage = async (toPage) => {        
         let users = await getUsers({city_id: user.city_id, page: toPage});
-        setUsers(users);        
+        setUsers(users);
     }
+
 
     return segment === "search" ? <UserSearch /> : <Listing users={users} moveToPage={moveToPage}/>
 }
@@ -45,10 +46,11 @@ const UserList = ({ segment }) => {
 const Listing = ({ users, moveToPage }) => {
     return (
         <>
+        <Paginator data={users} pageHandler={moveToPage}></Paginator>
         <IonList>
             {users.total && users.data.map((user, index) => {
                 return (
-                    <UserDetail user={user} index={index} key={index}/>
+                    <UserDetail user={user} index={users.from + index - 1} key={index}/>
                 );
             })}
             { (users.length === 0) ? (<IonItem><IonLabel>No users found.</IonLabel></IonItem>) : null }

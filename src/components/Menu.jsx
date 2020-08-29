@@ -81,7 +81,7 @@ const Menu = () => {
     }
 
     return (
-        <IonMenu side="start" menuId="side" contentId="main" type="overlay">
+        <IonMenu side="start" menuId="side" contentId="main" type="overlay" mode="md">
             <IonContent>
                 <IonMenuToggle autoHide={false}>
                     {render}

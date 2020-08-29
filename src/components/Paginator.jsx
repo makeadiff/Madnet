@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonItem, IonButton, IonIcon, IonChip } from '@ionic/react';
+import { IonItem, IonButton, IonIcon, IonChip, IonBadge } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, caretBackOutline, caretForwardOutline} from 'ionicons/icons'
 
 import "./Paginator.css"
@@ -19,17 +19,17 @@ const Paginator = React.memo(({data, pageHandler}) => {
     <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {data.to} of {data.total}</h3>
     <div className="paginateContainer">
       <IonItem text-center className="ion-text-center pageinateItem">      
-        <IonButton shape="round" title="First" color="dark" onClick={callPage} value={data.first_page_url} disabled={data.first_page_url !== null ? false: true } >
+        <IonButton shape="round" title="First" color="dark" onClick={callPage} value={data.first_page_url} disabled={(data.current_page !== 1) ? false: true } >
           <IonIcon icon={caretBackOutline}></IonIcon>
         </IonButton>
         <IonButton shape="round" title="Previous" color="dark" onClick={callPage} value={data.prev_page_url} disabled={data.prev_page_url !== null ? false : true }>
           <IonIcon icon={chevronBackOutline}></IonIcon>
         </IonButton>
-        <IonChip shape="round">{data.from%50} of {data.last_page}</IonChip>      
+        <IonBadge mode="ios" color="light">{data.current_page} of {data.last_page}</IonBadge>      
         <IonButton shape="round" title="Next" color="dark" onClick={callPage} value={data.next_page_url} disabled={data.next_page_url !== null ? false: true }>
           <IonIcon icon={chevronForwardOutline}></IonIcon>
         </IonButton>
-        <IonButton shape="round" title="Last" color="dark" onClick={callPage} value={data.last_page_url} disabled={data.last_page_url !== null ? false: true }>
+        <IonButton shape="round" title="Last" color="dark" onClick={callPage} value={data.last_page_url} disabled={(data.current_page !== data.last_page)? false: true }>
           <IonIcon icon={caretForwardOutline}></IonIcon>
         </IonButton>
       </IonItem>    

@@ -17,7 +17,7 @@ const UserSearch = ({ segment }) => {
         id: "",
         phone: "",
         any_email: "",
-        group_in: "",
+        groups_in: "",
         user_type: "volunteer"
     })
 
@@ -118,9 +118,9 @@ const InputRow = ({ id, label, type, value, onIonInput }) => {
 }
 
 const Listing = ({ users }) => {
-    return (
+    return (        
         <IonList>
-            {users.map((user, index) => {
+            {users.length && users.map((user, index) => {
                 return (
                     <UserDetail user={user} index={index} key={index}/>
                 );

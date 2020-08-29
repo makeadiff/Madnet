@@ -1,5 +1,5 @@
-import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonHeader, IonDatetime, IonModal, IonText, IonNote, IonChip, IonToolbar} from '@ionic/react';
-import { calendar, pencil, close, checkmarkCircle, closeCircle, ellipse} from 'ionicons/icons'
+import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonHeader, IonDatetime, IonModal, IonText, IonNote, IonChip, IonToolbar, IonSearchbar} from '@ionic/react';
+import { calendar, pencil, close, checkmarkCircle, closeCircle, ellipse, filter} from 'ionicons/icons'
 import React from 'react';
 import { useParams, useHistory } from "react-router-dom"
 import { GOOGLE_MAPS_API_TOKEN, CITY_COORDINATES } from '../../utils/Constants'
@@ -11,12 +11,14 @@ import MapContainer from '../../components/Map'
 import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
 
+
 const EventCreate = () => {
 
     const { eventId } = useParams();
-    const { user } = React.useContext(authContext);
+    const { user, accessLevel } = React.useContext(authContext);    
     const [ sendEmail, setSendEmail ] = React.useState(true)
     const [ usersList, setUsersList ] = React.useState(null)
+    const [ editable, setEditable ] = React.useState(false);
 
     const [ userSelectable, setUserSelectable ] = React.useState(false);
     const { getUsers, callApi, getVerticals, getGroupTypes} = React.useContext(dataContext)
@@ -47,16 +49,27 @@ const EventCreate = () => {
       setUserSelectable(true);
     }
 
-    const filterUserList = async (params) => {
-      console.log(params);      
-      let filterParams = {...userFilterParameter, ...params};
+    const filterUserList = async (params) => {         
+      console.log(params);
+      let filterParams = {...params};
+      if(params.cities_in && (filterParams.city_id || filterParams.city_id === 0)){
+        delete filterParams.city_id;
+      }      
+      else if(params.cities_in === ''){        
+        delete filterParams.cities_in;
+      }      
+      else if(!params.cities_in && eventData.city_id !== 0){             
+        filterParams.city_id = eventData.city_id;
+      }
+      console.log(filterParams);
+
       setUserFilterParameter(filterParams)
       let users = await getUsers(filterParams);
       if(users){
         setUsersList(users);
       }
     }
-        
+
     let moveToPage = async (toPage) => {
       console.log(toPage);
       let filters = {...userFilterParameter,page: toPage}
@@ -78,8 +91,7 @@ const EventCreate = () => {
         if(usersList.last_page!== 1)
           usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1});
       }
-      while(currentPage !== usersList.last_page)
-      console.log(selectUserList);
+      while(currentPage !== usersList.last_page)      
       return selectUserList;
     }
   
@@ -150,7 +162,23 @@ const EventCreate = () => {
         setDisable(false);
       }
             
-    }, [eventId])    
+    }, [eventId])
+
+
+    React.useEffect(() => {
+      if(!accessLevel()){
+        console.log('No access');
+      }
+      else{
+        let access = accessLevel()
+        if(access === 'director' || access === 'director'){
+          setEditable(true);
+        }
+        else{
+          setEditable(false);
+        }
+      }
+    },[user])
 
     return (      
       <IonPage>        
@@ -180,19 +208,19 @@ const EventCreate = () => {
                 )}
                 {eventId? (
                   <IonRow>
-                    <IonCol className="ion-text-center">
+                    <IonCol className="ion-text-center" size="4">
                       <IonItem>
                         <IonLabel position="stacked">Invited Users</IonLabel>
                         <IonText><h2>{usersList !== null ? usersList.data.length: ''}</h2></IonText>
                       </IonItem>
                     </IonCol>
-                    <IonCol className="ion-text-center">
+                    <IonCol className="ion-text-center" size="4">
                       <IonItem>
                         <IonLabel position="stacked">RSVPed Users</IonLabel>
                         <IonText><h2>{usersList !== null ? usersList.data.filter(user => user.rvsp === 'going').length: ''}</h2></IonText>
                       </IonItem>
                     </IonCol>
-                    <IonCol className="ion-text-center">
+                    <IonCol className="ion-text-center" size="4">
                       <IonItem>
                         <IonLabel position="stacked">Present Users</IonLabel>
                         <IonText><h2>{(usersList !== null ? usersList.data.filter(user => user.present === 1).length + selectedUsers.length: '')}</h2></IonText>
@@ -228,6 +256,7 @@ const EventCreate = () => {
                     usersList={usersList}
                     eventId={eventId}
                     disable={disable}
+                    editable={editable}
                     setShowPopover = {setShowPopover}                                  
                     city_id={eventData.city_id}
                     selectAllUsers = {selectAllUsers}
@@ -249,10 +278,10 @@ const EventCreate = () => {
         { eventId? (
           <>
           <IonFab vertical="bottom" horizontal="end" slot="fixed">
-            <IonFabButton onClick={openEdit}><IonIcon icon={pencil}/></IonFabButton>
+            <IonFabButton disabled={!editable} onClick={openEdit}><IonIcon icon={pencil}/></IonFabButton>
           </IonFab>
           <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ disable ? "hidden": "" }>
-            <IonFabButton onClick={closeEdit}> <IonIcon icon={close}/></IonFabButton>
+            <IonFabButton disabled={!editable} onClick={closeEdit}> <IonIcon icon={close}/></IonFabButton>
           </IonFab>   
           </>
         ):null }
@@ -276,13 +305,13 @@ const EventCreate = () => {
                   <p>Repeats Until: <strong>{eventData.repeat_until}</strong></p>
                   </>
                 ): null}
-                <ul>
+                {/* <ul>
                   {usersList!==null && usersList.data.filter(user => selectedUsers.indexOf(user.id) >= 0).map(user => {
                     return(
                       <li key={user.id}>{user.name}</li>
                     )
                   })}
-                </ul>
+                </ul> */}
               </IonText>
             </IonItem>
             <IonButton color="primary" onClick={submitForm} size="default" expand="full">Confirm</IonButton>
@@ -303,6 +332,7 @@ const EventUserList = React.memo((props) => {
   const [ checkAll, setCheckAll ] = React.useState(false);
   const [ selectedUsers, setSelectedUsers ] = React.useState([]);
   const { callApi } = React.useContext(dataContext);
+  const [ searchText, setSearchText ] = React.useState('');
   
   const toggleCheckAll = async (e) => {
     if(e.target.checked){
@@ -328,7 +358,7 @@ const EventUserList = React.memo((props) => {
         invitees.splice(invitees.indexOf(invitee_id),1);
       }
     }
-    setSelectedUsers(invitees);    
+    setSelectedUsers(invitees);
   }
 
   let markAttendance = async () => {
@@ -354,37 +384,48 @@ const EventUserList = React.memo((props) => {
     props.setShowPopover(true);
   }
 
-  // React.useEffect(() => {    
-  // },[props.usersList]);
-
   React.useEffect(() => {
     console.log('UserList rendered');
   })
 
-
   return (
     <>
-    <IonItem>
-      <IonCheckbox name="check_all" onIonChange={toggleCheckAll} value={checkAll} />&nbsp;
+    {props.editable? (
+      <>
+      <IonItem>          
+        <IonCheckbox name="check_all" onIonChange={toggleCheckAll} value={checkAll} />&nbsp;
       <IonLabel>Select All Users [{props.usersList.total ? props.usersList.total : props.usersList.data.length}]</IonLabel>                      
-    </IonItem>
-    {props.disable? (
-      <IonButton color="primary" size="default" onClick={markAttendance}>Mark Attendance</IonButton>      
-    ): (
-      <IonButton color="primary" size="default" onClick={confirmEvent}>Invite Users</IonButton>
-    )}
+      </IonItem>
+      {props.disable? (
+        <IonButton disabled={!props.editable} color="primary" size="default" onClick={markAttendance}>Mark Attendance</IonButton>      
+      ): (
+        <>
+        <IonSearchbar animated="true" mode="md" inputmode="text" onIonChange={e => setSearchText(e.target.value)} placeholder="Search users in this page."></IonSearchbar>
+        <IonButton disabled={!props.editable} color="primary" size="default" onClick={confirmEvent}>Invite Users</IonButton>
+        </>
+      )}
+      </>
+    ):null}
 
-    {props.usersList.data.map((user,index) => {
+    {/* {props.eventId? (
+      <>
+        <IonChip>Attended</IonChip>
+        <IonChip>Unmarked</IonChip>
+        <IonChip>Unmarked</IonChip>
+      </>
+    ):null} */}
+
+    {props.usersList.data.filter(user => (searchText.length && user.name.indexOf(searchText) >= 0) || (!searchText.length)).map((user,index) => {
       return (
       <IonItem key={index}>
         {!props.disable && !props.eventId? (
           <IonAvatar slot="start">                          
-              <IonCheckbox name="user_id" value={user.id} checked={(checkAll || (selectedUsers.indexOf(user.id) > 0))? true: false} onIonChange={inviteUser}></IonCheckbox>                                                                         
+              <IonCheckbox name="user_id" value={user.id} checked={(checkAll || (selectedUsers.indexOf(user.id.toString()) >= 0))? true: false} onIonChange={inviteUser}></IonCheckbox>                                                                         
           </IonAvatar>
         ): null}
         <IonLabel>
           <h2>{user.name}{props.city_id == 0? ', '+(CITY_COORDINATES[user.city_id].name): null}</h2>
-          <h3 className="no-padding">{user.mad_email ? user.mad_email : user.email} | {user.phone}</h3>
+          <h3 className="no-padding">{user.mad_email ? user.mad_email : user.email} {user.phone ? '| ' + user.phone: ''}</h3>
           <p>
             {
               user.groups && user.groups.map((group,index) => {
@@ -400,7 +441,7 @@ const EventUserList = React.memo((props) => {
         RSVP: <IonIcon icon={user.rsvp === 'going' || user.rsvp === 'maybe' ? checkmarkCircle: (user.rsvp === 'cant_go' ? closeCircle: ellipse)} className={user.rsvp}></IonIcon>
         </>
       ):null}
-      {props.eventId && props.disable? (
+      {props.editable && props.eventId && props.disable? (
         <IonCheckbox slot="end" mode="md" 
           value={user.id} checked={( user.present || checkAll || (selectedUsers.indexOf(user.id.toString()) >= 0))? true: false} 
           onIonChange={inviteUser}
@@ -422,7 +463,6 @@ const EventForm = React.memo((props) => {
   let disable = props.disable;
   
   const [ location, setLocation ] = React.useState({})
-
   const { user } = React.useContext(authContext);
   const [ cities, setCities ] = React.useState({})
   const [ eventTypes, setEventTypes ] = React.useState({})  
@@ -431,20 +471,33 @@ const EventForm = React.memo((props) => {
 
   const { getEventTypes, callApi } = React.useContext(dataContext)
 
-
   const [ eventData, setEventData ] = React.useState({
     name: 'Test Event',
     description: 'Test Desc',
     starts_on: '2020-08-10 10:10',      
     place: 'Test',
     city_id: user.city_id,
-    event_type_id: 2,      
+    event_type_id: 1,      
     created_by_user_id: user.id,
     latitude: 0,
     longitude: 0,
     frequency: 'none',
     repeat_until: null,
   });
+
+  // const [ eventData, setEventData ] = React.useState({
+  //   name: '',
+  //   description: '',
+  //   starts_on: '',
+  //   place: '',
+  //   city_id: user.city_id,
+  //   event_type_id: 0,
+  //   created_by_user_id: user.id,
+  //   latitude: 0,
+  //   longitude: 0,
+  //   frequency: 'none',
+  //   repeat_until: null,
+  // });
     
   const [ userFilterParameter, setUserFilterParameter ] = React.useState({
     city_id: user.city_id
@@ -452,13 +505,19 @@ const EventForm = React.memo((props) => {
 
   const [ errorMessage, setErrorMessage ] = React.useState('');
 
-  const updateField = e => {
+  const updateField = e => {    
     if(e.target.name == 'starts_on'){
       setEventData({
         ...eventData,
         starts_on: e.target.value.replace('T',' ').replace('+05:30','')
         }
       );
+    }
+    else if(e.target.name == 'repeat_unil'){
+      setEventData({
+        ...eventData,
+        repeat_until: e.target.value.split('T')[0]
+      });
     }
     else{
       setEventData({
@@ -576,7 +635,7 @@ const EventForm = React.memo((props) => {
               <form onSubmit={createEvent}>
                 <IonItem>                        
                   <IonLabel position="stacked">Event Type</IonLabel>                        
-                    <IonSelect disabled={disable} mode="md"  placeholder="Select Event Type" required interface="popover" name="event_type_id" 
+                    <IonSelect disabled={disable} mode="md" placeholder="Select Event Type" required interface="popover" name="event_type_id" 
                       value={eventData.event_type_id} 
                       onIonChange={updateField}
                     >
@@ -594,18 +653,18 @@ const EventForm = React.memo((props) => {
                   <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name" value={eventData.name} disabled={disable}></IonInput>
                 </IonItem>
                 <IonItem>
-                  <IonLabel position="stacked">Event Description</IonLabel>
+                  <IonLabel position="stacked">Description</IonLabel>
                   <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?" value={eventData.description} disabled={disable}></IonTextarea>
                 </IonItem>
                 <IonItem>
-                  <IonLabel position="stacked">Event Date</IonLabel>                        
-                  <IonDatetime displayFormat="D MMM YY h:mm A" mode="md" value={eventData.starts_on} name="starts_on" required placeholder="Enter Event Date"
+                  <IonLabel position="stacked">Date &amp; Time </IonLabel>                        
+                  <IonDatetime displayFormat="D MMM YYYY h:mm A" mode="md" min="2020" value={eventData.starts_on} name="starts_on" required placeholder="Enter Event Date"
                     onIonChange={updateField} disabled={disable}
                     minuteValues="0,15,30,45"
                   ></IonDatetime>
                 </IonItem>                      
                 <IonItem>
-                  <IonLabel position="stacked">Event Location</IonLabel>
+                  <IonLabel position="stacked">Event is happening at</IonLabel>
                   <IonInput name="place" type="text" onIonChange={updateField} placeholder="Zoom Call ID/Location Name" value={eventData.place} disabled={disable}></IonInput>
                 </IonItem>                
                 <IonItem className={disable? 'hidden': ''}>
@@ -639,15 +698,25 @@ const EventForm = React.memo((props) => {
                 </div>
 
                 {eventData.frequency != 'none' ? (
+                  <>
                   <IonItem>
                     <IonLabel position="stacked">Repeat Event Until</IonLabel>
-                    <IonInput type="date" 
+                    <IonDatetime displayFormat="MMM YYYY" mode="md"
+                      value={eventData.repeat_until} 
+                      name="repeat_until" 
+                      placeholder="Date Until white the event needs to be repeated"
+                      onIonChange={updateField}
+                      disabled={disable}
+                    >
+                    </IonDatetime>
+                    {/* <IonInput type="date" 
                       value={eventData.repeat_until}
                       onIonChange={updateField} name="repeat_until" placeholder="Date Until white the event needs to be repeated"
                       disabled={disable}
-                    ></IonInput>
-                    <IonNote>Note: If left blank, even will be repeated until 30 April, or end of academic year.</IonNote>
+                    ></IonInput>*/}
                   </IonItem>
+                  <IonNote className="eventNote">*Note: If left blank, even will be repeated until 30 April, or end of academic year.</IonNote>
+                  </>
                 ): null}
 
                 {errorMessage? (
@@ -689,10 +758,11 @@ const UserDataFilter = React.memo((props) => {
   const [ verticals, setVerticals ] = React.useState({})
   const [ groupTypes, setGroupTypes ] = React.useState({});
 
-
-  const [ selectedGroups, setSelectedGroups ] = React.useState(0)      
-  const [ selectedGroupType, setSelectedGroupType ] = React.useState();
+  const [ selectedGroups, setSelectedGroups ] = React.useState(0)
+  const [ selectedCities, setSelectedCities ] = React.useState(0)
+  const [ selectedGroupType, setSelectedGroupType ] = React.useState(0);
   const [ shelters, setShelters ] = React.useState({})
+  const [ cities, setCities ] = React.useState({})
   const [ userGroups, setUserGroups ] = React.useState({})  
   const { callApi, getVerticals, getGroupTypes } = React.useContext(dataContext)
 
@@ -702,23 +772,45 @@ const UserDataFilter = React.memo((props) => {
   const filterUser = async (e) => {
     let tempFilter = filters;
     if(e.target.name === 'group_id'){
-      setSelectedGroups(e.target.value);
-      tempFilter = {...tempFilter, groups_in: e.target.value.join(',')}
+      let selectedValues = e.target.value;
+      if(selectedValues.length > 0){
+        setSelectedGroups(e.target.value);
+        tempFilter = {...tempFilter, groups_in: e.target.value.join(',')}
+      }
     }
+    else if(e.target.name === 'cities_in'){
+      let city_ids = e.target.value;
+      if(city_ids.indexOf(0) >= 0){
+        city_ids.splice(city_ids.indexOf(0),1);
+      }
+      setSelectedCities(e.target.value);
+      tempFilter = {...tempFilter, cities_in: e.target.value.join(',')}
+    }    
     else{
       tempFilter = {...filters, [e.target.name]: e.target.value};
-    }
+    }    
+
     setFilters(tempFilter);
     props.filterUserList(tempFilter);
   }
 
-  const getUserGroups = async(e) => {
-
-  }
-
   const filterUserGroups = async(e) => {
-    console.log(e.target.value);    
-    setSelectedGroupType(e.target.value);
+    let selectedValues = e.target.value;    
+    if(selectedValues && selectedValues.length){
+      setSelectedGroupType(e.target.value);      
+      let filteredGroups = userGroups.filter(group => (e.target.value.indexOf(group.type) >= 0))
+      let filteredGroupIds = [];
+      filteredGroups.forEach(group => {
+        filteredGroupIds.push(group.id);
+      });
+      setSelectedGroups(filteredGroupIds);            
+    }
+    else{      
+      if(!selectedGroupType && !selectedGroups){
+        setSelectedGroups(0);
+        setSelectedGroupType(0);
+      }
+    }
   }
 
   const clearFilter = async (e) => {
@@ -735,16 +827,13 @@ const UserDataFilter = React.memo((props) => {
 
     setFilters(filterParameters);
     setUserGroupFilterParameter(groupFilterParameter);
-    
-    // let users = await getUsers(userFilterParameter);
-    // setUsersList(users);
-
-    let groups = await callApi({url: 'groups'});
-    setUserGroups(groups);
+    console.log(filterParameters);
+    props.filterUserList(filterParameters);
   }
 
   // Getting Filter Values only once during render   
   React.useEffect(() => {
+    console.log(city_id);
     (async function fetchShelters() {
       let shelterData = [];
       shelterData = await callApi({url: "cities/" + city_id + "/centers" })
@@ -757,37 +846,63 @@ const UserDataFilter = React.memo((props) => {
 
   React.useEffect(() => {
     (async function fetchVerticals(){
-      let verticalData = [];
-      verticalData = await getVerticals();
+      let verticalData = await getVerticals();
       if(verticalData){
         setVerticals(verticalData)
       }
     })();
 
     (async function fetchUserGroups() {
-      let userGroupData = [];
-      userGroupData = await callApi({url: "groups"})
+      let userGroupData = await callApi({url: "groups"})
       if(userGroupData){
         setUserGroups(userGroupData) 
       }        
     })();
 
     (async function fetchGroupTypes() {
-      let groupTypesData = [];
-      groupTypesData = await getGroupTypes();
+      let groupTypesData = await getGroupTypes();
       if(groupTypesData){
         setGroupTypes(groupTypesData);
       }
     })();
   },[])
 
+  React.useEffect(() => {
+    if(city_id === 0 || city_id === '0'){
+      (async function fetchCities(){
+        let city_data = await callApi({url: 'cities'});
+        if(city_data){
+          setCities(city_data);
+        }
+      })();
+    }
+  },[city_id])
+
   return (
     <>
     <IonRow>
-      <IonCol size-xs="12" size-md="3">
+      <IonCol size="12">
+        Select one or more of the filters to filter Volunteer's List.
+      </IonCol>
+      {cities.length ? (
+      <IonCol size-xs="12" size-md='3'>
         <IonItem>
-          {shelters.length? (
-            <IonSelect mode="md" placeholder="Select Shelter" interface="alert" name="center_id" value={filters.center_id} onIonChange={filterUser}>
+          <IonSelect mode="md" placeholder="Shelter Cities" interface="alert" name="cities_in" multiple value={selectedCities} onIonChange={filterUser}>
+            {
+              cities.map((city, index) => {
+                return (
+                  <IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>
+                )
+              })
+            }
+          </IonSelect>
+        </IonItem>
+      </IonCol>
+      ): null}      
+      {!cities.length && shelters.length? (
+      <IonCol size-xs="12" size-md="3">        
+        <IonItem>          
+            <IonSelect mode="md" placeholder="Select Shelter" interface="popover" name="center_id" value={filters.center_id} onIonChange={filterUser}>
               {
                 shelters.map((shelter,index) => {
                   return (
@@ -795,14 +910,14 @@ const UserDataFilter = React.memo((props) => {
                   )
                 })
               }
-            </IonSelect>
-          ):null}
-        </IonItem>
+            </IonSelect>          
+        </IonItem>        
       </IonCol>
+      ):null}
+      {verticals.length? (
       <IonCol size-xs="12" size-md="3">
-        <IonItem>
-          {verticals.length? (
-            <IonSelect mode="md" placeholder="Select Verical" interface="alert" name="vertical_id" value={filters.vertical_id} onIonChange={filterUser}>
+        <IonItem>          
+            <IonSelect mode="md" placeholder="Select Verical" interface="popover" name="vertical_id" value={filters.vertical_id} onIonChange={filterUser}>
               {
                 verticals.map((vertical,index) => {
                   return (
@@ -810,28 +925,28 @@ const UserDataFilter = React.memo((props) => {
                   )
                 })
               }
-            </IonSelect>
-          ):null}
+            </IonSelect>          
         </IonItem>
       </IonCol>
+      ):null}
+      {groupTypes.length? (
       <IonCol size-xs="12" size-md="3">
-          <IonItem>                  
-            {groupTypes.length? (
+          <IonItem>                              
               <IonSelect mode="md" placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUserGroups} multiple>
                 {
-                  groupTypes.map((groupType,index) => {
+                  groupTypes.filter(groupType => groupType.type !== 'executive').map((groupType,index) => {
                     return (
-                      <IonSelectOption key={index} value={groupType.type}>{groupType.type}</IonSelectOption>
+                      <IonSelectOption key={index} value={groupType.type}>{ groupType.type }</IonSelectOption>
                     )
                   })
                 }
-              </IonSelect>
-            ):null}
+              </IonSelect>            
           </IonItem>
       </IonCol>
+      ):null}
+      {userGroups.length? (
       <IonCol size-xs="12" size-md="3">
-        <IonItem>
-          {userGroups.length? (
+        <IonItem>          
             <IonSelect mode="md" placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
               {userGroups.filter(group => (filters.vertical_id && (group.vertical_id === filters.vertical_id)) || (!filters.vertical_id))
                 .filter(group => (selectedGroupType && selectedGroupType.indexOf(group.type)>=0) || (!selectedGroupType))
@@ -841,10 +956,10 @@ const UserDataFilter = React.memo((props) => {
                   )
                 })
               }
-            </IonSelect>
-          ):null}
+            </IonSelect>          
         </IonItem>
       </IonCol>
+      ):null}
     </IonRow>                  
     <IonItem>
       <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filter(s)</IonButton>

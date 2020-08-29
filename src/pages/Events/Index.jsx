@@ -8,7 +8,7 @@ import EventList from "./List"
 import { authContext } from "../../contexts/AuthContext";
 
 const EventIndex = () => {
-    const { user } = React.useContext(authContext);
+    const { user, accessLevel } = React.useContext(authContext);
     const [segment, setSegment] = React.useState('invitations')
     const { hasPermission } = React.useContext(authContext)
 
@@ -16,15 +16,14 @@ const EventIndex = () => {
         <IonPage>
             <Title name="Events" />
 
-            <IonContent className="dark">
-                {/* This is working code  */}
-                {/* { hasPermission('event_add') ? ( */}
-                <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton routerLink="/events/create">
-                        <IonIcon icon={add} />
-                    </IonFabButton>
-                </IonFab> 
-                {/* ) : null }  */}
+            <IonContent className="dark">                
+                {accessLevel() ? (
+                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                        <IonFabButton routerLink="/events/create">
+                            <IonIcon icon={add} />
+                        </IonFabButton>
+                    </IonFab>
+                ):null}
 
                 <IonSegment mode="md" value={segment} onIonChange={e => setSegment(e.detail.value)}>
                     <IonSegmentButton value="invitations">
@@ -39,7 +38,6 @@ const EventIndex = () => {
                     </IonSegmentButton>
                 </IonSegment>
                 
-
                 <EventList segment={segment} />
 
             </IonContent>
