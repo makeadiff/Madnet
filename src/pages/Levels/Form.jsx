@@ -38,7 +38,7 @@ const LevelForm = () => {
         }
 
         if(project_id == PROJECT_IDS.AFTERCARE) {
-            setLabels({level: "SSG", students:"Youth", teachers: "Volunteers"})
+            setLabels({level: "SSG", students:"Youth", teachers: "Wingmen"})
         }
 
         if(level_id !== "0") {
