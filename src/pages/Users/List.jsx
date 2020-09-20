@@ -23,7 +23,7 @@ const UserList = ({ segment }) => {
             if(segment === "needs-attention") {
                 user_data = await getUsers({city_id: user.city_id, credit_lesser_than: 0})
             } else if(segment === "all") {
-                user_data = await getUsers({city_id: user.city_id });                 
+                user_data = await getUsers({city_id: user.city_id });
             }
             if(user_data) {                
                 setUsers(user_data)
@@ -46,16 +46,16 @@ const UserList = ({ segment }) => {
 const Listing = ({ users, moveToPage }) => {
     return (
         <>
-        <Paginator data={users} pageHandler={moveToPage}></Paginator>
-        <IonList>
-            {users.total && users.data.map((user, index) => {
-                return (
-                    <UserDetail user={user} index={users.from + index - 1} key={index}/>
-                );
-            })}
-            { (users.length === 0) ? (<IonItem><IonLabel>No users found.</IonLabel></IonItem>) : null }
-        </IonList>
-        <Paginator data={users} pageHandler={moveToPage}></Paginator>
+            <Paginator data={users} pageHandler={moveToPage}></Paginator>
+            <IonList>
+                {users.total && users.data.map((user, index) => {
+                    return (
+                        <UserDetail user={user} index={users.from + index - 1} key={index}/>
+                    );
+                })}
+                { (users.length === 0) ? (<IonItem><IonLabel>No users found.</IonLabel></IonItem>) : null }
+            </IonList>
+            <Paginator data={users} pageHandler={moveToPage}></Paginator>
         </>
     )
 }
