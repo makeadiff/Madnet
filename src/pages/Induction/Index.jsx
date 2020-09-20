@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom'
 import { firebase } from "../../init-fcm"
 import { appContext } from "../../contexts/AppContext"
 import api from "../../utils/API"
-import { assets, setStoredUser } from "../../utils/Helpers"
+import { setStoredUser } from "../../utils/Helpers"
 import Title from '../../components/Title'
 
 import './Induction.css'

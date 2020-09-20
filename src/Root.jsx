@@ -20,6 +20,8 @@ import LevelAddStudent from './pages/Levels/AddStudent'
 import EventIndex from './pages/Events/Index'
 import EventCreate from './pages/Events/Create'
 import EventRSVP from './pages/Events/RSVP'
+// import EventView from './pages/Events/View'
+
 import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
@@ -122,14 +124,17 @@ const Root = () => {
                         <PrivateRoute path="/surveys/:surveyId">
                             <SurveyForm />
                         </PrivateRoute>
-
-                        <PrivateRoute path="/events/:eventId/rsvp">
+                        
+                        <PrivateRoute path="/events/:eventId/rsvp" exact={true}>
                             <EventRSVP />
                         </PrivateRoute>
                         <PrivateRoute path="/events" exact={true} >
                             <EventIndex />
                         </PrivateRoute>                    
-                        <PrivateRoute exact path="/events/create">
+                        <PrivateRoute path="/events/create" exact={true}>
+                            <EventCreate />
+                        </PrivateRoute>
+                        <PrivateRoute path="/events/view/:eventId" exact={true}>
                             <EventCreate />
                         </PrivateRoute>
 

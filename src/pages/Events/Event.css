@@ -15,6 +15,7 @@
     font-size: large;
     color: var(--ion-color-step-500);
 }
+
 .actions ion-title {
     font-size: medium;
 }
@@ -36,9 +37,15 @@ ion-row {
 .maybe {
     color: var(--ion-color-warning);
 }
-.selected {
-    background-color: var(--ion-color-step-300);
+
+ion-col.selected {
+    background-color: #ed1849;    
 }
+
+ion-card.light ion-col.selected ion-label{    
+    color: #FFF !important;
+}
+
 .icon-medium {
     font-size: large;
 }
@@ -69,10 +76,94 @@ ion-card.dark ion-checkbox{
     --border-color: #FFFFFF;
 }
 
+ion-card.light ion-label.label-stacked,
+ion-card.light ion-label,
+ion-card.light ion-input,
+ion-card.light ion-textarea,
+ion-card.light ion-select,
+ion-card.light ion-select .select-text{
+    --color: #000;
+    color:#000 !important;
+    --placeholder-color: #000; 
+}
+
 h3.no-padding{
     padding: 0;
 }
 
+.popover-content{
+    padding: 10px;
+}
+
 ion-input.search{
     --background: var(--black)
+}
+
+ion-select.in-item{
+    max-width: 100%;
+}
+
+@media (max-width: 500px){
+    ion-card-content{
+        padding:0;
+    }
+}
+
+ion-chip.selected{
+    background: #ED1849;
+    color: #FFF
+}
+
+.pl-20{
+    padding-left: 20px !important;
+}
+
+ion-icon.no_data{
+    color: red;
+}
+
+ion-icon.going{
+    color: green;
+}
+
+ion-icon.maybe{
+    color: yellow;
+}
+
+ion-icon.cant_go{
+    color: red
+}
+
+ion-modal ion-content.dark p,
+ion-modal ion-content.dark ul li{
+    color: #FFF;
+}
+
+ion-label.sc-ion-select-popover{
+    color: #000 !important;
+}
+
+ion-col.eventDetails{
+    color: #FFF;
+}
+
+ion-card.dark ion-searchbar{
+    --background: var(--black)
+}
+
+ion-note.eventNote{
+    color: #000;
+    text-align: left;
+    font-size: 12px;
+    padding-left: 18px;
+}
+
+.select-interface-option{
+    --color: #000;
+    --background: #FFF;
+}
+
+.popover-content, .alert-wrapper{
+    --background: #FFF;
+    --color: #ED1849;
 }

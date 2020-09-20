@@ -12,16 +12,17 @@ export const authContext = React.createContext({
   setCurrentUser: () => {},
   unsetCurrentUser: () => {},
   isFellow: () => {},
+  accessLevel: () => {},
   hasPermission: () => {}
 });
 
 const { Provider } = authContext;
 
 const AuthProvider = ({ children }) => {
-  const { auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission } = useAuthHandler( getStoredUser() );
+  const { auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission, accessLevel } = useAuthHandler( getStoredUser() );
 
   return (
-    <Provider value={{ auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission }}>
+    <Provider value={{ auth, user, setCurrentUser, unsetCurrentUser, isFellow, hasPermission, accessLevel }}>
       {children}
     </Provider>
   );
