@@ -6,7 +6,7 @@ let current_api_base_url = current_site_url + "api/"
 
 
 if(current_url.includes("localhost")) {
-    current_site_url = "http://localhost/makeadiff/"    
+    current_site_url = "http://localhost/MAD/"    
     current_api_base_url = current_site_url + "api/"
 
 } else if(current_url.includes("testing.makeadiff.in")) {
