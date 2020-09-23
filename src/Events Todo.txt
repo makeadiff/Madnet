@@ -1,0 +1,22 @@
+Event > New Event > Invite Volunteers
+	Filter Roles drop down by values given in 'Select Vertical' and 'Select Role Types'
+
+Event > New Event  
+	Bi-Weekly Recurring option.
+	
+Event > New Event
+	Dependent drop down for Event Type - Vertical / Role Type. Details : https://docs.google.com/spreadsheets/d/1rOpCb9xMBeB_FUGZLIDEGozwoAqEd9YkA1CWA6r66F8/edit?ts=5f3f759b#gid=0
+
+Event > New Event > Confirm(after inviting users)
+	Get the UI to be prittier.
+	Have a list of selected people show there. (Some place where all the selected people are shown together.)
+
+Event > View / Edit Event (post event creating)
+	Many fields are missing.
+
+Events > Listing
+	RSVP in the Invitation List UI Itself.
+
+Events > Listing
+	If you set a select users after chosing a filter, the Selected Users not showing up in the listing when you clear filters
+

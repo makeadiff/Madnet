@@ -39,7 +39,6 @@ const UserList = ({ segment }) => {
         setUsers(users);
     }
 
-
     return segment === "search" ? <UserSearch /> : <Listing users={users} moveToPage={moveToPage}/>
 }
 
@@ -61,4 +60,3 @@ const Listing = ({ users, moveToPage }) => {
 }
 
 export default UserList
-

@@ -131,10 +131,10 @@ const Root = () => {
                         <PrivateRoute path="/events" exact={true} >
                             <EventIndex />
                         </PrivateRoute>                    
-                        <PrivateRoute path="/events/create" exact={true}>
+                        <PrivateRoute path="/events/0" exact={true}>
                             <EventCreate />
                         </PrivateRoute>
-                        <PrivateRoute path="/events/view/:eventId" exact={true}>
+                        <PrivateRoute path="/events/:eventId" exact={true}>
                             <EventCreate />
                         </PrivateRoute>
 
@@ -202,10 +202,9 @@ function PrivateRoute({ children, ...rest }) {
     const { user } = React.useContext(authContext);
 
     return (
-        <Route {...rest}
-            render={() => 
+        <Route {...rest} render={() => 
             user.id ? (children) : ( <Redirect to={{ pathname: "/login" }} /> )
-            } />
+        } />
     );
 }
 
