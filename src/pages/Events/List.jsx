@@ -1,18 +1,18 @@
-import { IonList,IonItem,IonLabel } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import { IonList,IonItem,IonLabel } from '@ionic/react'
+import React, { useState, useEffect } from 'react'
 import * as moment from 'moment'
 
-import { authContext } from "../../contexts/AuthContext";
-import { appContext } from "../../contexts/AppContext";
-import { dataContext } from "../../contexts/DataContext";
-import EventDetail from "../../components/Event";
+import { authContext } from "../../contexts/AuthContext"
+import { appContext } from "../../contexts/AppContext"
+import { dataContext } from "../../contexts/DataContext"
+import EventDetail from "../../components/Event"
 import './Event.css'
 
 const EventList = ({ segment }) => {
     const { callApi , cache } = React.useContext(dataContext)
-    const { user } = React.useContext(authContext);
-    const { setLoading } = React.useContext(appContext);
-    const [ events, setEvents ] = useState([]);    
+    const { user } = React.useContext(authContext)
+    const { setLoading } = React.useContext(appContext)
+    const [ events, setEvents ] = useState([])
 
     useEffect(() => {
         async function fetchEventList() {

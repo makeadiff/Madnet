@@ -17,55 +17,55 @@ const Menu = () => {
     if(user.id) {
         render = (
             <>
-            <IonList id="volunteer-list" className="sections">
-                <IonListHeader>
-                    <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet                    
-                </IonListHeader>                  
-            </IonList>                               
+                <IonList id="volunteer-list" className="sections">
+                    <IonListHeader>
+                        <IonImg className="logoIcon" src={process.env.PUBLIC_URL+'/assets/icon/madnet/madnet-40.png'}></IonImg> MADNet                    
+                    </IonListHeader>                  
+                </IonList>                               
 
-            <IonList id="user-list" className="sections">
-                <IonListHeader>User Section</IonListHeader>                
-                <MenuSection pages={volunteer_pages} />                                                                                                          
-            </IonList> 
+                <IonList id="user-list" className="sections">
+                    <IonListHeader>User Section</IonListHeader>                
+                    <MenuSection pages={volunteer_pages} />                                                                                                          
+                </IonList> 
 
-            { isFellow() ? (
-                <IonList id="admin-list" className="sections">
-                    <IonListHeader>Admin Section</IonListHeader>
-                    <MenuSection pages={fellow_pages} />
+                { isFellow() ? (
+                    <IonList id="admin-list" className="sections">
+                        <IonListHeader>Admin Section</IonListHeader>
+                        <MenuSection pages={fellow_pages} />
+                    </IonList>
+                ) : null }           
+
+                <IonList className="sections">
+                    <IonItem routerLink='/profile' className={(data.path.includes('/profile') ? 'selected' : '') + ' noHover'}>
+                        <IonAvatar slot="start">
+                            <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
+                        </IonAvatar>
+                        <IonLabel>{user.name}<br/>#{user.id}</IonLabel>
+                    </IonItem>
+
+                    <IonItem onClick={ () => { setConfirmLogout(true) }}>
+                        <IonIcon slot="start" icon={ logOutOutline } />
+                        <IonLabel>Logout</IonLabel>
+                    </IonItem>
                 </IonList>
-            ) : null }           
 
-            <IonList className="sections">
-                <IonItem className="noHover" routerLink='/profile' className={data.path.includes('/profile') ? 'selected' : ''}>
-                    <IonAvatar slot="start">
-                    <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
-                    </IonAvatar>
-                    <IonLabel>{user.name}<br/>#{user.id}</IonLabel>
-                </IonItem>
-
-                <IonItem onClick={ () => { setConfirmLogout(true) }}>
-                    <IonIcon slot="start" icon={ logOutOutline } />
-                    <IonLabel>Logout</IonLabel>
-                </IonItem>
-            </IonList>
-
-            <IonAlert
-                isOpen={ confirmLogout }
-                onDidDismiss={ () => setConfirmLogout(false) }
-                header={'Logout!'}
-                message={'Are you sure you wish to logout?'}
-                buttons={[
-                    {
-                        text: 'Cancel',
-                        role: 'cancel',
-                        cssClass: 'secondary',
-                        handler: e => { }
-                    },
-                    {
-                        text: 'Logout',
-                        handler: unsetCurrentUser
-                    }
-                ]} />
+                <IonAlert
+                    isOpen={ confirmLogout }
+                    onDidDismiss={ () => setConfirmLogout(false) }
+                    header={'Logout!'}
+                    message={'Are you sure you wish to logout?'}
+                    buttons={[
+                        {
+                            text: 'Cancel',
+                            role: 'cancel',
+                            cssClass: 'secondary',
+                            handler: e => { }
+                        },
+                        {
+                            text: 'Logout',
+                            handler: unsetCurrentUser
+                        }
+                    ]} />
             </>
         );
 
@@ -86,7 +86,7 @@ const Menu = () => {
                 <IonMenuToggle autoHide={false}>
                     {render}
                 </IonMenuToggle>
-           </IonContent>
+            </IonContent>
         </IonMenu>
     )
 

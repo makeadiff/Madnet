@@ -1,20 +1,27 @@
-Event > New Event > Invite Volunteers
-	Filter Roles drop down by values given in 'Select Vertical' and 'Select Role Types'
-
-Event > New Event  
-	Bi-Weekly Recurring option.
-	
+Priority 1
 Event > New Event
-	Dependent drop down for Event Type - Vertical / Role Type. Details : https://docs.google.com/spreadsheets/d/1rOpCb9xMBeB_FUGZLIDEGozwoAqEd9YkA1CWA6r66F8/edit?ts=5f3f759b#gid=0
+    Dependent drop down for Event Type - Vertical / Role Type. Details : https://docs.google.com/spreadsheets/d/1rOpCb9xMBeB_FUGZLIDEGozwoAqEd9YkA1CWA6r66F8/edit?ts=5f3f759b#gid=0
+	Event_Type.audiance vertical,city
+	Event_Type.role		fellow,strat,volunteer
 
+Priority 2
+Event > New Event > Invite Volunteers
+    Filter Roles drop down by values given in 'Select Vertical' and 'Select Role Types'
+
+Priority 3 
+Event > New Event  
+    Bi-Weekly Recurring option.
+
+Priority 4
 Event > New Event > Confirm(after inviting users)
-	Get the UI to be prittier.
-	Have a list of selected people show there. (Some place where all the selected people are shown together.)
+    Get the UI to be prittier.
+    Have a list of selected people show there. (Some place where all the selected people are shown together.)
 
+Priority 5 
 Event > View / Edit Event (post event creating)
-	Many fields are missing.
+    Many fields are missing.
 
-Events > Listing
+Events > Listing : Done(ish)
 	RSVP in the Invitation List UI Itself.
 
 Events > Listing

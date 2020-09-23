@@ -80,17 +80,17 @@ const EventRSVP = () => {
                                     <IonCol size-xs="9" size-md="11">
                                         <IonRow className="actions">
                                             <IonCol className={`ion-text-center going ${rsvp === 'going' ? 'selected' : null }`}
-                                                onClick={e => saveRsvp('going')}>
+                                                onClick={() => saveRsvp('going')}>
                                                 <IonIcon icon={ checkmark } /><br />
                                                 <IonLabel>I'm Going</IonLabel>
                                             </IonCol>
                                             <IonCol className={`ion-text-center cant_go ${rsvp === 'cant_go' ? 'selected' : null }`}
-                                                onClick={e => { saveRsvp('cant_go') }}>
+                                                onClick={() => { saveRsvp('cant_go') }}>
                                                 <IonIcon icon={ close } /><br />
-                                                <IonLabel>I can't go</IonLabel>
+                                                <IonLabel>I can&apos;t go</IonLabel>
                                             </IonCol>
                                             <IonCol className={`ion-text-center maybe ${rsvp === 'maybe' ? 'selected' : null }`}
-                                                onClick={e => saveRsvp('maybe')}>
+                                                onClick={() => saveRsvp('maybe')}>
                                                 <IonIcon icon={ help } /><br />
                                                 <IonLabel>Not Sure</IonLabel>
                                             </IonCol>
