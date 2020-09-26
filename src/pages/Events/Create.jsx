@@ -1,4 +1,6 @@
-import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonHeader, IonDatetime, IonModal, IonText, IonNote, IonChip, IonToolbar, IonSearchbar} from '@ionic/react';
+import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, 
+    IonItem, IonTextarea, IonCardHeader, IonCardTitle, IonSelect, IonSelectOption, IonButton, IonList, IonCheckbox, IonHeader, IonDatetime, 
+    IonModal, IonText, IonNote, IonChip, IonToolbar, IonSearchbar} from '@ionic/react';
 import { calendar, pencil, close, checkmarkCircle, closeCircle, ellipse } from 'ionicons/icons'
 import React from 'react';
 import { useParams, useHistory } from "react-router-dom"
@@ -11,161 +13,151 @@ import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
 
 const EventCreate = () => {
-    const { eventId } = useParams();
+    const { eventId: event_id } = useParams();
     const { user, accessLevel } = React.useContext(authContext)
     const [ sendEmail, setSendEmail ] = React.useState(true)
     const [ usersList, setUsersList ] = React.useState(null)
     const [ editable, setEditable ] = React.useState(false);
 
-    const [ userSelectable, setUserSelectable ] = React.useState(false);
+    const [ userSelectable, setUserSelectable ] = React.useState(false)
     const { getUsers, callApi } = React.useContext(dataContext)
   
-    const [ selectedUsers, setSelectedUsers ] = React.useState([]);
+    const [ selectedUsers, setSelectedUsers ] = React.useState([])
 
-    const [ userFilterParameter, setUserFilterParameter ] = React.useState({city_id: user.city_id});
+    const [ userFilterParameter, setUserFilterParameter ] = React.useState({city_id: user.city_id})
     
-    const [ disable, setDisable ] = React.useState(false);
-    const [ showPopover, setShowPopover] = React.useState(false);
-    const [ eventData, setEventData ] = React.useState({});
-    let history = useHistory();
+    const [ disable, setDisable ] = React.useState(false)
+    const [ showPopover, setShowPopover] = React.useState(false)
+    const [ eventData, setEventData ] = React.useState({})
+    let history = useHistory()
 
     const openEdit = () => {
-        setDisable(false);
+        setDisable(false)
     }
 
     const closeEdit = () => {
-        setDisable(true);
+        setDisable(true)
     }        
 
     const getEventUsers = async (params) => {
-        setUserFilterParameter({...userFilterParameter,...params});
-        let users = await getUsers(params);      
-        setUsersList(users);
-        setUserSelectable(true);
+        setUserFilterParameter({...userFilterParameter,...params})
+        let users = await getUsers(params)
+        setUsersList(users)
+        setUserSelectable(true)
     }
 
     const filterUserList = async (params) => {         
-        console.log(params);
-        let filterParams = {...params};
-        if(params.cities_in && (filterParams.city_id || filterParams.city_id === 0)){
-            delete filterParams.city_id;
-        }      
-        else if(params.cities_in === ''){        
-            delete filterParams.cities_in;
-        }      
-        else if(!params.cities_in && eventData.city_id !== 0){             
-            filterParams.city_id = eventData.city_id;
+        console.log(params)
+        let filterParams = {...params}
+        if(params.city_in && (filterParams.city_id || filterParams.city_id === 0)){
+            delete filterParams.city_id
+        } else if(params.city_in === ''){        
+            delete filterParams.city_in
+        } else if(!params.city_in && eventData.city_id !== 0){             
+            filterParams.city_id = eventData.city_id
         }
-        console.log(filterParams);
+        console.log(filterParams)
 
         setUserFilterParameter(filterParams)
-        let users = await getUsers(filterParams);
-        if(users){
-            setUsersList(users);
+        let users = await getUsers(filterParams)
+        if(users) {
+            setUsersList(users)
         }
     }
 
     let moveToPage = async (toPage) => {
-        console.log(toPage);
+        console.log(toPage)
         let filters = {...userFilterParameter,page: toPage}
-        setUserFilterParameter(filters);
-        let users = await getUsers(filters);
-        setUsersList(users);
-        setUserSelectable(true);
+        setUserFilterParameter(filters)
+        let users = await getUsers(filters)
+        setUsersList(users)
+        setUserSelectable(true)
     }    
 
     let selectAllUsers = async () => {      
-        let selectUserList = [];
-        let currentPage = 0;
-        let usersListTemp = usersList;      
+        let selectUserList = []
+        let currentPage = 0
+        let usersListTemp = usersList
         do{
             usersListTemp.data.forEach(user => {
                 selectUserList.push(user.id)
             });
-            currentPage = usersListTemp.current_page;
-            if(usersList.last_page!== 1)
-                usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1});
-        }
-        while(currentPage !== usersList.last_page)      
+            currentPage = usersListTemp.current_page
+            if(usersList.last_page!== 1) {
+                usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1})
+            }
+        } while(currentPage !== usersList.last_page);
+
         return selectUserList;
     }
   
     let submitForm = async () => {
-        if(!eventId){
-            let event = eventData;        
-            let response = await callApi({url: 'events', params: event, method: 'post'});
+        if(event_id) {
+            console.log(selectedUsers)
+            return true
+        }
+        let event = eventData
+        let response = await callApi({url: 'events', params: event, method: 'post'})
 
-            if(response){
-                let event_id = response.id;
-          
-                let email = 0
-                if(sendEmail){
-                    email = 1;
+        if(response) {
+            let event_id = response.id
+            let email = (sendEmail) ? 1 : 0
+        
+            let sendInvites = await callApi({
+                url: `events/${event_id}/users`,
+                method: `post`,
+                params: {
+                    invite_user_ids: selectedUsers.join(','),
+                    send_invite_emails: email
                 }
-          
-                let sendInvites = await callApi({
-                    url: `events/${event_id}/users`,
-                    method: `post`,
-                    params: {
-                        invite_user_ids: selectedUsers.join(','),
-                        send_invite_emails: email
+            })
+
+            let recurring = false;
+        
+            if(event.frequency!=='none') {
+                recurring = await callApi({
+                    url: `events/${event_id}/recur`,
+                    method: 'post',
+                    params:{
+                        frequency: event.frequency,
+                        repeat_until: event.repeat_until
                     }
-                });
+                })
+            } else {
+                recurring = true;
+            }          
 
-                let recurring = false;
-          
-                if(event.frequency!=='none') {
-                    recurring = await callApi({
-                        url: `events/${event_id}/recur`,
-                        method: 'post',
-                        params:{
-                            frequency: event.frequency,
-                            repeat_until: event.repeat_until
-                        }
-                    })
-                }
-                else {
-                    recurring = true;
-                }          
-
-                if(sendInvites && recurring){
-                    setShowPopover(false);            
-                    history.push(`/events/${event_id}`);
-                }
+            if(sendInvites && recurring){
+                setShowPopover(false);            
+                history.push(`/events/${event_id}`);
             }
-        }        
-        else{
-            console.log(selectedUsers);
         }
     }
 
     React.useEffect(() => {      
-        if(eventId !== undefined && !isNaN(eventId) && eventId !== "0"){      
+        if(event_id !== undefined && !isNaN(event_id) && event_id !== "0"){      
             (async function getEventsData(){
-                let users = await callApi({url: `events/${eventId}/users`});
+                let users = await callApi({url: `events/${event_id}/users`});
                 if(users){
                     setUsersList({data: users});
                     setUserSelectable(true);
                 }
             })();
             setDisable(true);
-        }
-        else{
+        } else {
             setDisable(false);
         }
             
-    }, [eventId])
+    }, [event_id])
 
     React.useEffect(() => {
         if(!accessLevel()){
             console.log('No access');
-        }
-        else{
+        } else {
             let access = accessLevel()
             if(access === 'director' || access === 'director'){
                 setEditable(true);
-            }
-            else{
+            } else {
                 setEditable(false);
             }
         }
@@ -173,24 +165,23 @@ const EventCreate = () => {
 
     return (      
         <IonPage>        
-            <Title name={eventId ? 'View/Edit Event' : 'Create Event'} back="/events" />
+            <Title name={event_id ? 'View/Edit Event' : 'Create Event'} back="/events" />
 
             <IonContent className="dark">
-                <EventForm disable = {disable} setSendEmail = {setSendEmail}  sendEventData = {setEventData}
-                    getEventUsers = {getEventUsers} eventId = {eventId} />
+                <EventForm disable={disable} setSendEmail={setSendEmail} setEventData={setEventData} getEventUsers={getEventUsers} eventId={event_id} />
                 <IonCard className={userSelectable ? 'dark': 'hidden dark'}>
                     <IonCardHeader>
                         <IonCardTitle>
                             {/* Component to Display the Filter View on the User Selection View */}
-                            {!disable && !eventId ? (
+                            {!disable && !event_id ? (
                                 <>
-                                    <UserDataFilter filterUserList={filterUserList} city_id = {eventData.city_id ? eventData.city_id: user.city_id}/>
+                                    <UserDataFilter filterUserList={filterUserList} eventData={eventData} />
                                     <p>Select Users to Invite to Event</p>
                                 </> 
                             ) : (
                                 <span>Mark Attendees for the {eventData.name}</span>
                             )}
-                            {eventId? (
+                            {event_id? (
                                 <IonRow>
                                     <IonCol className="ion-text-center" size="4">
                                         <IonItem>
@@ -233,33 +224,24 @@ const EventCreate = () => {
                                         <Paginator data={usersList} pageHandler={moveToPage} />
                                     ): null}
                                     {/*<IonListHeader>                    
-                    <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput>
-                  </IonListHeader> */}
+                                        <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput>
+                                    </IonListHeader> */}
 
-                                    <EventUserList 
-                                        usersList={usersList}
-                                        eventId={eventId}
-                                        disable={disable}
-                                        editable={editable}
-                                        setShowPopover = {setShowPopover}                                  
-                                        city_id={eventData.city_id}
-                                        selectAllUsers = {selectAllUsers}
-                                        setInvitees = {setSelectedUsers}
-                                    />
+                                    <EventUserList usersList={usersList} eventId={event_id} disable={disable}
+                                        editable={editable} setShowPopover = {setShowPopover} city_id={eventData.city_id}
+                                        selectAllUsers = {selectAllUsers} setInvitees = {setSelectedUsers} />
                                 </IonList>
                                 {usersList.total? (
                                     <Paginator data={usersList} pageHandler={moveToPage} />
                                 ): null}
                             </>
-                        ):(
-                            <IonLabel>No Users in the selected filter.</IonLabel>
-                        )}
+                        ) : (<IonLabel>No Users in the selected filter.</IonLabel>)}
                     </IonCardContent>
                 </IonCard>
             </IonContent>
         
             {/* If Event ID exists, i.e for Viewing existing events, show an enable/disable edit Button  */}
-            { eventId? (
+            { event_id ? (
                 <>
                     <IonFab vertical="bottom" horizontal="end" slot="fixed">
                         <IonFabButton disabled={!editable} onClick={openEdit}><IonIcon icon={pencil}/></IonFabButton>
@@ -268,9 +250,9 @@ const EventCreate = () => {
                         <IonFabButton disabled={!editable} onClick={closeEdit}> <IonIcon icon={close}/></IonFabButton>
                     </IonFab>   
                 </>
-            ):null }
+            ) : null }
 
-            <IonModal isOpen={showPopover} mode="md" onWillDismiss={e => setShowPopover(false)}>
+            <IonModal isOpen={showPopover} mode="md" onWillDismiss={() => setShowPopover(false)}>
                 <IonHeader>
                     <IonToolbar>Confirm Event Details.</IonToolbar>            
                 </IonHeader>
@@ -289,19 +271,16 @@ const EventCreate = () => {
                                     <p>Repeats Until: <strong>{eventData.repeat_until}</strong></p>
                                 </>
                             ): null}
-                            {/* <ul>
-                  {usersList!==null && usersList.data.filter(user => selectedUsers.indexOf(user.id) >= 0).map(user => {
-                    return(
-                      <li key={user.id}>{user.name}</li>
-                    )
-                  })}
-                </ul> */}
+                            {/* Shows list of all selected/invited volunteers. <ul>
+                            {usersList !== null && usersList.data.filter(user => selectedUsers.indexOf(user.id) >= 0).map(user => {
+                                return (<li key={user.id}>{user.name}</li>)
+                            })}
+                            </ul> */}
                         </IonText>
                     </IonItem>
                     <IonButton color="primary" onClick={submitForm} size="default" expand="full">Confirm</IonButton>
                 </IonContent>                    
             </IonModal>
-        
         </IonPage>      
     );
 };
@@ -315,25 +294,23 @@ const EventUserList = React.memo( function UserList(props) {
     const [ searchText, setSearchText ] = React.useState('');
   
     const toggleCheckAll = async (e) => {
-        if(e.target.checked){
-            setCheckAll(true);
-            let inviteUsers = await props.selectAllUsers();
-            setSelectedUsers(inviteUsers);
-        }
-        else{
+        if(e.target.checked) {
+            setCheckAll(true)
+            let inviteUsers = await props.selectAllUsers()
+            setSelectedUsers(inviteUsers)
+        } else {
             setCheckAll(false);
         }
     }
 
-    let inviteUser = e => {
+    let inviteUser = (e) => {
         let invitee_id = e.target.value;
         let invitees = selectedUsers;            
         if(e.target.checked) {
             if(invitees.indexOf(invitee_id) < 0) {
                 invitees.push(invitee_id);
             }
-        }
-        else {
+        } else {
             if(invitees.indexOf(invitee_id) >= 0) {
                 invitees.splice(invitees.indexOf(invitee_id),1);
             }
@@ -341,7 +318,7 @@ const EventUserList = React.memo( function UserList(props) {
         setSelectedUsers(invitees);
     }
 
-    let markAttendance = async () => {
+    const markAttendance = async () => {
         console.log(selectedUsers);
         let response = await callApi({
             url: `events/${props.eventId}/attended`,
@@ -358,14 +335,10 @@ const EventUserList = React.memo( function UserList(props) {
         }
     }
 
-    let confirmEvent = async() => {
+    const confirmEvent = async() => {
         props.setInvitees(selectedUsers);  
         props.setShowPopover(true);
     }
-
-    React.useEffect(() => {
-        console.log('UserList rendered');
-    })
 
     return (
         <>
@@ -414,9 +387,7 @@ const EventUserList = React.memo( function UserList(props) {
                         {props.editable && props.eventId && props.disable? (
                             <IonCheckbox slot="end" mode="md" 
                                 value={user.id} checked={( user.present || checkAll || (selectedUsers.indexOf(user.id.toString()) >= 0))? true: false} 
-                                onIonChange={inviteUser}
-                            >
-                            </IonCheckbox>
+                                onIonChange={inviteUser}></IonCheckbox>
                         ): null}
                     </IonItem>
                 )
@@ -431,22 +402,41 @@ const EventForm = React.memo((props) => {
   
     const { user } = React.useContext(authContext);
     const [ cities, setCities ] = React.useState({})
-    const [ eventTypes, setEventTypes ] = React.useState({})  
+    const [ eventTypes, setEventTypes ] = React.useState({})
+    const [ verticals, setVerticals ] = React.useState({})
     const [ setIsRecurring ] = React.useState(false);
-    const { getEventTypes, callApi } = React.useContext(dataContext)
+    const { callApi } = React.useContext(dataContext)
 
     const [ eventData, setEventData ] = React.useState({
-        name: '',
-        description: '',
-        starts_on: '',
-        place: '',
+        // name: '',
+        // description: '',
+        // starts_on: '',
+        // place: '',
+        // city_id: user.city_id,
+        // event_type_id: 0,
+        // vertical_id: 0,
+        // audience: "",
+        // role: "",
+        // created_by_user_id: user.id,
+        // latitude: 0,
+        // longitude: 0,
+        // frequency: 'none',
+        // repeat_until: null
+
+        name: 'ED Vol Meet Test Event',
+        description: 'This is a test event',
+        starts_on: '2020-09-30T15:00:00+05:30',
+        place: 'Zoom',
         city_id: user.city_id,
-        event_type_id: 0,
+        event_type_id: "11",
+        vertical_id: 3,
+        audience: "city",
+        role: "volunteer",
         created_by_user_id: user.id,
         latitude: 0,
         longitude: 0,
         frequency: 'none',
-        repeat_until: null,
+        repeat_until: null
     });
     
     const [ userFilterParameter, setUserFilterParameter ] = React.useState({
@@ -456,14 +446,14 @@ const EventForm = React.memo((props) => {
     const [ errorMessage, setErrorMessage ] = React.useState('');
 
     const updateField = e => {    
-        if(e.target.name == 'starts_on'){
+        if(e.target.name === 'starts_on'){
             setEventData({
                 ...eventData,
                 starts_on: e.target.value.replace('T',' ').replace('+05:30','')
             }
             );
         }
-        else if(e.target.name == 'repeat_unil'){
+        else if(e.target.name === 'repeat_unil'){
             setEventData({
                 ...eventData,
                 repeat_until: e.target.value.split('T')[0]
@@ -507,34 +497,21 @@ const EventForm = React.memo((props) => {
         e.preventDefault();    
         if(!eventData.event_type_id){
             setErrorMessage('Select Event Type');        
-        }
-        else{
+        } else{
             setErrorMessage(null);
-            props.sendEventData(eventData);      
+            props.setEventData(eventData);      
             props.getEventUsers(userFilterParameter);      
         }      
     }
   
-  
     React.useEffect(() => {
-        (async function fetchEventTypes() {
-            let eventTypesData = [];
-
-            eventTypesData = await getEventTypes();        
-            if(eventTypesData){
-                setEventTypes(eventTypesData);
-            }                
-        })();
-
-        (async function getCities(){
-            let cityData;
-            cityData = await callApi({url: '/cities'});        
-            if(cityData){
-                setCities(cityData);
-            }
-        })();
-
-    }, [user])
+        function getApiData() {
+            callApi({graphql: "{event_types {id name audience role vertical_id}}", cache_key: "event_types", setter: setEventTypes})
+            callApi({url: "verticals", cache_key: "verticals", setter: setVerticals})
+            callApi({url: 'cities', cache_key: "cities", setter: setCities});
+        }
+        getApiData()
+    }, [])
 
     React.useEffect(() => {
         let eventId = props.eventId;
@@ -543,7 +520,7 @@ const EventForm = React.memo((props) => {
                 let event = await callApi({url: `events/${eventId}`});          
                 if(event){                  
                     setEventData({...event});
-                    props.sendEventData({...event});
+                    props.setEventData({...event});
                 }          
             })();      
         }    
@@ -555,7 +532,7 @@ const EventForm = React.memo((props) => {
         <IonCard className="light eventForm">
             <IonCardHeader>
                 <IonCardTitle>
-                    <IonIcon icon={calendar}></IonIcon> {!disable? 'Add/Edit Event Details' : `${eventData.name}`}
+                    <IonIcon icon={calendar}></IonIcon> { !disable ? 'Add/Edit Event Details' : eventData.name }
                 </IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
@@ -564,39 +541,73 @@ const EventForm = React.memo((props) => {
                         <IonCol size-md="6" size-xs="12">
                             {/* Form to capture event details and/or show once the user opens an event  */}
                             <form onSubmit={createEvent}>
-                                <IonItem>                        
-                                    <IonLabel position="stacked">Event Type</IonLabel>                        
+                                <IonItem>
+                                    <IonLabel position="stacked">Target Audience</IonLabel>
+                                    <IonSelect disabled={disable} mode="md" placeholder="Select Audience" required interface="popover" name="audience" 
+                                        value={eventData.audience} onIonChange={updateField}>
+                                        <IonSelectOption value="city">City</IonSelectOption>
+                                        <IonSelectOption value="center">Shelter</IonSelectOption>
+                                        <IonSelectOption value="vertical">Vertical</IonSelectOption>
+                                        <IonSelectOption value="">All</IonSelectOption>
+                                    </IonSelect>
+                                </IonItem>
+
+                                <IonItem>
+                                    <IonLabel position="stacked">Target Roles</IonLabel>
+                                    <IonSelect disabled={disable} mode="md" placeholder="Select Role" required interface="popover" name="role" 
+                                        value={eventData.role} onIonChange={updateField}>
+                                        <IonSelectOption value="national">Full Timers</IonSelectOption>
+                                        <IonSelectOption value="strat">Strats or Above</IonSelectOption>
+                                        <IonSelectOption value="fellow">Fellows or Above</IonSelectOption>
+                                        <IonSelectOption value="volunteer">Volunteers Or Above</IonSelectOption>
+                                        <IonSelectOption value="">Any</IonSelectOption>
+                                    </IonSelect>
+                                </IonItem>
+
+                                <IonItem>
+                                    <IonLabel position="stacked">Event Vertical</IonLabel>
+                                    <IonSelect disabled={disable} mode="md" placeholder="Select Event Vertical" required interface="popover"
+                                        name="vertical_id" value={eventData.vertical_id} onIonChange={updateField}>
+                                        { verticals.length && verticals.map((vertical,index) => {
+                                            return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
+                                        })}
+                                        <IonSelectOption value="0">All</IonSelectOption>
+                                    </IonSelect>
+                                </IonItem>
+
+                                <IonItem>
+                                    <IonLabel position="stacked">Event Type</IonLabel>
                                     <IonSelect disabled={disable} mode="md" placeholder="Select Event Type" required interface="popover" name="event_type_id" 
-                                        value={eventData.event_type_id} 
-                                        onIonChange={updateField}
-                                    >
-                                        {                                                                                                       
-                                            eventTypes.length && eventTypes.map((eventType,index) => {
-                                                return (
-                                                    <IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>
-                                                )
-                                            })
-                                        }
-                                    </IonSelect>                                               
+                                        value={eventData.event_type_id} onIonChange={updateField}>
+                                        { eventTypes.length && eventTypes.map((eventType,index) => {
+                                            // Filter the Event Type Drop down based on previous options.
+                                            if(eventData.role !== "" && eventType.role != eventData.role) return null
+                                            if(eventData.audience !== "" && eventType.audience != eventData.audience) return null
+                                            if(eventData.vertical_id != 0 && eventType.vertical_id != eventData.vertical_id) return null
+
+                                            return (<IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>)
+                                        })}
+                                    </IonSelect>
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel position="stacked">Event Name</IonLabel>
-                                    <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name" value={eventData.name} disabled={disable}></IonInput>
+                                    <IonInput name="name" type="text" required onIonChange={updateField} placeholder="Enter Event Name" 
+                                        value={eventData.name} disabled={disable}></IonInput>
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel position="stacked">Description</IonLabel>
-                                    <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?" value={eventData.description} disabled={disable}></IonTextarea>
+                                    <IonTextarea name="description" type="text" onIonChange={updateField} placeholder="What is the event for?" 
+                                        value={eventData.description} disabled={disable}></IonTextarea>
                                 </IonItem>
                                 <IonItem>
-                                    <IonLabel position="stacked">Date &amp; Time </IonLabel>                        
-                                    <IonDatetime displayFormat="D MMM YYYY h:mm A" mode="md" min="2020" value={eventData.starts_on} name="starts_on" required placeholder="Enter Event Date"
-                                        onIonChange={updateField} disabled={disable}
-                                        minuteValues="0,15,30,45"
-                                    ></IonDatetime>
+                                    <IonLabel position="stacked">Date &amp; Time </IonLabel>
+                                    <IonDatetime displayFormat="D MMM YYYY h:mm A" mode="md" min="2020" value={eventData.starts_on} name="starts_on" 
+                                        required placeholder="Enter Event Date" onIonChange={updateField} disabled={disable} minuteValues="0,15,30,45"></IonDatetime>
                                 </IonItem>                      
                                 <IonItem>
                                     <IonLabel position="stacked">Event is happening at</IonLabel>
-                                    <IonInput name="place" type="text" onIonChange={updateField} placeholder="Zoom Call ID/Location Name" value={eventData.place} disabled={disable}></IonInput>
+                                    <IonInput name="place" type="text" onIonChange={updateField} placeholder="Zoom Call ID/Location Name" 
+                                        value={eventData.place} disabled={disable}></IonInput>
                                 </IonItem>                
                                 <IonItem className={disable? 'hidden': ''}>
                                     <IonCheckbox  mode="md" name="send_email" color="danger" onIonChange={e => setSendEmail(e.target.checked)}/> &nbsp;
@@ -605,17 +616,11 @@ const EventForm = React.memo((props) => {
                                 <IonItem>
                                     <IonLabel position="stacked">Event City</IonLabel>                        
                                     <IonSelect disabled={disable} mode="md" placeholder="Select City" required interface="popover" name="city_id" 
-                                        value={eventData.city_id ? eventData.city_id: user.city_id} 
-                                        onIonChange={updateField}
-                                    >
+                                        value={eventData.city_id ? eventData.city_id: user.city_id} onIonChange={updateField}>
                                         <IonSelectOption value='0'>National</IonSelectOption>
-                                        {                                                                                                       
-                                            cities.length && cities.map((city,index) => {
-                                                return (
-                                                    <IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>
-                                                )
-                                            })
-                                        }
+                                        {cities.length && cities.map((city,index) => {
+                                            return (<IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>)
+                                        })}
                                     </IonSelect>                        
                                 </IonItem>                      
                 
@@ -625,6 +630,7 @@ const EventForm = React.memo((props) => {
                                 <div className="pl-20">
                                     <IonChip color="primary" className={eventData.frequency === 'none' ? 'selected': ''} value="none" name="frequency" onClick={updateField}>None</IonChip>
                                     <IonChip color="primary" className={eventData.frequency === 'weekly' ? 'selected': ''} value="weekly" name="frequency" onClick={updateField}>Weekly</IonChip>
+                                    <IonChip color="primary" className={eventData.frequency === 'bi-weekly' ? 'selected': ''} value="bi-weekly" name="frequency" onClick={updateField}>Bi-Weekly</IonChip>
                                     <IonChip color="primary" className={eventData.frequency === 'monthly' ? 'selected': ''} value="monthly" name="frequency" onClick={updateField}>Monthly</IonChip>
                                 </div>
 
@@ -637,14 +643,8 @@ const EventForm = React.memo((props) => {
                                                 name="repeat_until" 
                                                 placeholder="Date Until white the event needs to be repeated"
                                                 onIonChange={updateField}
-                                                disabled={disable}
-                                            >
+                                                disabled={disable}>
                                             </IonDatetime>
-                                            {/* <IonInput type="date" 
-                      value={eventData.repeat_until}
-                      onIonChange={updateField} name="repeat_until" placeholder="Date Until white the event needs to be repeated"
-                      disabled={disable}
-                    ></IonInput>*/}
                                         </IonItem>
                                         <IonNote className="eventNote">*Note: If left blank, even will be repeated until 30 April, or end of academic year.</IonNote>
                                     </>
@@ -663,29 +663,24 @@ const EventForm = React.memo((props) => {
                         </IonCol>
                         {/* MAP Is currently disabled, uncomment the code to enable the MAP  */}
                         {/* <IonCol size-md="6" size-xs="12">
-              <MapContainer
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_TOKEN}&v=3.exp&libraries=geometry,drawing,places`}
-                loadingElement={<div style={{ height: `100%` }} />}
-                containerElement={<div style={{ paddingTop: `40px`, height: `400px` }} />}
-                mapElement={<div style={{height: `100%` }} />}
-                coordinates={CITY_COORDINATES[user.city_id]}
-                locationUpdate={getUpdatedLocation}
-                isMarkerShown
-              />
-            </IonCol> */}
+                            <MapContainer
+                                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_TOKEN}&v=3.exp&libraries=geometry,drawing,places`}
+                                loadingElement={<div style={{ height: `100%` }} />}
+                                containerElement={<div style={{ paddingTop: `40px`, height: `400px` }} />}
+                                mapElement={<div style={{height: `100%` }} />}
+                                coordinates={CITY_COORDINATES[user.city_id]}
+                                locationUpdate={getUpdatedLocation}
+                                isMarkerShown
+                            />
+                            </IonCol> */}
                     </IonRow>
                 </IonGrid>                             
             </IonCardContent>
         </IonCard>
     )
-});
-
+})
 
 const UserDataFilter = React.memo((props) => {
-
-    // let filterUser = props.filterUser;
-    let city_id = props.city_id;
-
     const [ verticals, setVerticals ] = React.useState({})
     const [ groupTypes, setGroupTypes ] = React.useState({});
 
@@ -694,11 +689,26 @@ const UserDataFilter = React.memo((props) => {
     const [ selectedGroupType, setSelectedGroupType ] = React.useState(0);
     const [ shelters, setShelters ] = React.useState({})
     const [ cities, setCities ] = React.useState({})
-    const [ userGroups, setUserGroups ] = React.useState({})  
-    const { callApi, getVerticals, getGroupTypes } = React.useContext(dataContext)
+    const [ userGroups, setUserGroups ] = React.useState({})
+    const [ city_id, setCityId ] = React.useState(props.city_id)
+    const { callApi} = React.useContext(dataContext)
+    const { user } = React.useContext(authContext)
 
-    const [ filters, setFilters ] = React.useState({});
-    const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({});    
+    const [ filters, setFilters ] = React.useState({})
+    const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({})
+
+    React.useEffect(() => {
+        (function fetchData(){
+            callApi({url: "verticals", cache_key: "verticals", setter: setVerticals})
+            callApi({url: "groups", cache_key: "groups", setter: setUserGroups})
+            callApi({url: "group_types", cache_key: "group_types", setter: setGroupTypes})
+            callApi({url: 'cities', cache_key: "cities", setter: setCities});
+        })();
+
+        if(!city_id) {
+            setCityId(user.city_id)
+        }
+    },[])
 
     const filterUser = async (e) => {
         let tempFilter = filters;
@@ -708,16 +718,16 @@ const UserDataFilter = React.memo((props) => {
                 setSelectedGroups(e.target.value);
                 tempFilter = {...tempFilter, groups_in: e.target.value.join(',')}
             }
-        }
-        else if(e.target.name === 'cities_in'){
+
+        } else if(e.target.name === 'city_in'){
             let city_ids = e.target.value;
             if(city_ids.indexOf(0) >= 0){
                 city_ids.splice(city_ids.indexOf(0),1);
             }
             setSelectedCities(e.target.value);
-            tempFilter = {...tempFilter, cities_in: e.target.value.join(',')}
-        }    
-        else{
+            tempFilter = {...tempFilter, city_in: e.target.value.join(',')}
+
+        } else {
             tempFilter = {...filters, [e.target.name]: e.target.value};
         }    
 
@@ -744,8 +754,7 @@ const UserDataFilter = React.memo((props) => {
         }
     }
 
-    const clearFilter = async (e) => {
-        
+    const clearFilter = async () => {
         let filterParameters = filters;
         let groupFilterParameter = userGroupFilterParameter;
 
@@ -762,119 +771,65 @@ const UserDataFilter = React.memo((props) => {
         props.filterUserList(filterParameters);
     }
 
-    // Getting Filter Values only once during render   
     React.useEffect(() => {
-        console.log(city_id);
-        (async function fetchShelters() {
-            let shelterData = [];
-            shelterData = await callApi({url: "cities/" + city_id + "/centers" })
-            if(shelterData){
-                setShelters(shelterData)
-            }
-        })();
-    },[city_id])
-
-
-    React.useEffect(() => {
-        (async function fetchVerticals(){
-            let verticalData = await getVerticals();
-            if(verticalData){
-                setVerticals(verticalData)
-            }
-        })();
-
-        (async function fetchUserGroups() {
-            let userGroupData = await callApi({url: "groups"})
-            if(userGroupData){
-                setUserGroups(userGroupData) 
-            }        
-        })();
-
-        (async function fetchGroupTypes() {
-            let groupTypesData = await getGroupTypes();
-            if(groupTypesData){
-                setGroupTypes(groupTypesData);
-            }
-        })();
-    },[])
-
-    React.useEffect(() => {
-        if(city_id === 0 || city_id === '0'){
-            (async function fetchCities(){
-                let city_data = await callApi({url: 'cities'});
-                if(city_data){
-                    setCities(city_data);
-                }
-            })();
-        }
-    },[city_id])
+        if(!city_id) return;
+        (function fetchShelters() {
+            callApi({graphql: `{centers(city_id:${city_id}) {id name}}`, cache_key: `cities_${city_id}_centers`, setter: setShelters })
+        })()
+    } ,[city_id])
 
     return (
         <>
             <IonRow>
-                <IonCol size="12">
-        Select one or more of the filters to filter Volunteer's List.
-                </IonCol>
+                <IonCol size="12">Select one or more of the filters to filter Volunteer&apos;s List.</IonCol>
                 {cities.length ? (
                     <IonCol size-xs="12" size-md='3'>
                         <IonItem>
-                            <IonSelect mode="md" placeholder="Shelter Cities" interface="alert" name="cities_in" multiple value={selectedCities} onIonChange={filterUser}>
-                                {
-                                    cities.map((city, index) => {
-                                        return (
-                                            <IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>
-                                        )
-                                    })
-                                }
+                            <IonSelect mode="md" placeholder="Shelter Cities" interface="alert" name="city_in" multiple value={selectedCities} onIonChange={filterUser}>
+                                {cities.map((city, index) => {
+                                    return (<IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>)
+                                })}
                             </IonSelect>
                         </IonItem>
                     </IonCol>
-                ): null}      
+                ) : null }
+
                 {!cities.length && shelters.length? (
                     <IonCol size-xs="12" size-md="3">        
                         <IonItem>          
                             <IonSelect mode="md" placeholder="Select Shelter" interface="popover" name="center_id" value={filters.center_id} onIonChange={filterUser}>
-                                {
-                                    shelters.map((shelter,index) => {
-                                        return (
-                                            <IonSelectOption key={index} value={shelter.id}>{shelter.name}</IonSelectOption>
-                                        )
-                                    })
-                                }
+                                {shelters.map((shelter,index) => {
+                                    return (<IonSelectOption key={index} value={shelter.id}>{shelter.name}</IonSelectOption>)
+                                })}
                             </IonSelect>          
                         </IonItem>        
                     </IonCol>
-                ):null}
+                ) : null }
+
                 {verticals.length? (
                     <IonCol size-xs="12" size-md="3">
                         <IonItem>          
                             <IonSelect mode="md" placeholder="Select Verical" interface="popover" name="vertical_id" value={filters.vertical_id} onIonChange={filterUser}>
-                                {
-                                    verticals.map((vertical,index) => {
-                                        return (
-                                            <IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>
-                                        )
-                                    })
-                                }
+                                { verticals.map((vertical,index) => {
+                                    return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
+                                })}
                             </IonSelect>          
                         </IonItem>
                     </IonCol>
-                ):null}
+                ) : null }
+
                 {groupTypes.length? (
                     <IonCol size-xs="12" size-md="3">
                         <IonItem>                              
                             <IonSelect mode="md" placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUserGroups} multiple>
-                                {
-                                    groupTypes.filter(groupType => groupType.type !== 'executive').map((groupType,index) => {
-                                        return (
-                                            <IonSelectOption key={index} value={groupType.type}>{ groupType.type }</IonSelectOption>
-                                        )
-                                    })
-                                }
+                                { groupTypes.filter(groupType => groupType.type !== 'executive').map((groupType,index) => {
+                                    return (<IonSelectOption key={index} value={groupType.type}>{ groupType.type }</IonSelectOption>)
+                                })}
                             </IonSelect>            
                         </IonItem>
                     </IonCol>
-                ):null}
+                ) : null }
+
                 {userGroups.length? (
                     <IonCol size-xs="12" size-md="3">
                         <IonItem>          
@@ -882,15 +837,12 @@ const UserDataFilter = React.memo((props) => {
                                 {userGroups.filter(group => (filters.vertical_id && (group.vertical_id === filters.vertical_id)) || (!filters.vertical_id))
                                     .filter(group => (selectedGroupType && selectedGroupType.indexOf(group.type)>=0) || (!selectedGroupType))
                                     .map((group,index) => {
-                                        return (
-                                            <IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>
-                                        )
-                                    })
-                                }
+                                        return (<IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>)
+                                    })}
                             </IonSelect>          
                         </IonItem>
                     </IonCol>
-                ):null}
+                ) : null }
             </IonRow>                  
             <IonItem>
                 <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filter(s)</IonButton>

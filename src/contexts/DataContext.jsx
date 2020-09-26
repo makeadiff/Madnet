@@ -122,7 +122,8 @@ const useHandler = () => {
             cache: true,
             name: "",
             key: "",
-            cache_key: ""
+            cache_key: "",
+            setter: false // Setter function. If this is given, the function will automatically call the setter function with the valid data.
         }
         if(user_args.url !== undefined) {
             default_args["name"] = user_args.url.split(/[\/\?\(]/)[0]
@@ -141,10 +142,16 @@ const useHandler = () => {
         // See if it exists in Cache first.
         if(args.type === "rest" && args.method === "get" && args.cache === true) {
             let data = getLocalCache(args.type, args.url, args.cache_key)
-            if(data) return data
+            if(data) {
+                if(typeof args.setter === "function") args.setter.call({}, data)
+                return data
+            }
         } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
             let data = getLocalCache(args.type, args.graphql, args.cache_key)
-            if(data) return data
+            if(data) {
+                if(typeof args.setter === "function") args.setter.call({}, data)
+                return data
+            }
         }
         
         setLoading(true)        
@@ -184,6 +191,8 @@ const useHandler = () => {
         } else if(args.type === "graphql" && args.graphql_type === "query" && args.cache === true) {
             setLocalCache(args.type, args.graphql, data, args.cache_key)
         }
+
+        if(typeof args.setter === "function") args.setter.call({}, data)
         return data
     }
 
@@ -227,11 +236,9 @@ const useHandler = () => {
     const getUsers = async (params) => {
         let query_parts = []
 
-        if(!params){
-            console.log('here');
+        if(!params) {
             return await callApi({url: '/users_paginated'});
-        }
-        else{
+        } else {
             for(let param in params) {
                 query_parts.push(`${param}=${params[param]}`)
             }            

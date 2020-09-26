@@ -1,8 +1,8 @@
 Priority 1
 Event > New Event
     Dependent drop down for Event Type - Vertical / Role Type. Details : https://docs.google.com/spreadsheets/d/1rOpCb9xMBeB_FUGZLIDEGozwoAqEd9YkA1CWA6r66F8/edit?ts=5f3f759b#gid=0
-	Event_Type.audiance vertical,city
-	Event_Type.role		fellow,strat,volunteer
+	Event_Type.audience vertical,city,center,other
+	Event_Type.role		fellow,strat,volunteer,national,other
 
 Priority 2
 Event > New Event > Invite Volunteers
