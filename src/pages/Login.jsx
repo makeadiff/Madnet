@@ -34,7 +34,7 @@ function Login() {
             setLoading(true)
             api.rest(`users?identifier=${user.email}`, "get").then(loginUser)
 
-        }).catch(e => showMessage(e.message, "error"));
+        }).catch(e => showMessage(e.message, "error"))
     }, [])
 
     const loginUser = (user_data, method) => {
@@ -43,7 +43,7 @@ function Login() {
         let user = false
         if(user_data) {
             user = user_data.users;
-            if(method === "google") user = user_data.users[0];
+            if(method === "google") user = user_data.users[0]
         }
 
         if(user) {
