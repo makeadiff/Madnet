@@ -9,7 +9,6 @@ import { appContext } from "../../contexts/AppContext"
 import { dataContext } from "../../contexts/DataContext"
 
 import "./Form.css"
-import './Users.css'
 
 const UserList = ({ segment }) => {
     const { user } = React.useContext(authContext)

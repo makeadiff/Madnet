@@ -3,10 +3,10 @@ import * as React from "react";
 export const appContext = React.createContext({
     message: ["", false],
     setMessage: () => {},
-	showMessage: () => {},
-	loading: false,
-	setLoading: () => {},
-	data: {},
+    showMessage: () => {},
+    loading: false,
+    setLoading: () => {},
+    data: {},
     setData: () => {},
     notifications: [],
     addNotification: () => {}
@@ -15,7 +15,7 @@ export const appContext = React.createContext({
 const { Provider } = appContext;
 
 const AppProvider = ({ children }) => {
-    const { message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification } = useGlobalHandler();
+    const { message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification } = useGlobalHandler()
 
     return (
         <Provider value={{ message,setMessage,showMessage,loading,setLoading,data,setData,notifications,addNotification }}>
@@ -41,8 +41,8 @@ const useGlobalHandler = () => {
         data[key] = value
     }
 
-    const addNotification = (new_notification) => {
-        setNotifications([new_notification].concat(notifications))
+    const addNotification = (newNotification) => {
+        setNotifications([newNotification].concat(notifications))
     }
 
     return {

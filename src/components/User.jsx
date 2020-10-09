@@ -1,10 +1,12 @@
-import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon, IonItemDivider, IonLabel, IonCardContent, IonAlert } from '@ionic/react'
+import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon, IonCardContent, IonAlert } from '@ionic/react'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
-import {ellipsisVertical, trash, personRemove} from 'ionicons/icons';
+import {ellipsisVertical, trash, personRemove, person, pencilOutline } from 'ionicons/icons';
 import { authContext } from "../contexts/AuthContext"
 import { dataContext } from "../contexts/DataContext"
+
+import './Users.css'
 
 const UserDetail = ({user, index}) => {  
 
@@ -39,70 +41,61 @@ const UserDetail = ({user, index}) => {
 
     return (
         <>
-            <IonPopover
-                isOpen={showOptions}
-                onDidDismiss={e => setShowOptions(false)} > 
-      
-                <IonItem button routerLink={ `/users/${user.id}/` } routerDirection="none" onClick={() => setShowOptions(false)}> View {user.name} </IonItem>
+            <IonPopover isOpen={showOptions} onDidDismiss={e => setShowOptions(false)} > 
+                <IonItem button routerLink={ `/users/${user.id}/` } routerDirection="none" onClick={() => setShowOptions(false)}>
+                    <IonIcon className="userOptions" icon={person}></IonIcon> View {user.name}
+                </IonItem>
                 { hasPermission('user_edit') ? (
                     <>
-                        <IonItemDivider>
-                            <IonLabel> Edit {user.name} </IonLabel>                          
-                        </IonItemDivider>
-                        <IonItem button onClick={(e)=>setConfirmAlumni(true)}><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
-                        <IonItem button onClick={(e)=>setConfirmDelete(true)}><IonIcon className="userOptions" icon={trash}></IonIcon>Delete </IonItem>
+                        <IonItem button routerLink={ `/users/${user.id}/edit` } routerDirection="none" onClick={() => setShowOptions(false)}>
+                            <IonIcon className="userOptions" icon={pencilOutline}></IonIcon> Edit {user.name}
+                        </IonItem>
+                        <IonItem button onClick={()=>setConfirmAlumni(true)}><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
+                        <IonItem button onClick={()=>setConfirmDelete(true)}><IonIcon className="userOptions" icon={trash}></IonIcon> Delete</IonItem>
                     </>
                 ): null }      
-        
             </IonPopover>
+
             <IonCard class="light list" key={index}>
-                <Link to={ `/users/${user.id}/` }>
-                    <IonCardHeader className="noPadding">
-                        <IonCardTitle>          
-                            <p>
-                #{index+1}. {user.name}
-                            </p>                 
-                        </IonCardTitle>
-                    </IonCardHeader>
-                </Link>
-                <IonCardContent>
+                <IonCardHeader>
                     <IonGrid>
                         <IonRow>
                             <IonCol size="11">
-                                <IonRow>
-                                    <IonCol size-md="5" size-xs="6">                    
-                                        <p>Email: <strong>{ user.email }</strong></p>
-                                        {user.mad_email ? (
-                                            <p>MAD Email: { user.mad_email }</p>
-                                        ): null}
-                                        <p>{ user.phone }</p>                    
-                                    </IonCol>
-                                    <IonCol size-md="2" size-xs="6">                    
-                                        <p>Credit<br/><strong>{ user.credit }</strong></p>                    
-                                    </IonCol>
-                                    <IonCol size-md="5" size-xs="12">
-                                        {
-                                            user.groups.map((role,count) => {
-                                                return (
-                                                    <IonChip className="roles" key={count}>{role.name}</IonChip>
-                                                )
-                                            })
-                                        }
-                                    </IonCol>
-                                </IonRow>
+                                <IonCardTitle><Link to={ `/users/${user.id}/` }>#{index+1}. {user.name}</Link></IonCardTitle>
                             </IonCol>
                             <IonCol size="1">
-                                <IonButton  size="small" fill="clear" slots="icon-only" color="light" className="userEditButton" onClick={() => setShowOptions(true)}><IonIcon icon={ellipsisVertical}></IonIcon></IonButton>
+                                <IonItem size="small" slots="end" className="userEditButton" onClick={() => setShowOptions(true)}>
+                                    <IonIcon icon={ellipsisVertical} color="light"></IonIcon>
+                                </IonItem>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
+                </IonCardHeader>
+                
+                <IonCardContent>
+                    <IonGrid>
+                        <IonRow>
+                            <IonCol size-md="4" size-xs="11">                    
+                                <p>Email: <strong>{ user.email }</strong></p>
+                                {user.mad_email ? ( <p>MAD Email: { user.mad_email }</p> ) : null}
+                                <p>{ user.phone }</p>
+                                <p>Credit: <strong>{ user.credit }</strong></p>
+                            </IonCol>
+                            <IonCol size-md="7" size-xs="12">
+                                {user.groups.map((role,count) => {
+                                    return (<IonChip className="roles" key={count}>{role.name}</IonChip>)
+                                })}
                             </IonCol>
                         </IonRow>
                     </IonGrid>
                 </IonCardContent>
             </IonCard>
+
             <IonAlert
                 isOpen={ confirmDelete }
                 onDidDismiss={ () => { setConfirmDelete(false); setShowOptions(false); } }
-                header={'Delete'}
-                message={'Are you sure you wish to delete ' + user.name + '?'}
+                header="Delete"
+                message={`Are you sure you wish to delete ${user.name}?`}
                 buttons={[
                     {
                         text: 'Cancel',

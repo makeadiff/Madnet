@@ -4,7 +4,6 @@ import React from 'react'
 import Title from "../../components/Title"
 import UserList from "./List"
 
-
 const UserIndex = () => {
     const [segment, setSegment] = React.useState('all')
 

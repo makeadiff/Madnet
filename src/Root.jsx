@@ -59,7 +59,7 @@ const Root = () => {
                         onDidDismiss={ () => setMessage(["", false]) }
                         message={ message[0] }
                         className={ (message[1]) ? message[1] + "-toast" : "" }
-                        duration={3000} />
+                        duration={10000} />
 
                     <IonRouterOutlet id="main">
                         <Route path="/login">
@@ -114,7 +114,10 @@ const Root = () => {
                         {/* <PrivateRoute path="/users/:user_id/view">
                             <UserView />
                         </PrivateRoute> */}
-                        <PrivateRoute path="/users/:user_id/">
+                        <PrivateRoute path="/users/:user_id/" exact={true}>
+                            <UserForm />
+                        </PrivateRoute>
+                        <PrivateRoute path="/users/:user_id/:action" exact={true}>
                             <UserForm />
                         </PrivateRoute>
                         <PrivateRoute path="/users" exact={true} >

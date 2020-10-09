@@ -22,16 +22,24 @@ ion-icon.userOptions{
   font-size: 18px;
 }
 
-ion-card-header.noPadding{
-  padding: 0;
-  padding-left: 10px;
+ion-card-header, ion-card-content {
+  padding: 0 !important;
+}
+ion-card-title {
+  padding-top: 5px;
+}
+ion-row {
+  margin-bottom: 0;
 }
 
-ion-button.userEditButton{
+.userEditButton {
   float: right;
+  height: 25px;
 }
-
-a{
+.userEditButton ion-icon {
+  margin: -20px -9px 0 0;
+}
+a {
   text-decoration: none;
 }
 

@@ -39,6 +39,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --browser",
+    "debug": "NODE_ENV=debug jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -65,6 +66,8 @@
     "eslint-plugin-react": "^7.19.0",
     "firebase-mock": "^2.3.2",
     "protractor-react-selector": "^2.2.2",
+    "puppeteer": "^5.3.1",
+    "query-selector-shadow-dom": "^0.7.1",
     "react-test-renderer": "^16.13.1"
   },
   "description": "Make A Differenc(MAD) Internal App"

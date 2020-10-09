@@ -22,7 +22,7 @@ const Dashboard = () => {
                         <IonCol size-md="6" size-xs="12">
                             <IonCard className="light">
                                 <IonCardHeader>
-                                    <IonCardTitle>Hello, {user.name}</IonCardTitle>
+                                    <IonCardTitle id="greeting-title">Hello, {user.name}</IonCardTitle>
                                 </IonCardHeader>
                                 <IonCardContent>
                                     <IonGrid>
