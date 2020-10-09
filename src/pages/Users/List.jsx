@@ -43,18 +43,19 @@ const UserList = ({ segment }) => {
 
 const Listing = ({ users, moveToPage }) => {
     return (
-        <>
-            <Paginator data={users} pageHandler={moveToPage}></Paginator>
-            <IonList>
-                {users.total && users.data.map((user, index) => {
-                    return (
-                        <UserDetail user={user} index={users.from + index - 1} key={index}/>
-                    );
-                })}
-                { (users.length === 0) ? (<IonItem><IonLabel>No users found.</IonLabel></IonItem>) : null }
-            </IonList>
-            <Paginator data={users} pageHandler={moveToPage}></Paginator>
-        </>
+        (users.total > 0) ?
+            <>
+                <Paginator data={users} pageHandler={moveToPage}></Paginator>
+                <IonList>
+                    {users.data.map((user, index) => {
+                        return (
+                            <UserDetail user={user} index={users.from + index - 1} key={index}/>
+                        );
+                    })}
+                </IonList>
+                <Paginator data={users} pageHandler={moveToPage}></Paginator>
+            </> : 
+            <IonItem><IonLabel>No users found.</IonLabel></IonItem>
     )
 }
 

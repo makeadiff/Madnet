@@ -1,4 +1,4 @@
-import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonButton, IonPopover, IonIcon, IonCardContent, IonAlert } from '@ionic/react'
+import { IonItem, IonCard, IonGrid, IonRow, IonCol, IonChip, IonCardHeader, IonCardTitle, IonPopover, IonIcon, IonCardContent, IonAlert } from '@ionic/react'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
