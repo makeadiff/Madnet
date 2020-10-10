@@ -22,7 +22,7 @@ ion-icon.userOptions{
   font-size: 18px;
 }
 
-ion-card-header, ion-card-content {
+.user ion-card-header, .user ion-card-content {
   padding: 0 !important;
 }
 ion-card-title {

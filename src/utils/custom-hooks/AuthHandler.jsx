@@ -50,7 +50,7 @@ const useAuthHandler = (initialState) => {
             else if(grp.type === 'strat'){
                 isStrat = true;
             }
-            else if(grp.typw === 'fellow'){
+            else if(grp.type === 'fellow'){
                 isFellow = true;
             }
         }

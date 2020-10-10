@@ -56,7 +56,7 @@ const UserDetail = ({user, index}) => {
                 ): null }      
             </IonPopover>
 
-            <IonCard class="light list" key={index}>
+            <IonCard class="light list user" key={index}>
                 <IonCardHeader>
                     <IonGrid>
                         <IonRow>

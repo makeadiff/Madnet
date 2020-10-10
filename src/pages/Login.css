@@ -34,7 +34,7 @@ ion-content{
   margin: auto;
   position: relative;
   top: 50%;
-  transform: translateY(-50%);    
+  transform: translateY(-50%);
 }
 
 .loginCard ion-item{

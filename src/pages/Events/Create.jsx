@@ -4,6 +4,7 @@ import { IonPage, IonLabel,IonContent, IonInput,IonAvatar,IonFab, IonFabButton,I
 import { calendar, pencil, close, checkmarkCircle, closeCircle, ellipse } from 'ionicons/icons'
 import React from 'react';
 import { useParams, useHistory } from "react-router-dom"
+import moment from 'moment'
 import { CITY_COORDINATES } from '../../utils/Constants'
 
 import Title from "../../components/Title"
@@ -287,11 +288,10 @@ const EventCreate = () => {
 
 // Component to Show Users List
 const EventUserList = React.memo( function UserList(props) {
-    // usersList = props.usersList;
-    const [ checkAll, setCheckAll ] = React.useState(false);
-    const [ selectedUsers, setSelectedUsers ] = React.useState([]);
-    const { callApi } = React.useContext(dataContext);
-    const [ searchText, setSearchText ] = React.useState('');
+    const [ checkAll, setCheckAll ] = React.useState(false)
+    const [ selectedUsers, setSelectedUsers ] = React.useState([])
+    const { callApi } = React.useContext(dataContext)
+    const [ searchText, setSearchText ] = React.useState('')
   
     const toggleCheckAll = async (e) => {
         if(e.target.checked) {
@@ -370,15 +370,9 @@ const EventUserList = React.memo( function UserList(props) {
                         <IonLabel>
                             <h2>{user.name}{props.city_id == 0? ', '+(CITY_COORDINATES[user.city_id].name): null}</h2>
                             <h3 className="no-padding">{user.mad_email ? user.mad_email : user.email} {user.phone ? '| ' + user.phone: ''}</h3>
-                            <p>
-                                {
-                                    user.groups && user.groups.map((group,index) => {
-                                        return (
-                                            <span key={index}>{group.name}{(index < user.groups.length - 1) ? ', ': null}</span>
-                                        )
-                                    })
-                                }
-                            </p>
+                            <p>{user.groups && user.groups.map((group,index) => {
+                                return (<span key={index}>{group.name}{(index < user.groups.length - 1) ? ', ': null}</span>)
+                            })}</p>
                         </IonLabel>
                         {props.eventId && props.disable && user.rsvp? (
                             <span>RSVP: <IonIcon icon={user.rsvp === 'going' || user.rsvp === 'maybe' ? checkmarkCircle: (user.rsvp === 'cant_go' ? closeCircle: ellipse)} 
@@ -400,11 +394,10 @@ const EventUserList = React.memo( function UserList(props) {
 const EventForm = React.memo((props) => {
     let disable = props.disable;
   
-    const { user } = React.useContext(authContext);
+    const { user, accessLevel } = React.useContext(authContext)
     const [ cities, setCities ] = React.useState({})
     const [ eventTypes, setEventTypes ] = React.useState({})
     const [ verticals, setVerticals ] = React.useState({})
-    const [ setIsRecurring ] = React.useState(false);
     const { callApi } = React.useContext(dataContext)
 
     const [ eventData, setEventData ] = React.useState({
@@ -476,21 +469,6 @@ const EventForm = React.memo((props) => {
                 setUserFilterParameter({...tempFilter});
             }
         }
-        // else if(e.target.name === 'event_type_id'){
-        //     let selectedType = eventTypes.filter(type => type.id == e.target.value);
-        //     if(selectedType[0] && selectedType[0].vertical_id){
-        //         // setSelectedVertical(selectedType[0].vertical_id);
-        //         // setUserFilterParameter({...userFilterParameter, vertical_id: selectedType[0].vertical_id});
-        //     }
-        // }
-        else if(e.target.name === 'frequency'){
-            if(e.target.value !== 'none'){
-                setIsRecurring(true);
-            }
-            else{
-                setIsRecurring(false);
-            }
-        }
     }
   
     let createEvent = async (e) => {
@@ -556,8 +534,8 @@ const EventForm = React.memo((props) => {
                                     <IonLabel position="stacked">Target Roles</IonLabel>
                                     <IonSelect disabled={disable} mode="md" placeholder="Select Role" required interface="popover" name="role" 
                                         value={eventData.role} onIonChange={updateField}>
-                                        <IonSelectOption value="national">Full Timers</IonSelectOption>
-                                        <IonSelectOption value="strat">Strats or Above</IonSelectOption>
+                                        { (accessLevel() === "director") ? <IonSelectOption value="national">Full Timers</IonSelectOption> : null }
+                                        { (accessLevel() === "director" || accessLevel() === "strat") ? <IonSelectOption value="strat">Strats or Above</IonSelectOption> : null }
                                         <IonSelectOption value="fellow">Fellows or Above</IonSelectOption>
                                         <IonSelectOption value="volunteer">Volunteers Or Above</IonSelectOption>
                                         <IonSelectOption value="">Any</IonSelectOption>
@@ -616,7 +594,7 @@ const EventForm = React.memo((props) => {
                                 <IonItem>
                                     <IonLabel position="stacked">Event City</IonLabel>                        
                                     <IonSelect disabled={disable} mode="md" placeholder="Select City" required interface="popover" name="city_id" 
-                                        value={eventData.city_id ? eventData.city_id: user.city_id} onIonChange={updateField}>
+                                        value={eventData.city_id ? eventData.city_id : user.city_id} onIonChange={updateField}>
                                         <IonSelectOption value='0'>National</IonSelectOption>
                                         {cities.length && cities.map((city,index) => {
                                             return (<IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>)
@@ -638,15 +616,17 @@ const EventForm = React.memo((props) => {
                                     <>
                                         <IonItem>
                                             <IonLabel position="stacked">Repeat Event Until</IonLabel>
-                                            <IonDatetime displayFormat="MMM YYYY" mode="md"
+                                            <IonDatetime displayFormat="DD MMM YYYY" mode="md"
                                                 value={eventData.repeat_until} 
                                                 name="repeat_until" 
-                                                placeholder="Date Until white the event needs to be repeated"
+                                                placeholder="Date until when the event needs to be repeated"
                                                 onIonChange={updateField}
+                                                min={ moment().format("YYYY-MM-DD") } 
+                                                max={ moment(moment().format("YYYY") +" April 30").add(1, "year").format("YYYY-MM-DD") }
                                                 disabled={disable}>
                                             </IonDatetime>
                                         </IonItem>
-                                        <IonNote className="eventNote">*Note: If left blank, even will be repeated until 30 April, or end of academic year.</IonNote>
+                                        <IonNote className="eventNote">If left blank, even will be repeated until 30 April, or end of academic year.</IonNote>
                                     </>
                                 ): null}
 
@@ -692,7 +672,7 @@ const UserDataFilter = React.memo((props) => {
     const [ userGroups, setUserGroups ] = React.useState({})
     const [ city_id, setCityId ] = React.useState(props.city_id)
     const { callApi} = React.useContext(dataContext)
-    const { user } = React.useContext(authContext)
+    const { user, accessLevel } = React.useContext(authContext)
 
     const [ filters, setFilters ] = React.useState({})
     const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({})
@@ -781,8 +761,8 @@ const UserDataFilter = React.memo((props) => {
     return (
         <>
             <IonRow>
-                <IonCol size="12">Select one or more of the filters to filter Volunteer&apos;s List.</IonCol>
-                {cities.length ? (
+                <IonCol size="12">Filter Volunteers</IonCol>
+                {cities.length && (accessLevel() === "director" || accessLevel() === "strat") ? (
                     <IonCol size-xs="12" size-md='3'>
                         <IonItem>
                             <IonSelect mode="md" placeholder="Shelter Cities" interface="alert" name="city_in" multiple value={selectedCities} onIonChange={filterUser}>
