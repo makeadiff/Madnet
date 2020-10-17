@@ -47,20 +47,17 @@ const EventCreate = () => {
         setUserSelectable(true)
     }
 
-    const filterUserList = async (params) => {         
-        console.log(params)
-        let filterParams = {...params}
-        if(params.city_in && (filterParams.city_id || filterParams.city_id === 0)){
-            delete filterParams.city_id
-        } else if(params.city_in === ''){        
-            delete filterParams.city_in
-        } else if(!params.city_in && eventData.city_id !== 0){             
-            filterParams.city_id = eventData.city_id
+    const filterUserList = async (params) => {
+        let api_params = {...params} // We do this to make sure its a copy - and not a reference. By default JS makes an refernce of an object 
+        if(params.city_in.length <= 1 && params.city_id){
+            delete api_params.city_in
+        } else if(params.city_in.length > 1) {
+            delete api_params.city_id
+            api_params.city_in = params.city_in.join(",")
         }
-        console.log(filterParams)
 
-        setUserFilterParameter(filterParams)
-        let users = await getUsers(filterParams)
+        setUserFilterParameter(params)
+        let users = await getUsers(api_params)
         if(users) {
             setUsersList(users)
         }
@@ -113,7 +110,7 @@ const EventCreate = () => {
                 }
             })
 
-            let recurring = false;
+            let recurring = false
         
             if(event.frequency!=='none') {
                 recurring = await callApi({
@@ -125,12 +122,12 @@ const EventCreate = () => {
                     }
                 })
             } else {
-                recurring = true;
+                recurring = true
             }          
 
             if(sendInvites && recurring){
-                setShowPopover(false);            
-                history.push(`/events/${event_id}`);
+                setShowPopover(false)
+                history.push(`/events/${event_id}`)
             }
         }
     }
@@ -138,31 +135,31 @@ const EventCreate = () => {
     React.useEffect(() => {      
         if(event_id !== undefined && !isNaN(event_id) && event_id !== "0"){      
             (async function getEventsData(){
-                let users = await callApi({url: `events/${event_id}/users`});
+                let users = await callApi({url: `events/${event_id}/users`})
                 if(users){
-                    setUsersList({data: users});
-                    setUserSelectable(true);
+                    setUsersList({data: users})
+                    setUserSelectable(true)
                 }
             })();
-            setDisable(true);
+            setDisable(true)
         } else {
-            setDisable(false);
+            setDisable(false)
         }
             
     }, [event_id])
 
     React.useEffect(() => {
         if(!accessLevel()){
-            console.log('No access');
+            console.log('No access')
         } else {
             let access = accessLevel()
-            if(access === 'director' || access === 'director'){
-                setEditable(true);
+            if(access === 'executive' || access === 'director'){
+                setEditable(true)
             } else {
-                setEditable(false);
+                setEditable(false)
             }
         }
-    },[user])
+    }, [user])
 
     return (      
         <IonPage>        
@@ -287,7 +284,7 @@ const EventCreate = () => {
 };
 
 // Component to Show Users List
-const EventUserList = React.memo( function UserList(props) {
+const EventUserList = React.memo(function UserList(props) {
     const [ checkAll, setCheckAll ] = React.useState(false)
     const [ selectedUsers, setSelectedUsers ] = React.useState([])
     const { callApi } = React.useContext(dataContext)
@@ -319,7 +316,6 @@ const EventUserList = React.memo( function UserList(props) {
     }
 
     const markAttendance = async () => {
-        console.log(selectedUsers);
         let response = await callApi({
             url: `events/${props.eventId}/attended`,
             method: 'post',
@@ -328,7 +324,6 @@ const EventUserList = React.memo( function UserList(props) {
             }
         })
 
-        console.log(response);
         if(response){
             console.log('Attendance Marked');
             props.setInvitees(selectedUsers);
@@ -665,8 +660,7 @@ const UserDataFilter = React.memo((props) => {
     const [ groupTypes, setGroupTypes ] = React.useState({});
 
     const [ selectedGroups, setSelectedGroups ] = React.useState(0)
-    const [ selectedCities, setSelectedCities ] = React.useState(0)
-    const [ selectedGroupType, setSelectedGroupType ] = React.useState(0);
+    const [ selectedGroupType, setSelectedGroupType ] = React.useState(0)
     const [ shelters, setShelters ] = React.useState({})
     const [ cities, setCities ] = React.useState({})
     const [ userGroups, setUserGroups ] = React.useState({})
@@ -674,7 +668,11 @@ const UserDataFilter = React.memo((props) => {
     const { callApi} = React.useContext(dataContext)
     const { user, accessLevel } = React.useContext(authContext)
 
-    const [ filters, setFilters ] = React.useState({})
+    const [ filters, setFilters ] = React.useState({
+        "city_id": [props.eventData.city_id],
+        "vertical_id": props.eventData.vertical_id, 
+        "role": props.eventData.role
+    })
     const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({})
 
     React.useEffect(() => {
@@ -688,31 +686,56 @@ const UserDataFilter = React.memo((props) => {
         if(!city_id) {
             setCityId(user.city_id)
         }
-    },[])
 
-    const filterUser = async (e) => {
-        let tempFilter = filters;
+        if(city_id) {
+            setFilters({...filters, "city_in": [city_id.toString()]})
+        }
+    }, [])
+
+    React.useEffect(() => {
+        let newFilter = {}
+        if(props.eventData.city_id) {
+            newFilter.city_in = [props.eventData.city_id]
+        }
+        if(props.eventData.vertical_id) {
+            newFilter.vertical_id = props.eventData.vertical_id
+        }
+        if(props.eventData.role) {
+            newFilter.role = props.eventData.role
+            setSelectedGroupType(props.eventData.role)
+        }
+
+        setFilters(newFilter)
+    }, [props.eventData])
+
+    React.useEffect(() => {
+        console.log(filters)
+    }, [filters])
+
+    const filterUser = (e) => {
+        let tempFilter = filters
+
         if(e.target.name === 'group_id'){
-            let selectedValues = e.target.value;
-            if(selectedValues.length > 0){
-                setSelectedGroups(e.target.value);
-                tempFilter = {...tempFilter, groups_in: e.target.value.join(',')}
-            }
+            setSelectedGroups(e.target.value);
+            tempFilter.groups_in = e.target.value
 
         } else if(e.target.name === 'city_in'){
-            let city_ids = e.target.value;
-            if(city_ids.indexOf(0) >= 0){
-                city_ids.splice(city_ids.indexOf(0),1);
+            let city_ids = e.target.value
+
+            if(city_ids.length > 1 && city_ids.indexOf(0) >= 0) { // This will remove the 'National' City selection.
+                city_ids.splice(city_ids.indexOf(0),1)
             }
-            setSelectedCities(e.target.value);
-            tempFilter = {...tempFilter, city_in: e.target.value.join(',')}
+            tempFilter.city_in = city_ids
 
         } else {
-            tempFilter = {...filters, [e.target.name]: e.target.value};
-        }    
+            tempFilter[e.target.name] = e.target.value;
+        }
 
-        setFilters(tempFilter);
-        props.filterUserList(tempFilter);
+        setFilters(tempFilter)
+    }
+
+    const applyFilter = () => {
+        props.filterUserList(filters)
     }
 
     const filterUserGroups = async(e) => {
@@ -747,7 +770,6 @@ const UserDataFilter = React.memo((props) => {
 
         setFilters(filterParameters);
         setUserGroupFilterParameter(groupFilterParameter);
-        console.log(filterParameters);
         props.filterUserList(filterParameters);
     }
 
@@ -765,7 +787,7 @@ const UserDataFilter = React.memo((props) => {
                 {cities.length && (accessLevel() === "director" || accessLevel() === "strat") ? (
                     <IonCol size-xs="12" size-md='3'>
                         <IonItem>
-                            <IonSelect mode="md" placeholder="Shelter Cities" interface="alert" name="city_in" multiple value={selectedCities} onIonChange={filterUser}>
+                            <IonSelect mode="md" placeholder="Select Cities" interface="alert" name="city_in" multiple value={filters.city_in} onIonChange={filterUser}>
                                 {cities.map((city, index) => {
                                     return (<IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>)
                                 })}
@@ -774,7 +796,7 @@ const UserDataFilter = React.memo((props) => {
                     </IonCol>
                 ) : null }
 
-                {!cities.length && shelters.length? (
+                { props.eventData.audience === "center" && shelters.length? (
                     <IonCol size-xs="12" size-md="3">        
                         <IonItem>          
                             <IonSelect mode="md" placeholder="Select Shelter" interface="popover" name="center_id" value={filters.center_id} onIonChange={filterUser}>
@@ -800,32 +822,32 @@ const UserDataFilter = React.memo((props) => {
 
                 {groupTypes.length? (
                     <IonCol size-xs="12" size-md="3">
-                        <IonItem>                              
+                        <IonItem>
                             <IonSelect mode="md" placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUserGroups} multiple>
                                 { groupTypes.filter(groupType => groupType.type !== 'executive').map((groupType,index) => {
-                                    return (<IonSelectOption key={index} value={groupType.type}>{ groupType.type }</IonSelectOption>)
+                                    let type_name = groupType.type.charAt(0).toUpperCase() + groupType.type.slice(1)
+                                    return (<IonSelectOption key={index} value={groupType.type}>{ type_name }</IonSelectOption>)
                                 })}
-                            </IonSelect>            
+                            </IonSelect>
                         </IonItem>
                     </IonCol>
                 ) : null }
 
                 {userGroups.length? (
                     <IonCol size-xs="12" size-md="3">
-                        <IonItem>          
+                        <IonItem>
                             <IonSelect mode="md" placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
-                                {userGroups.filter(group => (filters.vertical_id && (group.vertical_id === filters.vertical_id)) || (!filters.vertical_id))
-                                    .filter(group => (selectedGroupType && selectedGroupType.indexOf(group.type)>=0) || (!selectedGroupType))
-                                    .map((group,index) => {
-                                        return (<IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>)
-                                    })}
-                            </IonSelect>          
+                                {userGroups.map((group,index) => {
+                                    return (<IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>)
+                                })}
+                            </IonSelect>
                         </IonItem>
                     </IonCol>
                 ) : null }
-            </IonRow>                  
+            </IonRow>
             <IonItem>
-                <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filter(s)</IonButton>
+                <IonButton size="default" color="primary" onClick={applyFilter}>Apply Filters</IonButton>
+                <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filters</IonButton>
             </IonItem>
         </>
     )
