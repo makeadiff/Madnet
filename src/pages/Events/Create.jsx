@@ -14,7 +14,7 @@ import { authContext } from "../../contexts/AuthContext";
 import { dataContext } from "../../contexts/DataContext";
 
 const EventCreate = () => {
-    const { eventId: event_id } = useParams();
+    const { eventId: eventId } = useParams();
     const { user, accessLevel } = React.useContext(authContext)
     const [ sendEmail, setSendEmail ] = React.useState(true)
     const [ usersList, setUsersList ] = React.useState(null)
@@ -55,6 +55,11 @@ const EventCreate = () => {
             delete api_params.city_id
             api_params.city_in = params.city_in.join(",")
         }
+        
+        if(params.role) { // Role is an alias for group_type in the API
+            api_params.group_type = params.role
+            delete api_params.role
+        }
 
         setUserFilterParameter(params)
         let users = await getUsers(api_params)
@@ -90,7 +95,7 @@ const EventCreate = () => {
     }
   
     let submitForm = async () => {
-        if(event_id) {
+        if(eventId) {
             console.log(selectedUsers)
             return true
         }
@@ -98,11 +103,11 @@ const EventCreate = () => {
         let response = await callApi({url: 'events', params: event, method: 'post'})
 
         if(response) {
-            let event_id = response.id
+            let eventId = response.id
             let email = (sendEmail) ? 1 : 0
         
             let sendInvites = await callApi({
-                url: `events/${event_id}/users`,
+                url: `events/${eventId}/users`,
                 method: `post`,
                 params: {
                     invite_user_ids: selectedUsers.join(','),
@@ -114,7 +119,7 @@ const EventCreate = () => {
         
             if(event.frequency!=='none') {
                 recurring = await callApi({
-                    url: `events/${event_id}/recur`,
+                    url: `events/${eventId}/recur`,
                     method: 'post',
                     params:{
                         frequency: event.frequency,
@@ -127,15 +132,15 @@ const EventCreate = () => {
 
             if(sendInvites && recurring){
                 setShowPopover(false)
-                history.push(`/events/${event_id}`)
+                history.push(`/events/${eventId}`)
             }
         }
     }
 
     React.useEffect(() => {      
-        if(event_id !== undefined && !isNaN(event_id) && event_id !== "0"){      
+        if(eventId !== undefined && !isNaN(eventId) && eventId !== "0"){      
             (async function getEventsData(){
-                let users = await callApi({url: `events/${event_id}/users`})
+                let users = await callApi({url: `events/${eventId}/users`})
                 if(users){
                     setUsersList({data: users})
                     setUserSelectable(true)
@@ -146,7 +151,7 @@ const EventCreate = () => {
             setDisable(false)
         }
             
-    }, [event_id])
+    }, [eventId])
 
     React.useEffect(() => {
         if(!accessLevel()){
@@ -163,23 +168,23 @@ const EventCreate = () => {
 
     return (      
         <IonPage>        
-            <Title name={event_id ? 'View/Edit Event' : 'Create Event'} back="/events" />
+            <Title name={eventId ? 'View/Edit Event' : 'Create Event'} back="/events" />
 
             <IonContent className="dark">
-                <EventForm disable={disable} setSendEmail={setSendEmail} setEventData={setEventData} getEventUsers={getEventUsers} eventId={event_id} />
+                <EventForm disable={disable} setSendEmail={setSendEmail} setEventData={setEventData} getEventUsers={getEventUsers} eventId={eventId} />
                 <IonCard className={userSelectable ? 'dark': 'hidden dark'}>
                     <IonCardHeader>
                         <IonCardTitle>
                             {/* Component to Display the Filter View on the User Selection View */}
-                            {!disable && !event_id ? (
+                            {!disable && !eventId ? (
                                 <>
-                                    <UserDataFilter filterUserList={filterUserList} eventData={eventData} />
+                                    <UserDataFilter filterUserList={filterUserList} eventData={eventData} eventId={eventId} />
                                     <p>Select Users to Invite to Event</p>
                                 </> 
                             ) : (
                                 <span>Mark Attendees for the {eventData.name}</span>
                             )}
-                            {event_id? (
+                            {eventId? (
                                 <IonRow>
                                     <IonCol className="ion-text-center" size="4">
                                         <IonItem>
@@ -225,7 +230,7 @@ const EventCreate = () => {
                                         <IonInput className="search" name="search_user_name" placeholder="Search User..." onIonChange={filterUser}></IonInput>
                                     </IonListHeader> */}
 
-                                    <EventUserList usersList={usersList} eventId={event_id} disable={disable}
+                                    <EventUserList usersList={usersList} eventId={eventId} disable={disable}
                                         editable={editable} setShowPopover = {setShowPopover} city_id={eventData.city_id}
                                         selectAllUsers = {selectAllUsers} setInvitees = {setSelectedUsers} />
                                 </IonList>
@@ -239,7 +244,7 @@ const EventCreate = () => {
             </IonContent>
         
             {/* If Event ID exists, i.e for Viewing existing events, show an enable/disable edit Button  */}
-            { event_id ? (
+            { eventId ? (
                 <>
                     <IonFab vertical="bottom" horizontal="end" slot="fixed">
                         <IonFabButton disabled={!editable} onClick={openEdit}><IonIcon icon={pencil}/></IonFabButton>
@@ -387,7 +392,7 @@ const EventUserList = React.memo(function UserList(props) {
 
 // Component to Capture Event Form Data 
 const EventForm = React.memo((props) => {
-    let disable = props.disable;
+    const { disable, eventId } = props
   
     const { user, accessLevel } = React.useContext(authContext)
     const [ cities, setCities ] = React.useState({})
@@ -396,35 +401,35 @@ const EventForm = React.memo((props) => {
     const { callApi } = React.useContext(dataContext)
 
     const [ eventData, setEventData ] = React.useState({
-        // name: '',
-        // description: '',
-        // starts_on: '',
-        // place: '',
-        // city_id: user.city_id,
-        // event_type_id: 0,
-        // vertical_id: 0,
-        // audience: "",
-        // role: "",
-        // created_by_user_id: user.id,
-        // latitude: 0,
-        // longitude: 0,
-        // frequency: 'none',
-        // repeat_until: null
-
-        name: 'ED Vol Meet Test Event',
-        description: 'This is a test event',
-        starts_on: '2020-09-30T15:00:00+05:30',
-        place: 'Zoom',
+        name: '',
+        description: '',
+        starts_on: '',
+        place: '',
         city_id: user.city_id,
-        event_type_id: "11",
-        vertical_id: 3,
-        audience: "city",
-        role: "volunteer",
+        event_type_id: 0,
+        vertical_id: 0,
+        audience: "",
+        role: "",
         created_by_user_id: user.id,
         latitude: 0,
         longitude: 0,
         frequency: 'none',
         repeat_until: null
+
+        // name: 'ED Vol Meet Test Event',
+        // description: 'This is a test event',
+        // starts_on: '2020-09-30T15:00:00+05:30',
+        // place: 'Zoom',
+        // city_id: user.city_id,
+        // event_type_id: "11",
+        // vertical_id: 3,
+        // audience: "city",
+        // role: "volunteer",
+        // created_by_user_id: user.id,
+        // latitude: 0,
+        // longitude: 0,
+        // frequency: 'none',
+        // repeat_until: null
     });
     
     const [ userFilterParameter, setUserFilterParameter ] = React.useState({
@@ -435,67 +440,65 @@ const EventForm = React.memo((props) => {
 
     const updateField = e => {    
         if(e.target.name === 'starts_on'){
-            setEventData({
-                ...eventData,
-                starts_on: e.target.value.replace('T',' ').replace('+05:30','')
-            }
-            );
+            setEventData({...eventData, starts_on: e.target.value.replace('T',' ').replace('+05:30','')});
         }
         else if(e.target.name === 'repeat_unil'){
-            setEventData({
-                ...eventData,
-                repeat_until: e.target.value.split('T')[0]
-            });
+            setEventData({...eventData, repeat_until: e.target.value.split('T')[0]});
         }
         else{
-            setEventData({
-                ...eventData,
-                [e.target.name]: e.target.value
-            });
+            setEventData({...eventData, [e.target.name]: e.target.value})
         }
 
         if(e.target.name === 'city_id'){
             if(e.target.value != 0){
-                setUserFilterParameter({...userFilterParameter, city_id: e.target.value});
+                setUserFilterParameter({...userFilterParameter, city_id: e.target.value})
             } else {
                 // If City is National, remove City Filter from the User Filter Parameters 
-                let tempFilter = userFilterParameter;
+                let tempFilter = {...userFilterParameter};
                 delete tempFilter.city_id;
-                setUserFilterParameter({...tempFilter});
+                setUserFilterParameter(tempFilter);
             }
         }
     }
   
     let createEvent = async (e) => {
-        e.preventDefault();    
-        if(!eventData.event_type_id){
-            setErrorMessage('Select Event Type');        
-        } else{
-            setErrorMessage(null);
-            props.setEventData(eventData);      
-            props.getEventUsers(userFilterParameter);      
-        }      
+        e.preventDefault()
+
+        if(eventId) { // Edit event
+            let response = await callApi({url: `events/${eventId}`, params: eventData, method: 'post'})
+            if(response) {
+                // All Good.
+            }
+
+        } else { // Create new event - so open up invite people option.
+            if(!eventData.event_type_id){
+                setErrorMessage('Select Event Type')
+            } else {
+                setErrorMessage(null)
+                props.setEventData(eventData)
+                props.getEventUsers(userFilterParameter)
+            }
+        }
     }
   
     React.useEffect(() => {
-        function getApiData() {
+        (function () {
             callApi({graphql: "{event_types {id name audience role vertical_id}}", cache_key: "event_types", setter: setEventTypes})
             callApi({url: "verticals", cache_key: "verticals", setter: setVerticals})
             callApi({url: 'cities', cache_key: "cities", setter: setCities});
-        }
-        getApiData()
+        })()
     }, [])
 
     React.useEffect(() => {
         let eventId = props.eventId;
         if(eventId !== undefined && !isNaN(eventId) && eventId !== "0"){
-            (async function getEventsGraphQL(){
-                let event = await callApi({url: `events/${eventId}`});          
+            (async function() {
+                let event = await callApi({url: `events/${eventId}`})    
                 if(event){                  
-                    setEventData({...event});
-                    props.setEventData({...event});
+                    setEventData({...eventData, ...event});
+                    props.setEventData({...eventData, ...event});
                 }          
-            })();      
+            })()
         }    
     }, [props.eventId])
     
@@ -514,51 +517,53 @@ const EventForm = React.memo((props) => {
                         <IonCol size-md="6" size-xs="12">
                             {/* Form to capture event details and/or show once the user opens an event  */}
                             <form onSubmit={createEvent}>
-                                <IonItem>
-                                    <IonLabel position="stacked">Target Audience</IonLabel>
-                                    <IonSelect disabled={disable} mode="md" placeholder="Select Audience" required interface="popover" name="audience" 
-                                        value={eventData.audience} onIonChange={updateField}>
-                                        <IonSelectOption value="city">City</IonSelectOption>
-                                        <IonSelectOption value="center">Shelter</IonSelectOption>
-                                        <IonSelectOption value="vertical">Vertical</IonSelectOption>
-                                        <IonSelectOption value="">All</IonSelectOption>
-                                    </IonSelect>
-                                </IonItem>
+                                { eventId ? null :
+                                    (<><IonItem>
+                                        <IonLabel position="stacked">Target Audience</IonLabel>
+                                        <IonSelect disabled={disable} mode="md" placeholder="Select Audience" required interface="popover" name="audience" 
+                                            value={eventData.audience} onIonChange={updateField}>
+                                            <IonSelectOption value="city">City</IonSelectOption>
+                                            <IonSelectOption value="center">Shelter</IonSelectOption>
+                                            <IonSelectOption value="vertical">Vertical</IonSelectOption>
+                                            <IonSelectOption value="">All</IonSelectOption>
+                                        </IonSelect>
+                                    </IonItem>
 
-                                <IonItem>
-                                    <IonLabel position="stacked">Target Roles</IonLabel>
-                                    <IonSelect disabled={disable} mode="md" placeholder="Select Role" required interface="popover" name="role" 
-                                        value={eventData.role} onIonChange={updateField}>
-                                        { (accessLevel() === "director") ? <IonSelectOption value="national">Full Timers</IonSelectOption> : null }
-                                        { (accessLevel() === "director" || accessLevel() === "strat") ? <IonSelectOption value="strat">Strats or Above</IonSelectOption> : null }
-                                        <IonSelectOption value="fellow">Fellows or Above</IonSelectOption>
-                                        <IonSelectOption value="volunteer">Volunteers Or Above</IonSelectOption>
-                                        <IonSelectOption value="">Any</IonSelectOption>
-                                    </IonSelect>
-                                </IonItem>
+                                    <IonItem>
+                                        <IonLabel position="stacked">Target Roles</IonLabel>
+                                        <IonSelect disabled={disable} mode="md" placeholder="Select Role" required interface="popover" name="role" 
+                                            value={eventData.role} onIonChange={updateField}>
+                                            { (accessLevel() === "director") ? <IonSelectOption value="national">Full Timers</IonSelectOption> : null }
+                                            { (accessLevel() === "director" || accessLevel() === "strat") ? <IonSelectOption value="strat">Strats or Above</IonSelectOption> : null }
+                                            <IonSelectOption value="fellow">Fellows or Above</IonSelectOption>
+                                            <IonSelectOption value="volunteer">Volunteers Or Above</IonSelectOption>
+                                            <IonSelectOption value="">Any</IonSelectOption>
+                                        </IonSelect>
+                                    </IonItem>
 
-                                <IonItem>
-                                    <IonLabel position="stacked">Event Vertical</IonLabel>
-                                    <IonSelect disabled={disable} mode="md" placeholder="Select Event Vertical" required interface="popover"
-                                        name="vertical_id" value={eventData.vertical_id} onIonChange={updateField}>
-                                        { verticals.length && verticals.map((vertical,index) => {
-                                            return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
-                                        })}
-                                        <IonSelectOption value="0">All</IonSelectOption>
-                                    </IonSelect>
-                                </IonItem>
+                                    <IonItem>
+                                        <IonLabel position="stacked">Event Vertical</IonLabel>
+                                        <IonSelect disabled={disable} mode="md" placeholder="Select Event Vertical" required interface="popover"
+                                            name="vertical_id" value={eventData.vertical_id} onIonChange={updateField}>
+                                            { verticals.length && verticals.map((vertical,index) => {
+                                                return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
+                                            })}
+                                            <IonSelectOption value="0">All</IonSelectOption>
+                                        </IonSelect>
+                                    </IonItem></>)
+                                }
 
                                 <IonItem>
                                     <IonLabel position="stacked">Event Type</IonLabel>
                                     <IonSelect disabled={disable} mode="md" placeholder="Select Event Type" required interface="popover" name="event_type_id" 
-                                        value={eventData.event_type_id} onIonChange={updateField}>
+                                        value={eventData.event_type_id.toString()} onIonChange={updateField}>
                                         { eventTypes.length && eventTypes.map((eventType,index) => {
                                             // Filter the Event Type Drop down based on previous options.
                                             if(eventData.role !== "" && eventType.role != eventData.role) return null
                                             if(eventData.audience !== "" && eventType.audience != eventData.audience) return null
                                             if(eventData.vertical_id != 0 && eventType.vertical_id != eventData.vertical_id) return null
 
-                                            return (<IonSelectOption key={index} value={eventType.id}>{eventType.name}</IonSelectOption>)
+                                            return (<IonSelectOption key={index} value={eventType.id.toString()}>{eventType.name}</IonSelectOption>)
                                         })}
                                     </IonSelect>
                                 </IonItem>
@@ -631,7 +636,7 @@ const EventForm = React.memo((props) => {
 
                                 {!disable ? (
                                     <IonItem>
-                                        <IonButton type="submit" size="default">Create Event &amp; Invite Users</IonButton>
+                                        <IonButton type="submit" size="default">{ eventId ? "Edit Event" : "Create Event & Invite Users" }</IonButton>
                                     </IonItem>   
                                 ): null}                      
                             </form>
@@ -656,6 +661,7 @@ const EventForm = React.memo((props) => {
 })
 
 const UserDataFilter = React.memo((props) => {
+    const { eventId, eventData } = props
     const [ verticals, setVerticals ] = React.useState({})
     const [ groupTypes, setGroupTypes ] = React.useState({});
 
@@ -669,9 +675,9 @@ const UserDataFilter = React.memo((props) => {
     const { user, accessLevel } = React.useContext(authContext)
 
     const [ filters, setFilters ] = React.useState({
-        "city_id": [props.eventData.city_id],
-        "vertical_id": props.eventData.vertical_id, 
-        "role": props.eventData.role
+        "city_id": [eventData.city_id],
+        "vertical_id": eventData.vertical_id, 
+        "role": eventData.role
     })
     const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({})
 
@@ -688,7 +694,7 @@ const UserDataFilter = React.memo((props) => {
         }
 
         if(city_id) {
-            setFilters({...filters, "city_in": [city_id.toString()]})
+            setFilters({...filters, "city_in": [city_id]})
         }
     }, [])
 
@@ -708,16 +714,12 @@ const UserDataFilter = React.memo((props) => {
         setFilters(newFilter)
     }, [props.eventData])
 
-    React.useEffect(() => {
-        console.log(filters)
-    }, [filters])
-
     const filterUser = (e) => {
         let tempFilter = filters
 
         if(e.target.name === 'group_id'){
             setSelectedGroups(e.target.value);
-            tempFilter.groups_in = e.target.value
+            tempFilter.group_in = e.target.value
 
         } else if(e.target.name === 'city_in'){
             let city_ids = e.target.value
