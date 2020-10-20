@@ -232,7 +232,7 @@ const EventCreate = () => {
 
                                     <EventUserList usersList={usersList} eventId={eventId} disable={disable}
                                         editable={editable} setShowPopover = {setShowPopover} city_id={eventData.city_id}
-                                        selectAllUsers = {selectAllUsers} setInvitees = {setSelectedUsers} />
+                                        selectAllUsers={selectAllUsers} setInvitees={setSelectedUsers} />
                                 </IonList>
                                 {usersList.total? (
                                     <Paginator data={usersList} pageHandler={moveToPage} />
@@ -264,7 +264,6 @@ const EventCreate = () => {
                         <IonText>
                             <hr/>
                             <p>Name: <strong>{eventData.name}</strong></p>
-                            <p>Event Type:<strong></strong></p>
                             <p>Starts On: <strong>{eventData.starts_on}</strong></p>
                             <p>Place/Zoom ID: <strong>{eventData.place}</strong></p>
                             <p>Users Invited: <strong>{selectedUsers.length}</strong></p>
@@ -298,15 +297,15 @@ const EventUserList = React.memo(function UserList(props) {
     const toggleCheckAll = async (e) => {
         if(e.target.checked) {
             setCheckAll(true)
-            let inviteUsers = await props.selectAllUsers()
+            const inviteUsers = await props.selectAllUsers()
             setSelectedUsers(inviteUsers)
         } else {
             setCheckAll(false);
         }
     }
 
-    let inviteUser = (e) => {
-        let invitee_id = e.target.value;
+    const inviteUser = (e) => {
+        const invitee_id = e.target.value;
         let invitees = selectedUsers;            
         if(e.target.checked) {
             if(invitees.indexOf(invitee_id) < 0) {
@@ -321,7 +320,7 @@ const EventUserList = React.memo(function UserList(props) {
     }
 
     const markAttendance = async () => {
-        let response = await callApi({
+        const response = await callApi({
             url: `events/${props.eventId}/attended`,
             method: 'post',
             params: {
@@ -344,10 +343,13 @@ const EventUserList = React.memo(function UserList(props) {
         <>
             {props.editable? (
                 <>
-                    <IonItem>          
-                        <IonCheckbox name="check_all" onIonChange={toggleCheckAll} value={checkAll} />&nbsp;
-                        <IonLabel>Select All Users [{props.usersList.total ? props.usersList.total : props.usersList.data.length}]</IonLabel>                      
-                    </IonItem>
+                    { !props.eventId ? /* Select All option is only for inivting people(event creating - eventId = 0). Attendance marking does not need it. */
+                        <IonItem>          
+                            <IonCheckbox name="check_all" onIonChange={toggleCheckAll} value={checkAll} />&nbsp;
+                            <IonLabel>Select All Users [{props.usersList.total ? props.usersList.total : props.usersList.data.length}]</IonLabel>                      
+                        </IonItem>
+                        : null }
+
                     {props.disable? (
                         <IonButton disabled={!props.editable} color="primary" size="default" onClick={markAttendance}>Mark Attendance</IonButton>      
                     ): (
@@ -760,24 +762,24 @@ const UserDataFilter = React.memo((props) => {
     }
 
     const clearFilter = async () => {
-        let filterParameters = filters;
-        let groupFilterParameter = userGroupFilterParameter;
+        let filterParameters = filters
+        let groupFilterParameter = userGroupFilterParameter
 
-        if(filterParameters.vertical_id) delete filterParameters.vertical_id;
-        if(filterParameters.group_in) delete filterParameters.group_in;
-        if(filterParameters.center_id) delete filterParameters.center_id;
+        if(filterParameters.vertical_id) delete filterParameters.vertical_id
+        if(filterParameters.group_in) delete filterParameters.group_in
+        if(filterParameters.center_id) delete filterParameters.center_id
 
-        if(groupFilterParameter.vertical_id) delete groupFilterParameter.vertical_id;
-        if(groupFilterParameter.type_in) delete groupFilterParameter.type_in;
+        if(groupFilterParameter.vertical_id) delete groupFilterParameter.vertical_id
+        if(groupFilterParameter.type_in) delete groupFilterParameter.type_in
 
-        setFilters(filterParameters);
-        setUserGroupFilterParameter(groupFilterParameter);
-        props.filterUserList(filterParameters);
+        setFilters(filterParameters)
+        setUserGroupFilterParameter(groupFilterParameter)
+        props.filterUserList(filterParameters)
     }
 
     React.useEffect(() => {
         if(!city_id) return;
-        (function fetchShelters() {
+        (function () {
             callApi({graphql: `{centers(city_id:${city_id}) {id name}}`, cache_key: `cities_${city_id}_centers`, setter: setShelters })
         })()
     } ,[city_id])

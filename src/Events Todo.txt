@@ -27,3 +27,20 @@ Events > Listing : Done(ish)
 Events > Listing
 	If you set a select users after chosing a filter, the Selected Users not showing up in the listing when you clear filters
 
+
+### Binny Notes
+- Attendance Marking is not saved
+- On Event Edit, there is an attept to write to Event.vertical_id - which does not exist(Only Event_Type.vertical_id)(API Issue) [Fixed/Check]
+- On 'Mark Attendance', everyone is getting selected.[Fixed]
+
+- On clicking 'Create Event and invite users', the app should scroll down to Invite users section.
+
+- Attendance marking is disabled in Event Editing Mode.
+- Mark Attendance button is called 'Invite Users' when Editing mode is on.
+- Show Invite Users option only when editing mode is on.
+
+- On Confirm box, Event Type is empty. [Fixed/Check]
+- On Event View Section, Event type missing, Event description missing, Event Place Missing - Right after creating the event. On refresh, everything shows up.
+- Mark Attendance : Select All Users - that action is making an invalid API pull for no reason.
+
+- Remove 'Add/' part from the title of Editing Event.
