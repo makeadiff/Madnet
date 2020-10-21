@@ -5,13 +5,13 @@ import { calendar, pencil, close, checkmarkCircle, closeCircle, ellipse } from '
 import React from 'react';
 import { useParams, useHistory } from "react-router-dom"
 import moment from 'moment'
-import { CITY_COORDINATES } from '../../utils/Constants'
 
 import Title from "../../components/Title"
 import Paginator from "../../components/Paginator"
 import './Event.css'
-import { authContext } from "../../contexts/AuthContext";
-import { dataContext } from "../../contexts/DataContext";
+import { authContext } from "../../contexts/AuthContext"
+import { dataContext } from "../../contexts/DataContext"
+import { appContext } from "../../contexts/AppContext";
 
 const EventCreate = () => {
     const { eventId: eventId } = useParams();
@@ -24,12 +24,13 @@ const EventCreate = () => {
     const { getUsers, callApi } = React.useContext(dataContext)
   
     const [ selectedUsers, setSelectedUsers ] = React.useState([])
-
     const [ userFilterParameter, setUserFilterParameter ] = React.useState({city_id: user.city_id})
-    
     const [ disable, setDisable ] = React.useState(false)
     const [ showPopover, setShowPopover] = React.useState(false)
     const [ eventData, setEventData ] = React.useState({})
+
+    const refUserList = React.useRef(null)
+
     let history = useHistory()
 
     const openEdit = () => {
@@ -43,8 +44,15 @@ const EventCreate = () => {
     const getEventUsers = async (params) => {
         setUserFilterParameter({...userFilterParameter,...params})
         let users = await getUsers(params)
-        setUsersList(users)
-        setUserSelectable(true)
+        if(users) {
+            setUsersList(users)
+            setUserSelectable(true)
+
+            // Scroll to the next area...
+            window.setTimeout(() => {
+                refUserList.current.scrollIntoView()
+            }, 300)
+        }
     }
 
     const filterUserList = async (params) => {
@@ -87,7 +95,7 @@ const EventCreate = () => {
             });
             currentPage = usersListTemp.current_page
             if(usersList.last_page!== 1) {
-                usersListTemp = await getUsers({...userFilterParameter,page: currentPage+1})
+                usersListTemp = await getUsers({ ...userFilterParameter, page: currentPage+1 })
             }
         } while(currentPage !== usersList.last_page);
 
@@ -99,6 +107,7 @@ const EventCreate = () => {
             console.log(selectedUsers)
             return true
         }
+
         let event = eventData
         let response = await callApi({url: 'events', params: event, method: 'post'})
 
@@ -140,7 +149,10 @@ const EventCreate = () => {
     React.useEffect(() => {      
         if(eventId !== undefined && !isNaN(eventId) && eventId !== "0"){      
             (async function getEventsData(){
-                let users = await callApi({url: `events/${eventId}/users`})
+                let users = await callApi({
+                    url: `events/${eventId}/users`,
+                    cache_key: `events_${eventId}_users`
+                })
                 if(users){
                     setUsersList({data: users})
                     setUserSelectable(true)
@@ -172,7 +184,7 @@ const EventCreate = () => {
 
             <IonContent className="dark">
                 <EventForm disable={disable} setSendEmail={setSendEmail} setEventData={setEventData} getEventUsers={getEventUsers} eventId={eventId} />
-                <IonCard className={userSelectable ? 'dark': 'hidden dark'}>
+                <IonCard className={userSelectable ? 'dark': 'hidden dark'} ref={refUserList}>
                     <IonCardHeader>
                         <IonCardTitle>
                             {/* Component to Display the Filter View on the User Selection View */}
@@ -291,8 +303,19 @@ const EventCreate = () => {
 const EventUserList = React.memo(function UserList(props) {
     const [ checkAll, setCheckAll ] = React.useState(false)
     const [ selectedUsers, setSelectedUsers ] = React.useState([])
-    const { callApi } = React.useContext(dataContext)
+    const { callApi, unsetLocalCache } = React.useContext(dataContext)
     const [ searchText, setSearchText ] = React.useState('')
+
+    // Make sure all the invited people are checked
+    React.useEffect(() => {
+        let invitees = []
+        for(let i in props.usersList.data) {
+            if(props.usersList.data[i].present) {
+                invitees.push(props.usersList.data[i].id.toString())
+            }
+        }
+        setSelectedUsers(invitees);
+    }, [])
   
     const toggleCheckAll = async (e) => {
         if(e.target.checked) {
@@ -320,16 +343,25 @@ const EventUserList = React.memo(function UserList(props) {
     }
 
     const markAttendance = async () => {
-        const response = await callApi({
-            url: `events/${props.eventId}/attended`,
-            method: 'post',
-            params: {
-                attendee_user_ids: selectedUsers.join(',')
-            }
+        let attendance = []
+
+        for(let i in props.usersList.data) {
+            const usr = props.usersList.data[i]
+            attendance.push({
+                user_id: usr.id,
+                present: (selectedUsers.indexOf(usr.id.toString()) >= 0) ? 1 : 0
+            })
+        }
+
+        const response = await callApi({ // The stringify().replace is because JSON has strings as keys - and graphql can't handle it.
+            graphql: `mutation {
+                markEventAttendance(event_id: ${props.eventId}, attendance: ${JSON.stringify(attendance).replace(/"/g, '')})
+            }`,
+            cache: false
         })
 
-        if(response){
-            console.log('Attendance Marked');
+        if(response) {
+            unsetLocalCache(`events_${props.eventId}_users`)
             props.setInvitees(selectedUsers);
         }
     }
@@ -370,7 +402,7 @@ const EventUserList = React.memo(function UserList(props) {
                             </IonAvatar>
                         ): null}
                         <IonLabel>
-                            <h2>{user.name}{props.city_id == 0? ', '+(CITY_COORDINATES[user.city_id].name): null}</h2>
+                            <h2>{ user.name }</h2>
                             <h3 className="no-padding">{user.mad_email ? user.mad_email : user.email} {user.phone ? '| ' + user.phone: ''}</h3>
                             <p>{user.groups && user.groups.map((group,index) => {
                                 return (<span key={index}>{group.name}{(index < user.groups.length - 1) ? ', ': null}</span>)
@@ -397,6 +429,7 @@ const EventForm = React.memo((props) => {
     const { disable, eventId } = props
   
     const { user, accessLevel } = React.useContext(authContext)
+    const { showMessage } = React.useContext(appContext)
     const [ cities, setCities ] = React.useState({})
     const [ eventTypes, setEventTypes ] = React.useState({})
     const [ verticals, setVerticals ] = React.useState({})
@@ -438,8 +471,6 @@ const EventForm = React.memo((props) => {
         city_id: user.city_id
     })
 
-    const [ errorMessage, setErrorMessage ] = React.useState('');
-
     const updateField = e => {    
         if(e.target.name === 'starts_on'){
             setEventData({...eventData, starts_on: e.target.value.replace('T',' ').replace('+05:30','')});
@@ -473,10 +504,13 @@ const EventForm = React.memo((props) => {
             }
 
         } else { // Create new event - so open up invite people option.
+            // Validation. This is horrible. But time out. :TODO
             if(!eventData.event_type_id){
-                setErrorMessage('Select Event Type')
+                showMessage('Select Event Type')
+            } else if(!eventData.starts_on){
+                showMessage('Set a date/time for the event')
+
             } else {
-                setErrorMessage(null)
                 props.setEventData(eventData)
                 props.getEventUsers(userFilterParameter)
             }
@@ -522,7 +556,7 @@ const EventForm = React.memo((props) => {
                                 { eventId ? null :
                                     (<><IonItem>
                                         <IonLabel position="stacked">Target Audience</IonLabel>
-                                        <IonSelect disabled={disable} mode="md" placeholder="Select Audience" required interface="popover" name="audience" 
+                                        <IonSelect disabled={disable} mode="md" placeholder="Select Audience" interface="popover" name="audience" 
                                             value={eventData.audience} onIonChange={updateField}>
                                             <IonSelectOption value="city">City</IonSelectOption>
                                             <IonSelectOption value="center">Shelter</IonSelectOption>
@@ -533,7 +567,7 @@ const EventForm = React.memo((props) => {
 
                                     <IonItem>
                                         <IonLabel position="stacked">Target Roles</IonLabel>
-                                        <IonSelect disabled={disable} mode="md" placeholder="Select Role" required interface="popover" name="role" 
+                                        <IonSelect disabled={disable} mode="md" placeholder="Select Role" interface="popover" name="role" 
                                             value={eventData.role} onIonChange={updateField}>
                                             { (accessLevel() === "director") ? <IonSelectOption value="national">Full Timers</IonSelectOption> : null }
                                             { (accessLevel() === "director" || accessLevel() === "strat") ? <IonSelectOption value="strat">Strats or Above</IonSelectOption> : null }
@@ -545,7 +579,7 @@ const EventForm = React.memo((props) => {
 
                                     <IonItem>
                                         <IonLabel position="stacked">Event Vertical</IonLabel>
-                                        <IonSelect disabled={disable} mode="md" placeholder="Select Event Vertical" required interface="popover"
+                                        <IonSelect disabled={disable} mode="md" placeholder="Select Event Vertical" interface="popover"
                                             name="vertical_id" value={eventData.vertical_id} onIonChange={updateField}>
                                             { verticals.length && verticals.map((vertical,index) => {
                                                 return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
@@ -631,10 +665,6 @@ const EventForm = React.memo((props) => {
                                         <IonNote className="eventNote">If left blank, even will be repeated until 30 April, or end of academic year.</IonNote>
                                     </>
                                 ): null}
-
-                                {errorMessage? (
-                                    <IonLabel color="danger">{errorMessage}</IonLabel>
-                                ):null}
 
                                 {!disable ? (
                                     <IonItem>
