@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { IonContent, IonPage, IonChip, IonGrid, IonRow, IonCol, IonList, IonItem, IonAvatar, IonLabel, IonInput, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonTextarea, IonRadioGroup, IonRadio, IonListHeader, IonFab, IonFabButton, IonIcon, IonButton, IonToggle, IonNote} from '@ionic/react';
 
 import { pencil, close } from 'ionicons/icons';
@@ -13,7 +14,6 @@ import { appContext } from "../contexts/AppContext"
 import { dataContext } from "../contexts/DataContext"
 
 const Profile = () => {
-
     const { user } = React.useContext(authContext)	
     const { setLoading, showMessage } = React.useContext(appContext)
     const { updateUser } = React.useContext(dataContext)
@@ -56,8 +56,10 @@ const Profile = () => {
     }
 
     async function updateUserData() {
-        if(changePassword){
+        if(changePassword) {
             userData.password = password;
+        } else {
+            delete userData.password
         }
         console.log(userData);
         let update = await updateUser(user.id, userData);		
@@ -179,8 +181,7 @@ const Profile = () => {
                                                                 return (
                                                                     <li key={index}><IonChip className="roles">{roles.name}</IonChip></li>
                                                                 )
-                                                            }
-                                                            else{	
+                                                            } else {
                                                                 breakcondition = true;
                                                                 return (
                                                                     <li key={index}><IonChip className="roles">+ {user.groups.length - index} More</IonChip></li>

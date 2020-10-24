@@ -5,6 +5,9 @@ import { Redirect, Route, useLocation } from 'react-router-dom'
 import { authContext } from "./contexts/AuthContext"
 import { appContext } from "./contexts/AppContext"
 
+
+import { SITE_URL } from './utils/Constants'
+
 import Menu from './components/Menu'
 import Page from './pages/Page'
 import Login from "./pages/Login"
@@ -190,6 +193,13 @@ const Root = () => {
                         <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact={true}>
                             <WingmanForm />
                         </PrivateRoute>
+
+
+                        {/* Redirect to external paths... */}
+                        <Route path="/donut" exact={true} render={() => {
+                            window.location.href = SITE_URL + 'donut'
+                        }} />
+
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>

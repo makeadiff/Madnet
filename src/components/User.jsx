@@ -82,9 +82,9 @@ const UserDetail = ({user, index}) => {
                                 <p>Credit: <strong>{ user.credit }</strong></p>
                             </IonCol>
                             <IonCol size-md="7" size-xs="12">
-                                {user.groups.map((role,count) => {
+                                { (user.groups) ? user.groups.map((role,count) => {
                                     return (<IonChip className="roles" key={count}>{role.name}</IonChip>)
-                                })}
+                                }) : null }
                             </IonCol>
                         </IonRow>
                     </IonGrid>
@@ -101,11 +101,11 @@ const UserDetail = ({user, index}) => {
                         text: 'Cancel',
                         role: 'cancel',
                         cssClass: 'secondary',
-                        handler: e => { }
+                        handler: () => { }
                     },
                     {
                         text: 'Delete',
-                        handler: e => deleteVolunteer(user.id)
+                        handler: () => deleteVolunteer(user.id)
                     }
                 ]} />
 

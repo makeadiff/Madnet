@@ -24,7 +24,9 @@ const EventRSVP = () => {
         async function fetchEvent() {
             setLoading(true)
             const event_data = await api.graphql(`{ event(id: ${eventId}) { 
-                id name description place starts_on event_type
+                id name description place starts_on event_type {
+                    id name
+                }
             }}`);
 
             if(event_data.event !== undefined) {

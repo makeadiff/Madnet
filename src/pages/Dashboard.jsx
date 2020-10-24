@@ -1,4 +1,4 @@
-import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/react';
+import { IonPage,IonContent,IonGrid,IonRow,IonCol,IonIcon,IonText, IonCard, IonCardHeader, IonCardTitle, IonCardContent,IonItem } from '@ionic/react';
 import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom'
 
@@ -76,6 +76,7 @@ const AppGrid = ({ apps }) => {
             <IonRow className="ion-justify-content-start">
                 {apps.map((app, index) => {
                     if(app.title === "Dashboard") return null
+
                     return (
                         <IonCol className="menu-item" key={index} size-xs="6" size-md="4">                            
                             <Link to={app.url}>
@@ -91,5 +92,6 @@ const AppGrid = ({ apps }) => {
         </IonGrid>
     )
 }
+
 
 export default Dashboard;
