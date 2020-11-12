@@ -22,3 +22,10 @@ ion-card.dark ion-select,
 ion-card.dark ion-label {
 	color: #FFF !important;
 }
+
+.frf-modal-feedback-type, .frf-modal-feedback-types {
+	padding: 5px 0;
+}
+.frf-modal-container {
+	border: 1px solid #000;
+}

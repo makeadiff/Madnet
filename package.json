@@ -19,6 +19,7 @@
     "@types/react-router": "^5.1.4",
     "@types/react-router-dom": "^5.1.3",
     "autolinker": "^3.14.1",
+    "feeder-react-feedback": "0.0.6",
     "firebase": "^7.14.3",
     "ionicons": "^5.0.0",
     "loadash": "^1.0.0",
