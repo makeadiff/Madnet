@@ -14,18 +14,18 @@ import './Induction.css'
 
 const InductionIndex = () => {
     const [init, setInit] = React.useState(false)
+    const [ error, setError ] = React.useState(null)
     const { setLoading, message, showMessage } = React.useContext(appContext)
     const history = useHistory()
     const no_user_err_message = (<>
-        Can't find any user with the given details. This can be because of either of these 2 reasons...
+        Can&apos;t find any user with the given details. This can be because of either of these 2 reasons...
         <ul>
-            <li>You have not given the email you gave when registering. 
+            <li>You have not given the email you just inputed when registering. 
                 Try using another email/phone if you have a alternative one.</li>
-            <li>We haven't updated your profile to mark you as a volunteer yet. 
-                If you think this is the case, reach out to one of the orginizers of the induction and get it fixed right now. 
-                You'll need this to be done to get to the next stage.</li>
+            <li>We haven&apos;t updated your profile to mark you as a volunteer yet. 
+                If you think this is the case, reach out to one of the orginizers of the training and get it fixed right now. 
+                You&apos;ll need this to be done to get to the next stage.</li>
         </ul></>)
-
 
     React.useEffect(() => { // Run on load - just once.
         if(init) return
@@ -41,7 +41,8 @@ const InductionIndex = () => {
                     setStoredUser(data.users[0])
                     history.push('/induction/setup')
                 } else {
-                    showMessage(no_user_err_message, "error")
+                    showMessage("Can't find any user with given details", "error")
+                    setError(no_user_err_message)
                 }
             })
 
@@ -82,7 +83,8 @@ const InductionIndex = () => {
                 // :TODO: Save time to /user/{user_id}/data/induction_started
 
             } else { // Can't find the user.
-                showMessage(no_user_err_message, "error")
+                showMessage("Can't find any user with given details", "error")
+                setError(no_user_err_message)
             }
         })
     }
@@ -103,26 +105,24 @@ const InductionIndex = () => {
                             Welcome to Make A Difference.
                         </IonCardTitle>
                         <IonCardSubtitle>
-                            We'll be setting up your profile in our database now. To continue, please enter the email you provided when registering for MAD
+                            We&apos;ll be setting up your profile in our database now. To continue, please enter the email you provided when registering for MAD
                         </IonCardSubtitle>
                     </IonCardHeader>
-                    <IonCardContent>                                         
+                    <IonCardContent>                 
                         <IonItem className="padded">
                             <IonLabel position="stacked">Enter your Registered Email</IonLabel>
                             <IonInput name="identifier" id="identifier" placeholder="Email" />
-                        </IonItem>                        
+                        </IonItem>
                         <IonButton name="action" expand="full" onClick={ stepOne } size="default">
                             Next <IonIcon icon={arrowForwardOutline}></IonIcon>
-                        </IonButton>                                                
+                        </IonButton>                        
                         <IonText className="centerAlign">
                             <p>--Or--</p>
-                        </IonText>                                            
+                        </IonText>                    
                         <IonButton type="button" expand="full" color="tertiary" block={true} size="default" onClick={signInWithGoogle}>
                             <IonIcon icon={logoGoogle}/>Login With Google
-                        </IonButton>                                                 
-                        <IonItem>
-                            {message.length && <span className={message[1] + "-message"}>{ message[0] }</span>}
-                        </IonItem>                        
+                        </IonButton>                         
+                        <div>{ error }</div>
                     </IonCardContent>
                 </IonCard>                
             </IonContent>

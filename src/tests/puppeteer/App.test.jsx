@@ -3,6 +3,9 @@
 // https://github.com/puppeteer/puppeteer
 // https://pptr.dev/
 
+// ESLint Config
+/* global jest,beforeAll,afterAll,test */
+
 const puppeteer = require('puppeteer')
 const {  QueryHandler } = require("query-selector-shadow-dom/plugins/puppeteer");
 

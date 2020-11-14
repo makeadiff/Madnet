@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonItem, IonInput, IonPage, IonContent,IonIcon, IonList, IonButton } from '@ionic/react'
+import { IonItem, IonInput, IonPage, IonContent,IonIcon, IonList, IonButton, IonCard,IonCardContent,IonCardTitle, IonCardHeader } from '@ionic/react'
 import { arrowForwardOutline } from 'ionicons/icons'
 import { useHistory } from 'react-router-dom'
 
@@ -22,7 +22,6 @@ const InductionProfile = () => {
         const profile_str = localStorage.getItem("induction_profile")
         if(profile_str) {
             setProfile(JSON.parse(profile_str))
-
         } else { // Can't find any induction information.
             history.push('/induction/join')
         }
@@ -45,19 +44,28 @@ const InductionProfile = () => {
                 showMessage("Incorrect OTP provided.", "error")
             }
         }).catch(e => showMessage(e.message, "error"))
-   }
+    }
 
     return (
         <IonPage>
             <Title name={profile ? "Hello, " + profile.user.name : ""} />
-            <IonContent>
-                <IonList>
-                <IonItem lines="none"><p>We have sent an OTP to your { profile.type === "email" ? "email address" : "phone number" }. Please enter the OTP to continue...</p></IonItem>
+            <IonContent className="dark">
+                <IonCard className="dark">
+                    <IonCardHeader>
+                        <IonCardTitle>
+                            Verify your Email
+                        </IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                        <IonList>
+                            <IonItem lines="none"><p>We have sent an OTP to your { profile.type === "email" ? "email address" : "phone number" }. Please enter the OTP to continue...</p></IonItem>
 
-                <IonItem lines="none"><IonInput name="otp" id="otp" placeholder="OTP" /></IonItem>
-                <IonItem lines="none"><IonButton type="submit" name="action" onClick={checkOtp}>Next Step 
-                    <IonIcon icon={ arrowForwardOutline }></IonIcon></IonButton></IonItem>
-                </IonList>
+                            <IonItem lines="none"><IonInput name="otp" id="otp" placeholder="OTP" /></IonItem>
+                            <IonItem lines="none"><IonButton type="submit" name="action" onClick={checkOtp}>Next Step 
+                                <IonIcon icon={ arrowForwardOutline }></IonIcon></IonButton></IonItem>
+                        </IonList>
+                    </IonCardContent>
+                </IonCard>
             </IonContent>
         </IonPage>
     )

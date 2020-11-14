@@ -6,11 +6,6 @@ Oct 30
 
 
 
-
-
-
-
-
 https://trello.com/b/Zni3SYTi/madnet
 
 Global error message system.

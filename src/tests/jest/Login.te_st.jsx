@@ -1,14 +1,14 @@
 import React from 'react';
 import { IonCardTitle } from '@ionic/react'
 import renderer from 'react-test-renderer';
-import {shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 import Login from '../Login';
 
 var jest = require('jest');
 jest.mock('../../init-fcm.js', () => {
     return {
         requestPermission: () => { return },
-        onMessage: (callback) => { return },
+        onMessage: () => { return },
         convertNotificationPayload: (payload) => {
             return {
                 name : "notification.title",

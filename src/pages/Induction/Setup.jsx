@@ -40,25 +40,20 @@ const InductionSetup = () => {
         } else {
             setLoading("Setting your password...")
             api.rest(`users/${user.id}`, "post", {"password": password})
-            .then(() => {
-                setLoading(false)
-                setStep("home-page")
+                .then(() => {
+                    setLoading(false)
+                    setStep("home-page")
             
-            }).catch(e => {
-                setLoading(false)
-                showMessage("There was an error changing your password. Try again after some time.", "error")
-            })
+                }).catch(() => {
+                    setLoading(false)
+                    showMessage("There was an error changing your password. Try again after some time.", "error")
+                })
         }
     }
 
     const notificationPermission = () => {
         requestPermission()
         setStep('done')
-    }
-
-    const allDone = () => {
-        // :TODO: Save time to /user/{user_id}/data/induction_done
-        history.push('/dashboard')
     }
 
     return (
@@ -68,17 +63,17 @@ const InductionSetup = () => {
                 <IonCard className="dark">
                     <IonCardHeader>
                         <IonCardTitle>
-                            Let's Set Up your account.
+                            Let&apos;s Set Up your account.
                         </IonCardTitle>        
                         <IonCardSubtitle>
-                            <p>Congratulations! Now, you have access to all of MAD Tech. You'll be able to</p>
+                            <p>Congratulations! Now, you have access to all of MAD Tech. You&apros;ll be able to</p>
                             <ul>
                                 <li>See MAD events in your city</li>
-                                <li>See your student's data</li>
+                                <li>See your student&apros;s data</li>
                                 <li>Get information about MAD</li>
                                 <li>And much, much more...</li>
                             </ul>
-                            <p>To do all, this we'll need to setup a few things</p>                         
+                            <p>To do all, this we&apros;ll need to setup a few things</p>                         
                         </IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>                                                                        
@@ -89,7 +84,8 @@ const InductionSetup = () => {
                         { (step === "set-password") ? 
                             (<>
                                 <IonItem>
-                                    First, setup a password for your account. You can login using your email and this password. Alternatively, you can use Google login to login as well.
+                                    First, setup a password for your account. You can login using your email and this password. 
+                                        Alternatively, you can use Google login to login as well.
                                 </IonItem>
 
                                 <IonItem className="padded">
@@ -113,20 +109,19 @@ const InductionSetup = () => {
                         { (step === "home-page") ? 
                             (<>
                                 <IonItem>
-                                    First, you'll have to add this app to your phone. Hopefully you'll be using this from your phone - if you are NOT using this on your phone, skip to the next step.
+                                    First, you&apros;ll have to add this app to your phone. Hopefully you&apros;ll be using this from your phone - 
+                                        if you are NOT using this on your phone, skip to the next step.
                                 </IonItem>
 
                                 <IonItem>
-                                    {
-                                    browser === "firefox" ? 
-                                        (
-                                            <span>Click on the <IonIcon icon={homeOutline}></IonIcon> at the top-right corner of the browser in firefox and then click on '+ Add to Home Screen'</span>
-                                        )
+                                    { browser === "firefox" ? 
+                                        (<span>Click on the <IonIcon icon={homeOutline}></IonIcon> at the top-right corner of the browser in 
+                                            firefox and then click on &apros;+ Add to Home Screen&apros;</span>)
                                         : "Click on the 'Add MADNet to Home Screen' at the bottom of the browser in Chrome"
-                                }</IonItem>
+                                    }</IonItem>
 
                                 <IonItem className="padded">
-                                    <IonButton size="default" onClick={e => setStep("notification-permission") }>Next Step</IonButton>
+                                    <IonButton size="default" onClick={() => setStep("notification-permission") }>Next Step</IonButton>
                                 </IonItem>
                             </>)
                             : null }
@@ -134,7 +129,7 @@ const InductionSetup = () => {
                         { (step === "notification-permission") ? 
                             (<>
                                 <IonItem>
-                                    Next, we'll need permission to send you notifications. 
+                                    Next, we&apros;ll need permission to send you notifications. 
                                     To let us do that, click on the button below and then press Allow.
                                 </IonItem>
 
@@ -151,7 +146,7 @@ const InductionSetup = () => {
                                 </IonItem>
 
                                 <IonItem className="padded">
-                                    <IonButton size="default" onClick={e => { history.push('/dashboard') }}>Dashboard</IonButton>
+                                    <IonButton size="default" onClick={() => { history.push('/dashboard') }}>Dashboard</IonButton>
                                 </IonItem>
                             </>)
                             : null }
