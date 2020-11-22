@@ -7,12 +7,19 @@ import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import { volunteer_pages, fellow_pages } from "../utils/Menu"
 import { logOutOutline } from 'ionicons/icons'
+import { eraseCookie } from "../utils/Helpers"
 
 const Menu = () => {
     const [ confirmLogout, setConfirmLogout ] = React.useState(false)
     const { user, unsetCurrentUser, isFellow } = React.useContext(authContext)
     const { data } = React.useContext(appContext)
     let render
+
+    const logout = () => {
+        eraseCookie('user_identifier')
+        eraseCookie('auth_token')
+        unsetCurrentUser()
+    }
 
     if(user.id) {
         render = (
@@ -59,11 +66,11 @@ const Menu = () => {
                             text: 'Cancel',
                             role: 'cancel',
                             cssClass: 'secondary',
-                            handler: e => { }
+                            handler: () => { }
                         },
                         {
                             text: 'Logout',
-                            handler: unsetCurrentUser
+                            handler: logout
                         }
                     ]} />
             </>
