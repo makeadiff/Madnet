@@ -162,10 +162,10 @@ const LevelForm = () => {
                 </IonList>
 
                 { disable ?
-                    (<IonFab onClick={() => { setDisable(false) }} vertical="bottom" horizontal="end" slot="fixed">
+                    (<IonFab onClick={() => { setDisable(false) }} vertical="bottom" horizontal="start" slot="fixed">
                         <IonFabButton><IonIcon icon={pencil}/></IonFabButton>
                     </IonFab>) : 
-                    (<IonFab onClick={() => { setDisable(true) }} vertical="bottom" horizontal="end" slot="fixed">
+                    (<IonFab onClick={() => { setDisable(true) }} vertical="bottom" horizontal="start" slot="fixed">
                         <IonFabButton><IonIcon icon={close}/></IonFabButton>
                     </IonFab>) }
             </IonContent>

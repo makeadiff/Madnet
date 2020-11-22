@@ -169,16 +169,12 @@ const UserForm = () => {
                     <Title name={(!disable? 'Edit ':'') + user.name } />
                     <IonContent className="dark">
                         { hasPermission('user_edit') && disable ?  (
-                            <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                                <IonFabButton onClick={openEdit}>
-                                    <IonIcon icon={ pencil } />
-                                </IonFabButton>
+                            <IonFab vertical="bottom" horizontal="start" slot="fixed">
+                                <IonFabButton onClick={openEdit}><IonIcon icon={ pencil } /></IonFabButton>
                             </IonFab>
                         ) : (
-                            <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                                <IonFabButton onClick={closeEdit}>
-                                    <IonIcon icon={ close } />
-                                </IonFabButton>
+                            <IonFab vertical="bottom" horizontal="start" slot="fixed">
+                                <IonFabButton onClick={closeEdit}><IonIcon icon={ close } /></IonFabButton>
                             </IonFab>
                         ) }
 

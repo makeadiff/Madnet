@@ -41,7 +41,7 @@ const UserDetail = ({user, index}) => {
 
     return (
         <>
-            <IonPopover isOpen={showOptions} onDidDismiss={e => setShowOptions(false)} > 
+            <IonPopover isOpen={showOptions} onDidDismiss={() => setShowOptions(false)} > 
                 <IonItem button routerLink={ `/users/${user.id}/` } routerDirection="none" onClick={() => setShowOptions(false)}>
                     <IonIcon className="userOptions" icon={person}></IonIcon> View {user.name}
                 </IonItem>
@@ -53,7 +53,7 @@ const UserDetail = ({user, index}) => {
                         <IonItem button onClick={()=>setConfirmAlumni(true)}><IonIcon className="userOptions" icon={personRemove}></IonIcon> Mark Alumni</IonItem>
                         <IonItem button onClick={()=>setConfirmDelete(true)}><IonIcon className="userOptions" icon={trash}></IonIcon> Delete</IonItem>
                     </>
-                ): null }      
+                ) : null }      
             </IonPopover>
 
             <IonCard class="light list user" key={index}>

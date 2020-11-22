@@ -258,10 +258,10 @@ const EventCreate = () => {
             {/* If Event ID exists, i.e for Viewing existing events, show an enable/disable edit Button  */}
             { eventId ? (
                 <>
-                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                    <IonFab vertical="bottom" horizontal="start" slot="fixed">
                         <IonFabButton disabled={!editable} onClick={openEdit}><IonIcon icon={pencil}/></IonFabButton>
                     </IonFab>
-                    <IonFab vertical="bottom" horizontal="end" slot="fixed" className={ disable ? "hidden": "" }>
+                    <IonFab vertical="bottom" horizontal="start" slot="fixed" className={ disable ? "hidden": "" }>
                         <IonFabButton disabled={!editable} onClick={closeEdit}> <IonIcon icon={close}/></IonFabButton>
                     </IonFab>   
                 </>

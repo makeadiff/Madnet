@@ -2,9 +2,12 @@ import React from 'react'
 import { IonRouterOutlet, IonSplitPane, IonPage, IonLoading, IonToast } from '@ionic/react'
 import { IonReactHashRouter } from '@ionic/react-router'
 import { Redirect, Route, useLocation } from 'react-router-dom'
+
+import Feedback from "feeder-react-feedback";
+import "feeder-react-feedback/dist/feeder-react-feedback.css";
+
 import { authContext } from "./contexts/AuthContext"
 import { appContext } from "./contexts/AppContext"
-
 
 import { SITE_URL } from './utils/Constants'
 
@@ -24,7 +27,6 @@ import EventIndex from './pages/Events/Index'
 import EventCreate from './pages/Events/Create'
 import EventRSVP from './pages/Events/RSVP'
 // import EventView from './pages/Events/View'
-
 import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
@@ -32,7 +34,7 @@ import InductionSetup from './pages/Induction/Setup'
 import Profile from './pages/Profile'
 import Notes from './pages/Notes'
 import UserIndex from './pages/Users/Index'
-import UserView from './pages/Users/View'
+// import UserView from './pages/Users/View'
 import UserForm from './pages/Users/Form'
 import StudentIndex from './pages/Students/Index'
 import StudentForm from './pages/Students/Form'
@@ -44,6 +46,7 @@ import WingmanView from './pages/Allocations/Wingman/View'
 
 const Root = () => {
     const { loading, setLoading, message, setMessage } = React.useContext(appContext)
+    const { user } = React.useContext(authContext)
 
     return (
         <IonReactHashRouter>
@@ -203,6 +206,8 @@ const Root = () => {
 
                         <Route path="/" render={() => <Redirect to="/dashboard" /> } exact={true} />
                     </IonRouterOutlet>
+
+                    <Feedback projectId="5fad1e16c018ec00042287b0" email={true} emailRequired={true} primaryColor="#ef233c" textColor="#ffffff" emailDefaultValue={user.email} />
                 </IonPage>
 
             </IonSplitPane>

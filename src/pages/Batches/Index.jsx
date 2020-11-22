@@ -47,7 +47,7 @@ const BatchIndex = () => {
                     })}
                 </IonList>
 
-                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                <IonFab vertical="bottom" horizontal="start" slot="fixed">
                     <IonFabButton routerLink={ `/shelters/${shelter.id}/projects/${project_id}/batches/0` }><IonIcon icon={ add }/></IonFabButton>
                 </IonFab>
             </IonContent>

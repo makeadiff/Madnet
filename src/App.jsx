@@ -18,9 +18,6 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-import Feedback from "feeder-react-feedback";
-import "feeder-react-feedback/dist/feeder-react-feedback.css";
-
 /* Theme variables */
 import './theme/variables.css';
 import './App.css';
@@ -36,8 +33,6 @@ const App = () => {
                 <AuthContextProvider>
                     <DataContextProvider>
                         <Root />
-
-                        <Feedback projectId="5fad1e16c018ec00042287b0" email={true} emailRequired={true} primaryColor="#ef233c" textColor="#ffffff"  />
                     </DataContextProvider>
                 </AuthContextProvider>
             </AppContextProvider>

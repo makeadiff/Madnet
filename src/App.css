@@ -24,8 +24,9 @@ ion-card.dark ion-label {
 }
 
 .frf-modal-feedback-type {
-	padding: 5px 0;
+	padding: 5px 0 !important;
 }
-.frf-modal-container {
-	border: 1px solid #000;
+.frf-trigger-button {
+	right: -9px !important;
+	bottom: 10px !important;
 }

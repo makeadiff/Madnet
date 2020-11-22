@@ -16,7 +16,7 @@ const EventIndex = () => {
 
             <IonContent className="dark">                
                 {accessLevel() ? (
-                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                    <IonFab vertical="bottom" horizontal="start" slot="fixed">
                         <IonFabButton routerLink="/events/0">
                             <IonIcon icon={add} />
                         </IonFabButton>

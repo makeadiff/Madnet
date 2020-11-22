@@ -66,7 +66,7 @@ const LevelIndex = () => {
                     })}
                 </IonList>
 
-                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                <IonFab vertical="bottom" horizontal="start" slot="fixed">
                     <IonFabButton routerLink={ `/shelters/${shelter_id}/projects/${project_id}/levels/0` }><IonIcon icon={ add }/></IonFabButton>
                 </IonFab>
             </IonContent>

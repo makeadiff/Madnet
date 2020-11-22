@@ -3,7 +3,7 @@ Oct 30
 - Name Capitalization in Users(?)
 - Style Resources Page better.
 - Get valid resources from team
-
+- MADNet login should work with Auth too. If logged in on one app, it should work in the other too.
 
 
 https://trello.com/b/Zni3SYTi/madnet

@@ -8,6 +8,7 @@ import { requestPermission, firebase, onMessage,convertNotificationPayload } fro
 import { authContext } from "../contexts/AuthContext"
 import { appContext } from "../contexts/AppContext"
 import api from "../utils/API"
+import { setCookie } from "../utils/Helpers"
 
 import './Login.css'
 
@@ -48,6 +49,11 @@ function Login() {
 
         if(user) {
             setCurrentUser(user)
+
+            // If the same user goes to a page with Auth, this code will let them auto login.
+            setCookie('user_identifier', user.email)
+            setCookie('auth_token', user.auth_token)
+
             requestPermission()
             onMessage((payload) => {
                 addNotification(convertNotificationPayload(payload))

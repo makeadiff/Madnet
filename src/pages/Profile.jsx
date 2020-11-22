@@ -174,23 +174,21 @@ const Profile = () => {
                                         <IonItem>											
                                             <IonLabel position="stacked">Roles: </IonLabel>								
                                             <ul className="roleList">
-                                                {								
-                                                    user.groups.map((roles, index) => {									
-                                                        if(!breakcondition){
-                                                            if(index < 3){
-                                                                return (
-                                                                    <li key={index}><IonChip className="roles">{roles.name}</IonChip></li>
-                                                                )
-                                                            } else {
-                                                                breakcondition = true;
-                                                                return (
-                                                                    <li key={index}><IonChip className="roles">+ {user.groups.length - index} More</IonChip></li>
-                                                                )										
-                                                            }											
-                                                        }
-                                                    })
-                                                }	
-                                            </ul>						
+                                                { (user.groups) ? user.groups.map((roles, index) => {									
+                                                    if(!breakcondition){
+                                                        if(index < 3){
+                                                            return (
+                                                                <li key={index}><IonChip className="roles">{roles.name}</IonChip></li>
+                                                            )
+                                                        } else {
+                                                            breakcondition = true;
+                                                            return (
+                                                                <li key={index}><IonChip className="roles">+ {user.groups.length - index} More</IonChip></li>
+                                                            )										
+                                                        }											
+                                                    }
+                                                }) : null }
+                                            </ul>
                                         </IonItem>							
                                         { (user.mad_email) ? (
                                             <IonItem>
@@ -208,9 +206,9 @@ const Profile = () => {
                                         </IonItem>						
                                     </IonCardContent>
                                 </IonCard>
-                                <IonCard className="dark no-shadow">								
+                                {/* <IonCard className="dark no-shadow">
                                     <IonCardHeader>
-                                        <IonCardTitle>Profile Settings</IonCardTitle>									
+                                        <IonCardTitle>Profile Settings</IonCardTitle>
                                     </IonCardHeader>
                                     <IonCardContent>
                                         <IonItem>
@@ -218,15 +216,15 @@ const Profile = () => {
                                             <IonToggle color="primary" />
                                         </IonItem>
                                     </IonCardContent>
-                                </IonCard>
-                            </IonList>																
+                                </IonCard> */}
+                            </IonList>
                         </IonCol>
                     </IonRow>              
                 </IonGrid>
-                <IonFab onClick={openEdit} vertical="bottom" horizontal="end" slot="fixed" className={ !disable? "hidden": null }>
+                <IonFab onClick={openEdit} vertical="bottom" horizontal="start" slot="fixed" className={ !disable? "hidden": null }>
                     <IonFabButton><IonIcon icon={pencil}/></IonFabButton>
                 </IonFab>
-                <IonFab onClick={closeEdit} vertical="bottom" horizontal="end" slot="fixed" className={ disable? "hidden": null }>
+                <IonFab onClick={closeEdit} vertical="bottom" horizontal="start" slot="fixed" className={ disable? "hidden": null }>
                     <IonFabButton><IonIcon icon={close}/></IonFabButton>
                 </IonFab>
             </IonContent>
