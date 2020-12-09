@@ -199,19 +199,19 @@ const UserForm = () => {
                                                         <IonInput type="email" name="email" placeholder="Personal Email" value={ user.email }  disabled={disable} onIonChange={updateField}/>
                                                     </IonItem>
                                                     {/* <IonItem>
-                                                <IonLabel position="stacked">MAD Email</IonLabel>
-                                                <IonInput type="email" name="mad_email" placeholder="Official Email" value={ user.mad_email }  disabled={disable} onIonChange={updateField}/>
-                                            </IonItem> */}
+                                                        <IonLabel position="stacked">MAD Email</IonLabel>
+                                                        <IonInput type="email" name="mad_email" placeholder="Official Email" value={ user.mad_email }  disabled={disable} onIonChange={updateField}/>
+                                                    </IonItem> */}
                                                     <IonItem>
                                                         <IonLabel position="stacked">Phone</IonLabel>
                                                         <IonInput type="text" name="phone" placeholder="Phone" value={ user.phone }  disabled={disable} onIonChange={updateField}/>
                                                     </IonItem>
                                                     {/* {!disable? (
-                                                <>
-                                                    <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
-                                                    <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
-                                                </>
-                                            ): null}*/}
+                                                        <>
+                                                            <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
+                                                            <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
+                                                        </>
+                                                    ): null}*/}
 
                                                     {disable? (
                                                         <IonItem>

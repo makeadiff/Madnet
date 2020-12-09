@@ -34,7 +34,7 @@ const Links = () => {
 }
 
 const LinkSection = ({ index, section }) => {
-    let key_plural = index + "s" // Only coving groups || verticals || centers - so 'es' not needed.
+    let key_plural = index + "s" // Only covering groups || verticals || centers - so 'es' not needed.
 
     if((index === "general" || index === "city" || index === "links") && section.links.length) {
         return (
@@ -60,6 +60,21 @@ const LinkSection = ({ index, section }) => {
 }
 
 const OutLink = ({ link }) => {
+    const { user } = React.useContext(authContext)
+
+    const replaces = {
+        '%USER_ID%' : user.id,
+        '%CITY_ID%' : user.city_id,
+        '%NAME%'    : user.name,
+        '%FIRST_NAME%': user.name.split(' ').slice(0, -1).join(' ')
+    }
+
+    for(let replace_this in replaces) {
+        link.url = link.url.replace(replace_this, replaces[replace_this])
+        link.name = link.name.replace(replace_this, replaces[replace_this])
+        link.text = link.text.replace(replace_this, replaces[replace_this])
+    }
+
     return (
         <IonCard>
             <IonCardHeader>
