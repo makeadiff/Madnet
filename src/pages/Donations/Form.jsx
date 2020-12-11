@@ -7,6 +7,8 @@ import { dataContext } from '../../contexts/DataContext'
 import { appContext } from '../../contexts/AppContext'
 import Title from '../../components/Title'
 
+// TODO - validations don't work. 
+
 const DonationForm = () => {
     const { user } = React.useContext(authContext)
     const [ donation, setDonation ] = React.useState({donor_name: "", amount: "", donor_phone: "", donor_email: "", 
@@ -23,23 +25,20 @@ const DonationForm = () => {
         const ele = e.target
         const { id, value } = ele
 
-        let title = "name"
-        if(id === "donor_email") title = "email address"
-        else if(id === "donor_phone") title = "phone number"
-        else if(id === "amount") title = "amount"
-
-        // Using HTML validation.
-        if(ele.firstChild && typeof ele.firstChild.checkValidity === "function" && !ele.firstChild.checkValidity()) {
-            let message = ele.firstChild.validationMessage 
-            if(ele.firstChild.validity.patternMismatch) {
-                message = "Please enter a valid " + title
+        setError(id, "")
+        if(id === "donor_email" && value) {
+            if(!value.match(/^[a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9\-\_\.]+\.[a-zA-Z\.]{2,6}$/)) {
+                setError(id, "Please enter a valid email address")
             }
-            console.log("error " + message)
-            setError(id, message)
-        } else { // No errors.
-            setError(id, "")
+        } else if(id === "donor_phone" && value) {
+            if(!value.match(/^(\+?\d{1,3}[\- ]?)?\d{10}$/)) {
+                setError(id, "Please enter a phone number")
+            }
+        } else if(id === "donor_name" && value) {
+            if(!value.match(/^[A-Za-z\-' ]{1,60}$/)) {
+                setError(id, "Please enter a valid name")
+            }
         }
-        // Custom validation rules, if any, goes here.
 
         setDonation({...donation, [id]: value})
     }
@@ -47,20 +46,27 @@ const DonationForm = () => {
     const saveDonation = e => {
         e.preventDefault()
 
+        // :TODO: Use comment parameter to add which platform - ketto or global giving.
         callApi({
             url: "/donations",
             method: "post",
             params: donation
         }).then((data) => {
-            if(data.status === "success") {
-                showMessage("Donation details saved")
+            if(data.id) {
+                showMessage("Donation details saved. Donation ID: " + data.id)
+                setDonation({donor_name: "", amount: "", donor_phone: "", donor_email: "", 
+                    added_on: moment().format("YYYY-MM-DD"), fundraiser_user_id: user.id, type: "crowdfunding_patforms"})
+                setError("donor_email", "")
+                setError("donor_name", "")
+                setError("donor_phone", "")
+                setError("amount", "")
             }
         })
     }  
 
     return (
         <IonPage>
-            <Title name="Add Ketto Donation Details" />
+            <Title name="Add Crowd Funding Donations" />
             <IonContent className="dark">
                 <IonCard>
                     <IonCardContent>
@@ -68,15 +74,14 @@ const DonationForm = () => {
                             <IonList>
                                 <IonItem>
                                     <IonLabel position="stacked">Donor Name</IonLabel>
-                                    <IonInput id="name" type="text" value={ donation.name } 
-                                        required={true} minlength="2" maxlength="70" pattern="[A-Za-z\-' ]{1,60}"
-                                        autocapitalize={true} onChange={ updateField } />
+                                    <IonInput id="donor_name" type="text" value={ donation.donor_name } required={true} minlength="2" maxlength="70"
+                                        autocapitalize={true} onIonChange={ updateField } />
                                     { errors.donor_name ? <p className="error-message">{ errors.donor_name }</p> : null }
                                 </IonItem>
 
                                 <IonItem>
                                     <IonLabel position="stacked">Donor Email</IonLabel>
-                                    <IonInput id="donor_email" type="email" value={ donation.donor_email } required={true} onIonChange={ updateField } />{/* pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" */}
+                                    <IonInput id="donor_email" type="email" value={ donation.donor_email } required={true} onIonChange={ updateField } />
                                     { errors.donor_email ? <p className="error-message">{ errors.donor_email }</p> : null }
                                 </IonItem>
 
@@ -91,7 +96,6 @@ const DonationForm = () => {
                                     <IonInput id="amount" type="number" value={ donation.amount } required={true} onIonChange={ updateField }  />
                                     { errors.amount ? <p className="error-message">{ errors.amount }</p> : null }
                                 </IonItem>
-
 
                                 <IonItem>
                                     <IonLabel position="stacked">Donated On</IonLabel>

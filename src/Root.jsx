@@ -16,6 +16,7 @@ import Page from './pages/Page'
 import Login from "./pages/Login"
 import Dashboard from './pages/Dashboard'
 import Links from './pages/Links'
+import DonationIndex from './pages/Donations/Index'
 import DonationForm from './pages/Donations/Form'
 import ShelterView from './pages/Shelters/View'
 import ShelterIndex from './pages/Shelters/Index'
@@ -148,6 +149,9 @@ const Root = () => {
                             <EventCreate />
                         </PrivateRoute>
 
+                        <PrivateRoute path="/donations" exact={true} >
+                            <DonationIndex />
+                        </PrivateRoute>
                         <PrivateRoute path="/donations/0" exact={true} >
                             <DonationForm />
                         </PrivateRoute>

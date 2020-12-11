@@ -15,7 +15,7 @@ export const volunteer_pages = [
     // },
     {
         title: 'Donations',
-        url: '/donut',
+        url: '/donations',
         iosIcon: wallet,
         mdIcon: wallet
     },
