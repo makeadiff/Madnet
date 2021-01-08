@@ -2,7 +2,7 @@ import React from 'react';
 import { IonCardTitle } from '@ionic/react'
 import renderer from 'react-test-renderer';
 import {shallow} from 'enzyme';
-import Login from '../Login';
+import Login from '../../pages/Login';
 
 var jest = require('jest');
 jest.mock('../../init-fcm.js', () => {

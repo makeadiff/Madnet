@@ -40,6 +40,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --browser",
+    "lint:deps": "depcruise --config .dependency-cruiser.js src",
     "debug": "NODE_ENV=debug jest",
     "eject": "react-scripts eject"
   },
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@capacitor/cli": "1.5.1",
     "@ionic/react-test-utils": "0.0.3",
+    "dependency-cruiser": "^9.21.4",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "eslint": "^6.8.0",
