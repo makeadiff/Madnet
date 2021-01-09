@@ -1,6 +1,6 @@
 # MADNet
 
-Volunteer/Fellow tool to aid all on-ground MAD operations. Progressive Web App(PWA) 
+Volunteer/Fellow tool to aid all on-ground MAD operations. Progressive Web App(PWA)
 
 ## Vision
 
