@@ -23,7 +23,8 @@ module.exports = {
     },
     "plugins": [
         "react",
-        "protractor"
+        "protractor",
+        "prettier"
     ],
     "settings": {
         "react": {
@@ -31,7 +32,7 @@ module.exports = {
         }
     },
     "rules": {
-        "indent": ["warn", 4],
+        "prettier/prettier": "error",
         "react/prop-types": 0,                      // TODO: activate rule
         "protractor/no-absolute-url": 0,            // TODO: activate rule
         "protractor/no-describe-selectors": 0,      // TODO: activate rule
