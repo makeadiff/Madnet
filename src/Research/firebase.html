@@ -1,131 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+<head>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
 
-    <!-- SDKs for Firebase products that you want to use - https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-messaging.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-analytics.js"></script>
+<!-- SDKs for Firebase products that you want to use - https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-messaging.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-analytics.js"></script>
 
-    <script>
-      // Your web app's Firebase configuration
-      var firebaseConfig = {
-        apiKey: 'AIzaSyBMADdvkn0Avmq2_loScmoXdTf7m7LgNXk',
-        authDomain: 'madnet-28ca4.firebaseapp.com',
-        databaseURL: 'https://madnet-28ca4.firebaseio.com',
-        projectId: 'madnet-28ca4',
-        storageBucket: 'madnet-28ca4.appspot.com',
-        messagingSenderId: '552143822852',
-        appId: '1:552143822852:web:b4878a4f6cf344350b5551',
-        measurementId: 'G-1Q23XLELJ9'
-      }
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig)
-      firebase.analytics()
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyBMADdvkn0Avmq2_loScmoXdTf7m7LgNXk",
+        authDomain: "madnet-28ca4.firebaseapp.com",
+        databaseURL: "https://madnet-28ca4.firebaseio.com",
+        projectId: "madnet-28ca4",
+        storageBucket: "madnet-28ca4.appspot.com",
+        messagingSenderId: "552143822852",
+        appId: "1:552143822852:web:b4878a4f6cf344350b5551",
+        measurementId: "G-1Q23XLELJ9"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
 
-      // Retrieve Firebase Messaging object.
-      const messaging = firebase.messaging()
-      // Add the public key generated from the console here.
-      messaging.usePublicVapidKey(
-        'BA9qJfeWPrqYdKAoQNsFaEGsyStR5YfPp99wWa-py6nmKKnU-6A0oGjHC4LDzwoAiAyps_LzkYnIyWXY8Hzm04k'
-      )
+    // Retrieve Firebase Messaging object.
+    const messaging = firebase.messaging();
+    // Add the public key generated from the console here.
+    messaging.usePublicVapidKey('BA9qJfeWPrqYdKAoQNsFaEGsyStR5YfPp99wWa-py6nmKKnU-6A0oGjHC4LDzwoAiAyps_LzkYnIyWXY8Hzm04k');
 
-      // IDs of divs that display Instance ID token UI or request permission UI.
-      const tokenDivId = 'token_div'
-      const permissionDivId = 'permission_div'
+    // IDs of divs that display Instance ID token UI or request permission UI.
+    const tokenDivId = 'token_div';
+    const permissionDivId = 'permission_div';
 
-      // Callback fired if Instance ID token is updated.
-      messaging.onTokenRefresh(() => {
-        messaging
-          .getToken()
-          .then((refreshedToken) => {
-            console.log('Token refreshed.')
+    // Callback fired if Instance ID token is updated.
+    messaging.onTokenRefresh(() => {
+    messaging.getToken().then((refreshedToken) => {
+        console.log('Token refreshed.');
 
-            // Send Instance ID token to app server.
-            // sendTokenToServer(refreshedToken);
-          })
-          .catch((err) => {
-            console.log('Unable to retrieve refreshed token ', err)
-          })
-      })
+        // Send Instance ID token to app server.
+        // sendTokenToServer(refreshedToken);
+    }).catch((err) => {
+        console.log('Unable to retrieve refreshed token ', err);
+    });
+    });
 
-      // Handle incoming messages. Called when:
-      // - a message is received while the app has focus
-      // - the user clicks on an app notification created by a service worker
-      //   `messaging.setBackgroundMessageHandler` handler.
-      // Test Sending message using https://console.firebase.google.com/u/1/project/madnet-28ca4/notification/compose
-      messaging.onMessage((payload) => {
-        console.log('Message received. ', payload)
-      })
+    // Handle incoming messages. Called when:
+    // - a message is received while the app has focus
+    // - the user clicks on an app notification created by a service worker
+    //   `messaging.setBackgroundMessageHandler` handler.
+    // Test Sending message using https://console.firebase.google.com/u/1/project/madnet-28ca4/notification/compose
+    messaging.onMessage((payload) => {
+    console.log('Message received. ', payload);
+    });
 
-      function resetUI() {
-        // Get Instance ID token. Initially this makes a network call, once retrieved
-        // subsequent calls to getToken will return from cache.
-        messaging
-          .getToken()
-          .then((currentToken) => {
-            if (currentToken) {
-              console.log('Got Token', currentToken)
-              // sendTokenToServer(currentToken);
-              // updateUIForPushEnabled(currentToken);
-            } else {
-              // Show permission request.
-              console.log(
-                'No Instance ID token available. Request permission to generate one.'
-              )
-              // Show permission UI.
-              // updateUIForPushPermissionRequired();
-              // setTokenSentToServer(false);
-            }
-          })
-          .catch((err) => {
-            console.log('An error occurred while retrieving token. ', err)
-            // showToken('Error retrieving Instance ID token. ', err);
-            // setTokenSentToServer(false);
-          })
-      }
+    function resetUI() {
+    // Get Instance ID token. Initially this makes a network call, once retrieved
+    // subsequent calls to getToken will return from cache.
+    messaging.getToken().then((currentToken) => {
+        if (currentToken) {
+        console.log("Got Token", currentToken)
+        // sendTokenToServer(currentToken);
+        // updateUIForPushEnabled(currentToken);
+        } else {
+        // Show permission request.
+        console.log('No Instance ID token available. Request permission to generate one.');
+        // Show permission UI.
+        // updateUIForPushPermissionRequired();
+        // setTokenSentToServer(false);
+        }
+    }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+        // showToken('Error retrieving Instance ID token. ', err);
+        // setTokenSentToServer(false);
+    });
+    }
 
-      function showToken(currentToken) {
-        console.log('Token: ', currentToken)
-      }
 
-      function requestPermission() {
-        console.log('Requesting permission...')
-        Notification.requestPermission().then((permission) => {
-          if (permission === 'granted') {
-            console.log('Notification permission granted.')
+    function showToken(currentToken) {
+    console.log("Token: ", currentToken)
+    }
 
-            resetUI()
-          } else {
-            console.log('Unable to get permission to notify.')
-          }
-        })
-      }
+    function requestPermission() {
+    console.log('Requesting permission...');
+    Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+        console.log('Notification permission granted.');
 
-      function deleteToken() {
-        // Delete Instance ID token.
-        messaging
-          .getToken()
-          .then((currentToken) => {
-            messaging
-              .deleteToken(currentToken)
-              .then(() => {
-                console.log('Token deleted.')
-                // Once token is deleted update UI.
-                resetUI()
-              })
-              .catch((err) => {
-                console.log('Unable to delete token. ', err)
-              })
-          })
-          .catch((err) => {
-            console.log('Error retrieving Instance ID token. ', err)
-          })
-      }
+        resetUI();
+        } else {
+        console.log('Unable to get permission to notify.');
+        }
+    });
+    }
 
-      resetUI()
-    </script>
-  </head>
-  <body></body>
+    function deleteToken() {
+    // Delete Instance ID token.
+    messaging.getToken().then((currentToken) => {
+        messaging.deleteToken(currentToken).then(() => {
+        console.log('Token deleted.');
+        // Once token is deleted update UI.
+        resetUI();
+        }).catch((err) => {
+        console.log('Unable to delete token. ', err);
+        });
+    }).catch((err) => {
+        console.log('Error retrieving Instance ID token. ', err);
+    });
+
+    }
+
+    resetUI();
+</script> 
+</head>
+<body>
+</body>
 </html>

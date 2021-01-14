@@ -2,11 +2,10 @@ ion-toolbar.md {
   --background: var(--ion-title-background-color);
 }
 
-ion-content.dark {
+ion-content.dark{
   --background: var(--black);
 }
-ion-list ion-item.striped:nth-child(even),
-ion-list.striped ion-item:nth-child(even) {
+ion-list ion-item.striped:nth-child(even), ion-list.striped ion-item:nth-child(even) {
   --background: var(--ion-background-color-alt);
 }
 ion-item.title {

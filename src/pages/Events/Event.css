@@ -1,80 +1,79 @@
 .date-number {
-  font-size: xx-large;
-  text-align: center;
+    font-size: xx-large;
+    text-align: center;
 }
 .month-name {
-  color: var(--ion-color-danger);
-  text-align: center;
+    color: var(--ion-color-danger);
+    text-align: center;
 }
 
 .event-name {
-  font-size: x-large;
-  padding-bottom: 7px;
+    font-size: x-large;
+    padding-bottom: 7px;
 }
 .event-type {
-  font-size: large;
-  color: var(--ion-color-step-500);
+    font-size: large;
+    color: var(--ion-color-step-500);
 }
 
 .actions ion-title {
-  font-size: medium;
+    font-size: medium;
 }
 .actions ion-icon {
-  font-size: xx-large;
+    font-size: xx-large;
 }
 ion-row {
-  margin-bottom: 16px;
+    margin-bottom:16px;
 }
 
 .going {
-  color: var(--ion-color-success);
+    color: var(--ion-color-success);
 }
 
 .cant_go {
-  color: var(--ion-color-danger);
+    color: var(--ion-color-danger);
 }
 
 .maybe {
-  color: var(--ion-color-warning);
+    color: var(--ion-color-warning);
 }
 
 ion-col.selected {
-  background-color: #ed1849;
+    background-color: #ed1849;    
 }
 
-ion-card.light ion-col.selected ion-label {
-  color: #fff !important;
+ion-card.light ion-col.selected ion-label{    
+    color: #FFF !important;
 }
 
 .icon-medium {
-  font-size: large;
+    font-size: large;
 }
 
-.actions ion-col {
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 4px;
+.actions ion-col{
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
 }
 
-.actions ion-col:hover {
-  background: var(--red-bright);
+.actions ion-col:hover{
+    background: var(--red-bright);
 }
 
-ion-label.error {
-  color: #ffffff !important;
+ion-label.error{
+    color: #FFFFFF !important;    
 }
 
-ion-alert .alert-radio-label,
-ion-alert .alert-checkbox-label {
-  color: var(--black) !important;
+ion-alert .alert-radio-label, ion-alert .alert-checkbox-label{
+    color: var(--black) !important;
 }
 
-ion-card.light ion-checkbox {
-  --border-color: var(--black);
+ion-card.light ion-checkbox{
+    --border-color: var(--black)
 }
 
-ion-card.dark ion-checkbox {
-  --border-color: #ffffff;
+ion-card.dark ion-checkbox{
+    --border-color: #FFFFFF;
 }
 
 ion-card.light ion-label.label-stacked,
@@ -82,90 +81,89 @@ ion-card.light ion-label,
 ion-card.light ion-input,
 ion-card.light ion-textarea,
 ion-card.light ion-select,
-ion-card.light ion-select .select-text {
-  --color: #000;
-  color: #000 !important;
-  --placeholder-color: #000;
+ion-card.light ion-select .select-text{
+    --color: #000;
+    color:#000 !important;
+    --placeholder-color: #000; 
 }
 
-h3.no-padding {
-  padding: 0;
-}
-
-.popover-content {
-  padding: 10px;
-}
-
-ion-input.search {
-  --background: var(--black);
-}
-
-ion-select.in-item {
-  max-width: 100%;
-}
-
-@media (max-width: 500px) {
-  ion-card-content {
+h3.no-padding{
     padding: 0;
-  }
 }
 
-ion-chip.selected {
-  background: #ed1849;
-  color: #fff;
+.popover-content{
+    padding: 10px;
 }
 
-.pl-20 {
-  padding-left: 20px !important;
+ion-input.search{
+    --background: var(--black)
 }
 
-ion-icon.no_data {
-  color: red;
+ion-select.in-item{
+    max-width: 100%;
 }
 
-ion-icon.going {
-  color: green;
+@media (max-width: 500px){
+    ion-card-content{
+        padding:0;
+    }
 }
 
-ion-icon.maybe {
-  color: yellow;
+ion-chip.selected{
+    background: #ED1849;
+    color: #FFF
 }
 
-ion-icon.cant_go {
-  color: red;
+.pl-20{
+    padding-left: 20px !important;
+}
+
+ion-icon.no_data{
+    color: red;
+}
+
+ion-icon.going{
+    color: green;
+}
+
+ion-icon.maybe{
+    color: yellow;
+}
+
+ion-icon.cant_go{
+    color: red
 }
 
 ion-modal ion-content.dark p,
-ion-modal ion-content.dark ul li {
-  color: #fff;
+ion-modal ion-content.dark ul li{
+    color: #FFF;
 }
 
-ion-label.sc-ion-select-popover {
-  color: #000 !important;
+ion-label.sc-ion-select-popover{
+    color: #000 !important;
 }
 
-ion-col.eventDetails {
-  color: #fff;
+ion-col.eventDetails{
+    color: #FFF;
 }
 
-ion-card.dark ion-searchbar {
-  --background: var(--black);
+ion-card.dark ion-searchbar{
+    --background: var(--black)
 }
 
-ion-note.eventNote {
-  color: #000;
-  text-align: left;
-  font-size: 12px;
-  padding-left: 18px;
+ion-note.eventNote{
+    color: #000;
+    text-align: left;
+    font-size: 12px;
+    padding-left: 18px;
 }
 
-.select-interface-option {
-  --color: #000;
-  --background: #fff;
+.select-interface-option{
+    --color: #000;
+    --background: #FFF;
 }
 
-.popover-content,
-.alert-wrapper {
-  --background: #fff;
-  --color: #ed1849;
+.popover-content, .alert-wrapper{
+    --background: #FFF;
+    --color: #ED1849;
 }

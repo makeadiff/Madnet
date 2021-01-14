@@ -1,29 +1,28 @@
-ion-card.list {
+ion-card.list{
   border: none;
   border-left: 3px solid var(--red-bright);
 }
 
-ion-card.list ion-card-title {
-  font-size: 15px;
+ion-card.list ion-card-title{
+  font-size:15px;
 }
 
-ion-card.list ion-card-title p {
-  margin-bottom: 0px;
+ion-card.list ion-card-title p{
+  margin-bottom: 0px
 }
 
-ion-card.list ion-chip {
+ion-card.list ion-chip{
   font-size: 13px;
   padding: 8px;
   height: 25px;
 }
 
-ion-icon.userOptions {
+ion-icon.userOptions{
   color: var(--red-bright);
   font-size: 18px;
 }
 
-.user ion-card-header,
-.user ion-card-content {
+.user ion-card-header, .user ion-card-content {
   padding: 0 !important;
 }
 ion-card-title {

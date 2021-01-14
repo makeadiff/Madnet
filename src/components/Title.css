@@ -1,23 +1,23 @@
-#notification-button {
-  position: relative;
-  width: 42px;
-  top: 1px;
-  right: 1px;
-  overflow: visible !important;
+#notification-button {            
+    position: relative;
+    width: 42px;
+    top:1px;
+    right: 1px;
+    overflow: visible!important;
 }
 
 #notifications-badge {
-  background-color: var(--ion-color-danger);
-  position: absolute;
-  top: 0;
-  right: -3px;
-  border-radius: 100%;
+    background-color: var(--ion-color-danger);
+    position: absolute;
+    top: 0;
+    right: -3px;
+    border-radius: 100%;
 }
 .home-link {
-  color: var(--ion-color-light);
+    color: var(--ion-color-light);
 }
 
-ion-title {
-  font-size: 20px;
-  font-weight: 400;
+ion-title{
+    font-size: 20px;
+    font-weight: 400;
 }
