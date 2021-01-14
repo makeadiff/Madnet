@@ -30,6 +30,19 @@ const DonationIndex = () => {
 
     }, [donations])
 
+    const formatText = (input) => {
+        if(!input) return "";
+        input = input.replace(/[_\-]/g, ' ')		//Changes 'hello_cruel-world' to 'hello cruel world'
+            .replace(/([a-zA-Z])(\d)/g, '$1 $2')	//Changes 'no1' to 'no 1'
+            .replace(/([a-z])([A-Z])/g, '$1 $2');	//Changes 'helloWorld' to 'hello World'
+
+        var text = input.toLowerCase().split(' ').map(function(word) {
+                return word.replace(word[0], word[0].toUpperCase());
+            }).join(' ');
+
+        return text;
+    }
+
     return (
         <IonPage>
             <Title name={`Funds raised by you this year: ${total} Rs`} />
@@ -51,6 +64,10 @@ const DonationIndex = () => {
                                     <IonRow>
                                         <IonCol className="label">Amount</IonCol>
                                         <IonCol pullMd="3">{donation.amount}</IonCol>
+                                    </IonRow>
+                                    <IonRow>
+                                        <IonCol className="label">Source</IonCol>
+                                        <IonCol pullMd="3">{formatText(donation.type)}</IonCol>
                                     </IonRow>
                                     <IonRow>
                                         <IonCol className="label">Date</IonCol>
