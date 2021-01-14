@@ -55,8 +55,8 @@ const EventCreate = () => {
         }
     }
 
-    const filterUserList = async (params) => {
-        let api_params = {...params} // We do this to make sure its a copy - and not a reference. By default JS makes an refernce of an object 
+    const filterUserList = (params) => {
+        let api_params = {...params} // We do this to make sure its a copy - and not a reference. By default JS makes an reference of an object 
         if(params.city_in.length <= 1 && params.city_id){
             delete api_params.city_in
         } else if(params.city_in.length > 1) {
@@ -70,10 +70,15 @@ const EventCreate = () => {
         }
 
         setUserFilterParameter(params)
-        let users = await getUsers(api_params)
-        if(users) {
-            setUsersList(users)
+        let query_parts = []
+        for(let par in api_params) {
+            let val = api_params[par]
+            if(val.toString() === "0") continue;
+
+            if(Array.isArray(val)) val = val.join(",")
+            query_parts.push(`${par}=${val}`)
         }
+        callApi({url: `/users_paginated?${query_parts.join("&")}`, cache: true, setter: setUsersList})
     }
 
     let moveToPage = async (toPage) => {
@@ -126,7 +131,7 @@ const EventCreate = () => {
 
             let recurring = false
         
-            if(event.frequency!=='none') {
+            if(event.frequency !== 'none') {
                 recurring = await callApi({
                     url: `events/${eventId}/recur`,
                     method: 'post',
@@ -154,7 +159,7 @@ const EventCreate = () => {
                     cache_key: `events_${eventId}_users`
                 })
                 if(users){
-                    setUsersList({data: users})
+                    setUsersList({ data: users })
                     setUserSelectable(true)
                 }
             })();
@@ -455,11 +460,11 @@ const EventForm = React.memo((props) => {
         // description: 'This is a test event',
         // starts_on: '2020-09-30T15:00:00+05:30',
         // place: 'Zoom',
-        // city_id: user.city_id,
-        // event_type_id: "11",
-        // vertical_id: 3,
-        // audience: "city",
-        // role: "volunteer",
+        // city_id: "0",
+        // event_type_id: 20,
+        // vertical_id: "0",
+        // audience: "vertical",
+        // role: "fellow",
         // created_by_user_id: user.id,
         // latitude: 0,
         // longitude: 0,
@@ -697,21 +702,21 @@ const UserDataFilter = React.memo((props) => {
     const [ verticals, setVerticals ] = React.useState({})
     const [ groupTypes, setGroupTypes ] = React.useState({});
 
-    const [ selectedGroups, setSelectedGroups ] = React.useState(0)
-    const [ selectedGroupType, setSelectedGroupType ] = React.useState(0)
     const [ shelters, setShelters ] = React.useState({})
     const [ cities, setCities ] = React.useState({})
     const [ userGroups, setUserGroups ] = React.useState({})
     const [ city_id, setCityId ] = React.useState(props.city_id)
-    const { callApi} = React.useContext(dataContext)
+    const { callApi } = React.useContext(dataContext)
     const { user, accessLevel } = React.useContext(authContext)
 
     const [ filters, setFilters ] = React.useState({
-        "city_id": [eventData.city_id],
+        "city_in": [eventData.city_id],
         "vertical_id": eventData.vertical_id, 
-        "role": eventData.role
+        "role": [eventData.role],
+        "group_in": []
     })
-    const [ userGroupFilterParameter, setUserGroupFilterParameter ] = React.useState({})
+
+    const [ selectedRoles, setSelectedRoles ] = React.useState([])
 
     React.useEffect(() => {
         (function fetchData(){
@@ -740,20 +745,29 @@ const UserDataFilter = React.memo((props) => {
         }
         if(props.eventData.role) {
             newFilter.role = props.eventData.role
-            setSelectedGroupType(props.eventData.role)
+            setSelectedRoles(props.eventData.role)
         }
 
         setFilters(newFilter)
     }, [props.eventData])
 
+    React.useEffect(() => {
+        if(!city_id) return;
+        (function () {
+            callApi({graphql: `{centers(city_id:${city_id}) {id name}}`, cache_key: `cities_${city_id}_centers`, setter: setShelters })
+        })()
+    } ,[city_id])
+
+    // :DEBUG: 
+    // React.useEffect(() => {
+    //     console.log(filters)
+    // }, [filters])
+
+
     const filterUser = (e) => {
         let tempFilter = filters
 
-        if(e.target.name === 'group_id'){
-            setSelectedGroups(e.target.value);
-            tempFilter.group_in = e.target.value
-
-        } else if(e.target.name === 'city_in'){
+        if(e.target.name === 'city_in'){
             let city_ids = e.target.value
 
             if(city_ids.length > 1 && city_ids.indexOf(0) >= 0) { // This will remove the 'National' City selection.
@@ -772,118 +786,105 @@ const UserDataFilter = React.memo((props) => {
         props.filterUserList(filters)
     }
 
+    // This function will populate the role dropdown based on what you have entered for the role type(eg. IF you choose 'fellow' role type, it will put all fellow user groups into the role dropdown.)
     const filterUserGroups = async(e) => {
         let selectedValues = e.target.value;    
         if(selectedValues && selectedValues.length){
-            setSelectedGroupType(e.target.value);      
             let filteredGroups = userGroups.filter(group => (e.target.value.indexOf(group.type) >= 0))
             let filteredGroupIds = [];
             filteredGroups.forEach(group => {
-                filteredGroupIds.push(group.id);
+                filteredGroupIds.push(group.id)
             });
-            setSelectedGroups(filteredGroupIds);            
+            setFilters({...filters, [e.target.name]: selectedValues, "group_in": filteredGroupIds})
+            
+        } else { // User un-eselcted all roles - nothing selected.
+            setFilters({...filters, [e.target.name]: selectedValues})
         }
-        else{      
-            if(!selectedGroupType && !selectedGroups){
-                setSelectedGroups(0);
-                setSelectedGroupType(0);
-            }
-        }
+
+        setSelectedRoles(selectedValues)
     }
 
     const clearFilter = async () => {
         let filterParameters = filters
-        let groupFilterParameter = userGroupFilterParameter
 
         if(filterParameters.vertical_id) delete filterParameters.vertical_id
         if(filterParameters.group_in) delete filterParameters.group_in
         if(filterParameters.center_id) delete filterParameters.center_id
 
-        if(groupFilterParameter.vertical_id) delete groupFilterParameter.vertical_id
-        if(groupFilterParameter.type_in) delete groupFilterParameter.type_in
+        setSelectedRoles([])
 
         setFilters(filterParameters)
-        setUserGroupFilterParameter(groupFilterParameter)
-        props.filterUserList(filterParameters)
+        // props.filterUserList(filterParameters) // If we apply filter at this point, all users will be selected.
     }
 
-    React.useEffect(() => {
-        if(!city_id) return;
-        (function () {
-            callApi({graphql: `{centers(city_id:${city_id}) {id name}}`, cache_key: `cities_${city_id}_centers`, setter: setShelters })
-        })()
-    } ,[city_id])
-
     return (
-        <>
-            <IonRow>
-                <IonCol size="12">Filter Volunteers</IonCol>
-                {cities.length && (accessLevel() === "director" || accessLevel() === "strat") ? (
-                    <IonCol size-xs="12" size-md='3'>
-                        <IonItem>
-                            <IonSelect mode="md" placeholder="Select Cities" interface="alert" name="city_in" multiple value={filters.city_in} onIonChange={filterUser}>
-                                {cities.map((city, index) => {
-                                    return (<IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>)
-                                })}
-                            </IonSelect>
-                        </IonItem>
-                    </IonCol>
-                ) : null }
+        <><IonRow>
+            <IonCol size="12">Filter Volunteers</IonCol>
+            {cities.length && (accessLevel() === "director" || accessLevel() === "strat") ? (
+                <IonCol size-xs="12" size-md='3'>
+                    <IonItem>
+                        <IonSelect mode="md" placeholder="Select Cities" interface="alert" name="city_in" multiple value={filters.city_in} onIonChange={filterUser}>
+                            {cities.map((city, index) => {
+                                return (<IonSelectOption key={index} value={city.id}>{city.name}</IonSelectOption>)
+                            })}
+                        </IonSelect>
+                    </IonItem>
+                </IonCol>
+            ) : null }
 
-                { props.eventData.audience === "center" && shelters.length? (
-                    <IonCol size-xs="12" size-md="3">        
-                        <IonItem>          
-                            <IonSelect mode="md" placeholder="Select Shelter" interface="popover" name="center_id" value={filters.center_id} onIonChange={filterUser}>
-                                {shelters.map((shelter,index) => {
-                                    return (<IonSelectOption key={index} value={shelter.id}>{shelter.name}</IonSelectOption>)
-                                })}
-                            </IonSelect>          
-                        </IonItem>        
-                    </IonCol>
-                ) : null }
+            { props.eventData.audience === "center" && shelters.length? (
+                <IonCol size-xs="12" size-md="3">        
+                    <IonItem>          
+                        <IonSelect mode="md" placeholder="Select Shelter" interface="popover" name="center_id" value={filters.center_id} onIonChange={filterUser}>
+                            {shelters.map((shelter,index) => {
+                                return (<IonSelectOption key={index} value={shelter.id}>{shelter.name}</IonSelectOption>)
+                            })}
+                        </IonSelect>          
+                    </IonItem>        
+                </IonCol>
+            ) : null }
 
-                {verticals.length? (
-                    <IonCol size-xs="12" size-md="3">
-                        <IonItem>          
-                            <IonSelect mode="md" placeholder="Select Verical" interface="popover" name="vertical_id" value={filters.vertical_id} onIonChange={filterUser}>
-                                { verticals.map((vertical,index) => {
-                                    return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
-                                })}
-                            </IonSelect>          
-                        </IonItem>
-                    </IonCol>
-                ) : null }
+            { verticals.length? (
+                <IonCol size-xs="12" size-md="3">
+                    <IonItem>          
+                        <IonSelect mode="md" placeholder="Select Verical" interface="popover" name="vertical_id" value={filters.vertical_id} onIonChange={filterUser}>
+                            { verticals.map((vertical,index) => {
+                                return (<IonSelectOption key={index} value={vertical.id}>{vertical.name}</IonSelectOption>)
+                            })}
+                        </IonSelect>          
+                    </IonItem>
+                </IonCol>
+            ) : null }
 
-                {groupTypes.length? (
-                    <IonCol size-xs="12" size-md="3">
-                        <IonItem>
-                            <IonSelect mode="md" placeholder="Select Role Type(s)" interface="alert" name="group_types" value={selectedGroupType}  onIonChange={filterUserGroups} multiple>
-                                { groupTypes.filter(groupType => groupType.type !== 'executive').map((groupType,index) => {
-                                    let type_name = groupType.type.charAt(0).toUpperCase() + groupType.type.slice(1)
-                                    return (<IonSelectOption key={index} value={groupType.type}>{ type_name }</IonSelectOption>)
-                                })}
-                            </IonSelect>
-                        </IonItem>
-                    </IonCol>
-                ) : null }
+            { groupTypes.length? (
+                <IonCol size-xs="12" size-md="3">
+                    <IonItem>
+                        <IonSelect mode="md" placeholder="Select Role Type(s)" interface="alert" name="role" value={selectedRoles} onIonChange={filterUserGroups} multiple>
+                            { groupTypes.filter(groupType => groupType.type !== 'executive').map((groupType,index) => {
+                                let type_name = groupType.type.charAt(0).toUpperCase() + groupType.type.slice(1)
+                                return (<IonSelectOption key={index} value={groupType.type}>{ type_name }</IonSelectOption>)
+                            })}
+                        </IonSelect>
+                    </IonItem>
+                </IonCol>
+            ) : null }
 
-                {userGroups.length? (
-                    <IonCol size-xs="12" size-md="3">
-                        <IonItem>
-                            <IonSelect mode="md" placeholder="Select Role(s)" interface="alert" name="group_id" value={selectedGroups} onIonChange={filterUser} multiple>
-                                {userGroups.map((group,index) => {
-                                    return (<IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>)
-                                })}
-                            </IonSelect>
-                        </IonItem>
-                    </IonCol>
-                ) : null }
-            </IonRow>
-            <IonItem>
-                <IonButton size="default" color="primary" onClick={applyFilter}>Apply Filters</IonButton>
-                <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filters</IonButton>
-            </IonItem>
-        </>
+            { userGroups.length? (
+                <IonCol size-xs="12" size-md="3">
+                    <IonItem>
+                        <IonSelect mode="md" placeholder="Select Role(s)" interface="alert" name="group_in" value={filters.group_in} onIonChange={filterUser} multiple>
+                            {userGroups.map((group,index) => {
+                                return (<IonSelectOption key={index} value={group.id}>{group.name}</IonSelectOption>)
+                            })}
+                        </IonSelect>
+                    </IonItem>
+                </IonCol>
+            ) : null }
+        </IonRow>
+        <IonItem>
+            <IonButton size="default" color="primary" onClick={applyFilter}>Apply Filters</IonButton>
+            <IonButton size="small" color="danger" onClick={clearFilter}>Clear Filters</IonButton>
+        </IonItem></>
     )
 
 });

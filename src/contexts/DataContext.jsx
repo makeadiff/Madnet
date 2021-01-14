@@ -240,7 +240,11 @@ const useHandler = () => {
             return await callApi({url: '/users_paginated'});
         } else {
             for(let param in params) {
-                query_parts.push(`${param}=${params[param]}`)
+                let val = params[param]
+                if(val.toString() === "0") continue;
+
+                if(Array.isArray(val)) val = val.join(",")
+                query_parts.push(`${param}=${val}`)
             }            
             return await callApi({url:`/users_paginated?${query_parts.join("&")}`, cache: false})
         }
