@@ -1,9 +1,9 @@
-ion-card.dark ion-card-subtitle {
-  color: #ffffff;
+ion-card.dark ion-card-subtitle{
+  color: #FFFFFF;
 }
 
-ion-card.dark ion-card-title {
-  color: #ffffff;
+ion-card.dark ion-card-title{
+  color: #FFFFFF;  
   padding-bottom: 15px;
   border-bottom: 1px solid var(--red-bright);
 }

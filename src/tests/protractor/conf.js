@@ -1,21 +1,21 @@
 exports.config = {
-  framework: 'jasmine',
-  seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['login.js', 'dashboard.js'],
-  plugins: [
-    {
-      package: 'protractor-react-selector'
+    framework: 'jasmine',
+    seleniumAddress: 'http://localhost:4444/wd/hub',
+    specs: ['login.js', 'dashboard.js'],
+    plugins: [  
+        { 
+            package: "protractor-react-selector"
+        },
+        {
+            package: 'protractor-testability-plugin'
+        }
+    ],
+    onPrepare: async () => {
+        // await browser.waitForAngularEnabled(false);
     },
-    {
-      package: 'protractor-testability-plugin'
+    capabilities: {
+        browserName: 'firefox'
     }
-  ],
-  onPrepare: async () => {
-    // await browser.waitForAngularEnabled(false);
-  },
-  capabilities: {
-    browserName: 'firefox'
-  }
 }
 
 /*

@@ -1,20 +1,21 @@
-.pageInfo {
+.pageInfo{
   font-size: 15px;
   text-align: center;
-  color: #fff;
+  color: #FFF;
 }
 
-.paginateContainer {
+.paginateContainer{
   position: relative;
   height: 50px;
 }
 
-.pageinateItem {
+
+.pageinateItem{  
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.pageinateItem ion-button {
+.pageinateItem ion-button{
   text-align: center;
 }
