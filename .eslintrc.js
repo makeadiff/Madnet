@@ -23,7 +23,8 @@ module.exports = {
     },
     "plugins": [
         "react",
-        "protractor"
+        "protractor",
+         "prettier"
     ],
     "settings": {
         "react": {
