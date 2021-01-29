@@ -5,15 +5,14 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
   pull_request_target:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -22,13 +21,13 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Run Linters on Node v${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-        ref: ${{ github.head_ref }}
-    - run: git fetch origin master:master
-    - run: npm install
-    - run: npm run prettier:check
-    - run: npm run lint
+      - uses: actions/checkout@v2
+      - name: Run Linters on Node v${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          ref: ${{ github.head_ref }}
+      - run: git fetch origin master:master
+      - run: npm install
+      - run: npm run prettier:check
+      - run: npm run lint
