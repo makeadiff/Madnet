@@ -23,11 +23,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Run Linters on Node v${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
         ref: ${{ github.head_ref }}
-    - run: echo ${{ github.head_ref }}
     - run: git fetch origin master:master
+    - run: npm install
     - run: npm run prettier:check
+    - run: npm run lint
