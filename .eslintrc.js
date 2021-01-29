@@ -12,35 +12,25 @@ module.exports = {
   ],
   globals: {
     Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
+    SharedArrayBuffer: 'readonly',
+    require: "readonly",
+    describe: "readonly",
+    it: "readonly",
+    expect: "readonly",
+    process: "readonly"
   },
   parserOptions: {
     ecmaFeatures: {
       jsx: true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly",
-        "require": "readonly",
-        "describe": "readonly",
-        "it" : "readonly",
-        "expect": "readonly",
-        "process": "readonly"
-    },
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react", 'protractor', 'prettier'
-    ],
+    ecmaVersion: 2018,
+    sourceType: 'module'
+  },
+  plugins: ['react', 'protractor', 'prettier'],
+  settings: {
+    react: {
+      version: 'detect'
+    }
   },
   rules: {
     'react/prop-types': 0, // TODO: activate rule
