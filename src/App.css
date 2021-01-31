@@ -1,32 +1,31 @@
 ion-menu {
-	width: 300px;
+  width: 300px;
 }
 
-ion-modal{
-	color: #000 !important;
+ion-modal {
+  color: #000 !important;
 }
 
 ion-content.dark ion-label,
 ion-content.dark ion-select {
-	color: #fff !important;
+  color: #fff !important;
 }
 
 ion-card.light ion-select,
 ion-card.light ion-label,
 ion-card.light ion-datetime {
-	color: #000 !important;
+  color: #000 !important;
 }
-
 
 ion-card.dark ion-select,
 ion-card.dark ion-label {
-	color: #FFF !important;
+  color: #fff !important;
 }
 
 .frf-modal-feedback-type {
-	padding: 5px 0 !important;
+  padding: 5px 0 !important;
 }
 .frf-trigger-button {
-	right: -9px !important;
-	bottom: 10px !important;
+  right: -9px !important;
+  bottom: 10px !important;
 }

@@ -13,11 +13,11 @@ module.exports = {
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
-    require: "readonly",
-    describe: "readonly",
-    it: "readonly",
-    expect: "readonly",
-    process: "readonly"
+    require: 'readonly',
+    describe: 'readonly',
+    it: 'readonly',
+    expect: 'readonly',
+    process: 'readonly'
   },
   parserOptions: {
     ecmaFeatures: {

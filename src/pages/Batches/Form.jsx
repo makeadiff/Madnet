@@ -1,135 +1,240 @@
-import { IonPage, IonList,IonItem,IonLabel,IonContent,IonIcon,IonFab,IonFabButton,
-    IonSelect,IonSelectOption, IonButton } from '@ionic/react'
+import {
+  IonPage,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonContent,
+  IonIcon,
+  IonFab,
+  IonFabButton,
+  IonSelect,
+  IonSelectOption,
+  IonButton
+} from '@ionic/react'
 import { pencil, close } from 'ionicons/icons'
 import React from 'react'
-import { useParams } from "react-router-dom"
+import { useParams } from 'react-router-dom'
 
 import * as moment from 'moment'
 
-import Title from "../../components/Title"
-import { dataContext } from "../../contexts/DataContext"
-import { appContext } from "../../contexts/AppContext"
+import Title from '../../components/Title'
+import { dataContext } from '../../contexts/DataContext'
+import { appContext } from '../../contexts/AppContext'
 
 const BatchForm = () => {
-    const { shelter_id, project_id, batch_id } = useParams()
-    const [batch, setBatch] = React.useState({batch_name: "", class_time: "16:00:00", day: 0, project_id: project_id, center_id: shelter_id})
-    const [ disable, setDisable ] = React.useState( true )
-    const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
-    const { showMessage } = React.useContext(appContext)
+  const { shelter_id, project_id, batch_id } = useParams()
+  const [batch, setBatch] = React.useState({
+    batch_name: '',
+    class_time: '16:00:00',
+    day: 0,
+    project_id: project_id,
+    center_id: shelter_id
+  })
+  const [disable, setDisable] = React.useState(true)
+  const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
+  const { showMessage } = React.useContext(appContext)
 
-    React.useEffect(() => {
-        async function fetchBatch() {
-            const batch_data = await callApi({graphql: `{ batch(id: ${batch_id}) { 
+  React.useEffect(() => {
+    async function fetchBatch() {
+      const batch_data = await callApi({
+        graphql: `{ batch(id: ${batch_id}) { 
                 id batch_name day class_time project_id
-            }}`, cache: true, cache_key: `batch_${batch_id}`})
+            }}`,
+        cache: true,
+        cache_key: `batch_${batch_id}`
+      })
 
-            setBatch(batch_data)
-        }
-
-        if(batch_id !== "0") {
-            if(cache[`batch_${batch_id}`] === undefined || !cache[`batch_${batch_id}`]){
-                fetchBatch()
-            } else {
-                setBatch(cache[`batch_${batch_id}`])
-            }
-
-        } else {
-            setDisable(false)
-            setBatch({ ...batch, batch_name: "New Batch"})
-        }
-    }, [batch_id,  cache[`batch_${batch_id}`]])
-
-    const updateField = (e) => {
-        setBatch({ ...batch, [e.target.name]: e.target.value })
-    }
-    const updateTimeField = (e) => {
-        let time_parts = batch.class_time.split(":")
-        if(e.target.name === "class_time_hour") time_parts[0] = e.target.value
-        else if(e.target.name === "class_time_min") time_parts[1] = e.target.value
-
-        setBatch({ ...batch, class_time: time_parts.join(":")})
+      setBatch(batch_data)
     }
 
-    const saveBatch = (e) => {
-        e.preventDefault()
-
-        if(batch_id !== "0") { // Edit
-            callApi({url: `/batches/${batch_id}`, method: "post", params: batch}).then((data) => {
-                if(data) {
-                    setDisable( true )
-                    showMessage("Batch Updated Successfully", "success")
-                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_batch_index`)
-                    unsetLocalCache( `shelter_view_${shelter_id}`)
-                    unsetLocalCache( `batch_${batch_id}`)
-                }
-            })
-        } else { // Create new batch
-            callApi({url: `/batches`, method: "post", params: batch}).then((data) => {
-                if(data) {
-                    setDisable( true )
-                    showMessage("Batch Created Successfully", "success")
-                    unsetLocalCache( `shelter_${shelter_id}_project_${project_id}_batch_index`)
-                    unsetLocalCache( `shelter_view_${shelter_id}`)
-                    unsetLocalCache( `batch_${batch_id}`)
-                }
-            })
-        }
+    if (batch_id !== '0') {
+      if (
+        cache[`batch_${batch_id}`] === undefined ||
+        !cache[`batch_${batch_id}`]
+      ) {
+        fetchBatch()
+      } else {
+        setBatch(cache[`batch_${batch_id}`])
+      }
+    } else {
+      setDisable(false)
+      setBatch({ ...batch, batch_name: 'New Batch' })
     }
+  }, [batch_id, cache[`batch_${batch_id}`]])
 
-    const class_time_options = [8,9,10,11,12,13,14,15,16,17,18]
-    const day_options = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  const updateField = (e) => {
+    setBatch({ ...batch, [e.target.name]: e.target.value })
+  }
+  const updateTimeField = (e) => {
+    let time_parts = batch.class_time.split(':')
+    if (e.target.name === 'class_time_hour') time_parts[0] = e.target.value
+    else if (e.target.name === 'class_time_min') time_parts[1] = e.target.value
 
-    return (
-        <IonPage>
-            <Title name={ `Batch: ${day_options[batch.day]} ${ moment("2020-04-29 " + batch.class_time).format("hh:mm A")}` } // This should have been just batch.batch_name - but some bug caches previous view ka data in that variable.
-                back={`/shelters/${shelter_id}/projects/${project_id}/batches`} />
+    setBatch({ ...batch, class_time: time_parts.join(':') })
+  }
 
-            <IonContent class="dark">
-                <IonList>
-                    <form onSubmit={ saveBatch }>
-                        <IonItem>
-                            <IonLabel>Class Time</IonLabel>
-                            <IonSelect slot="end" name="class_time_hour" value={ batch.class_time.split(":")[0] } onIonChange={ updateTimeField } disabled={disable}>
-                                { class_time_options.map((hour, index) => {
-                                    return (
-                                        <IonSelectOption key={index} value={ (hour < 10) ? "0" + hour.toString() : hour.toString() }>{ 
-                                            moment("2020-04-29 " + ((hour < 10) ? "0" + hour.toString() : hour.toString()) + ":00:00").format("hh A") // Date can be anything. 
-                                        }</IonSelectOption>
-                                    )
-                                })}
-                            </IonSelect>
-                            <IonSelect slot="end" name="class_time_min" value={ batch.class_time.split(":")[1] } onIonChange={ updateTimeField } disabled={disable}>
-                                { ["00", "15", "30", "45"].map((min, index) => {
-                                    return (
-                                        <IonSelectOption key={index} value={ min }>: { min }</IonSelectOption>
-                                    )
-                                })}
-                            </IonSelect>
-                        </IonItem>
-                        <IonItem>
-                            <IonLabel>Day</IonLabel>
-                            <IonSelect name="day" value={ batch.day } onIonChange={ updateField } disabled={disable}>
-                                { day_options.map((name, day) => {
-                                    return (
-                                        <IonSelectOption key={day} value={ day.toString() }>{ name }</IonSelectOption>
-                                    )
-                                })}
-                            </IonSelect>
-                        </IonItem>
-                        { disable ? null : <IonItem><IonButton type="submit">Save</IonButton></IonItem> }
-                    </form>
-                </IonList>
+  const saveBatch = (e) => {
+    e.preventDefault()
 
-                { disable ?
-                    (<IonFab onClick={() => { setDisable(false) }} vertical="bottom" horizontal="start" slot="fixed">
-                        <IonFabButton><IonIcon icon={pencil}/></IonFabButton>
-                    </IonFab>) : 
-                    (<IonFab onClick={() => { setDisable(true) }} vertical="bottom" horizontal="start" slot="fixed">
-                        <IonFabButton><IonIcon icon={close}/></IonFabButton>
-                    </IonFab>) }
-            </IonContent>
-        </IonPage>
-    );
-};
+    if (batch_id !== '0') {
+      // Edit
+      callApi({
+        url: `/batches/${batch_id}`,
+        method: 'post',
+        params: batch
+      }).then((data) => {
+        if (data) {
+          setDisable(true)
+          showMessage('Batch Updated Successfully', 'success')
+          unsetLocalCache(
+            `shelter_${shelter_id}_project_${project_id}_batch_index`
+          )
+          unsetLocalCache(`shelter_view_${shelter_id}`)
+          unsetLocalCache(`batch_${batch_id}`)
+        }
+      })
+    } else {
+      // Create new batch
+      callApi({ url: `/batches`, method: 'post', params: batch }).then(
+        (data) => {
+          if (data) {
+            setDisable(true)
+            showMessage('Batch Created Successfully', 'success')
+            unsetLocalCache(
+              `shelter_${shelter_id}_project_${project_id}_batch_index`
+            )
+            unsetLocalCache(`shelter_view_${shelter_id}`)
+            unsetLocalCache(`batch_${batch_id}`)
+          }
+        }
+      )
+    }
+  }
+
+  const class_time_options = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+  const day_options = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+  ]
+
+  return (
+    <IonPage>
+      <Title
+        name={`Batch: ${day_options[batch.day]} ${moment(
+          '2020-04-29 ' + batch.class_time
+        ).format('hh:mm A')}`} // This should have been just batch.batch_name - but some bug caches previous view ka data in that variable.
+        back={`/shelters/${shelter_id}/projects/${project_id}/batches`}
+      />
+
+      <IonContent class="dark">
+        <IonList>
+          <form onSubmit={saveBatch}>
+            <IonItem>
+              <IonLabel>Class Time</IonLabel>
+              <IonSelect
+                slot="end"
+                name="class_time_hour"
+                value={batch.class_time.split(':')[0]}
+                onIonChange={updateTimeField}
+                disabled={disable}
+              >
+                {class_time_options.map((hour, index) => {
+                  return (
+                    <IonSelectOption
+                      key={index}
+                      value={
+                        hour < 10 ? '0' + hour.toString() : hour.toString()
+                      }
+                    >
+                      {
+                        moment(
+                          '2020-04-29 ' +
+                            (hour < 10
+                              ? '0' + hour.toString()
+                              : hour.toString()) +
+                            ':00:00'
+                        ).format('hh A') // Date can be anything.
+                      }
+                    </IonSelectOption>
+                  )
+                })}
+              </IonSelect>
+              <IonSelect
+                slot="end"
+                name="class_time_min"
+                value={batch.class_time.split(':')[1]}
+                onIonChange={updateTimeField}
+                disabled={disable}
+              >
+                {['00', '15', '30', '45'].map((min, index) => {
+                  return (
+                    <IonSelectOption key={index} value={min}>
+                      : {min}
+                    </IonSelectOption>
+                  )
+                })}
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Day</IonLabel>
+              <IonSelect
+                name="day"
+                value={batch.day}
+                onIonChange={updateField}
+                disabled={disable}
+              >
+                {day_options.map((name, day) => {
+                  return (
+                    <IonSelectOption key={day} value={day.toString()}>
+                      {name}
+                    </IonSelectOption>
+                  )
+                })}
+              </IonSelect>
+            </IonItem>
+            {disable ? null : (
+              <IonItem>
+                <IonButton type="submit">Save</IonButton>
+              </IonItem>
+            )}
+          </form>
+        </IonList>
+
+        {disable ? (
+          <IonFab
+            onClick={() => {
+              setDisable(false)
+            }}
+            vertical="bottom"
+            horizontal="start"
+            slot="fixed"
+          >
+            <IonFabButton>
+              <IonIcon icon={pencil} />
+            </IonFabButton>
+          </IonFab>
+        ) : (
+          <IonFab
+            onClick={() => {
+              setDisable(true)
+            }}
+            vertical="bottom"
+            horizontal="start"
+            slot="fixed"
+          >
+            <IonFabButton>
+              <IonIcon icon={close} />
+            </IonFabButton>
+          </IonFab>
+        )}
+      </IonContent>
+    </IonPage>
+  )
+}
 
 export default BatchForm
