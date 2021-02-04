@@ -9,6 +9,12 @@
       "options": {
         "parser": "json"
       }
+    },
+    {
+      "files": ".github/workflows/node.js.yml",
+      "options": {
+        "parser": "yaml"
+      }
     }
   ]
 }

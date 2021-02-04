@@ -1,14 +1,10 @@
+Dec 12
+- Editing director's profile - Leadearship User Groups not shown
+
 Oct 30
 - When deleting a user, that row should get hidden from view(See if any other has delete option as well)
 - Name Capitalization in Users(?)
-- Style Resources Page better.
 - Get valid resources from team
-
-
-
-
-
-
 
 
 https://trello.com/b/Zni3SYTi/madnet
