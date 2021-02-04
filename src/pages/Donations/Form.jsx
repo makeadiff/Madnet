@@ -6,6 +6,8 @@ import {
   IonContent,
   IonLabel,
   IonItem,
+  IonSelect,
+  IonSelectOption,
   IonList,
   IonCard,
   IonCardContent
@@ -28,13 +30,16 @@ const DonationForm = () => {
     donor_email: '',
     added_on: moment().format('YYYY-MM-DD'),
     fundraiser_user_id: user.id,
-    type: 'crowdfunding_patforms'
+    type: 'crowdfunding_patforms',
+    source: 'give_india'
   })
+
   const [errors, setErrors] = React.useState({
     donor_name: '',
     amount: '',
     donor_phone: '',
     donor_email: '',
+    source: '',
     added_on: ''
   })
   const { callApi } = React.useContext(dataContext)
@@ -70,6 +75,8 @@ const DonationForm = () => {
 
   const saveDonation = (e) => {
     e.preventDefault()
+
+    donation.comment = JSON.stringify({source: donation.source})
 
     // :TODO: Use comment parameter to add which platform - ketto or global giving.
     callApi({
@@ -160,6 +167,23 @@ const DonationForm = () => {
                   />
                   {errors.amount ? (
                     <p className="error-message">{errors.amount}</p>
+                  ) : null}
+                </IonItem>
+
+                <IonItem>
+                  <IonLabel position="stacked">Source</IonLabel>
+                  <IonSelect
+                    name="source"
+                    id="source"
+                    value={donation.source}
+                    onIonChange={updateField}
+                  >
+                    <IonSelectOption value="give_india">Give India</IonSelectOption>
+                    <IonSelectOption value="global_giving">Global Giving</IonSelectOption>
+                    <IonSelectOption value="ketto">Ketto</IonSelectOption>
+                  </IonSelect>
+                  {errors.source ? (
+                    <p className="error-message">{errors.source}</p>
                   ) : null}
                 </IonItem>
 
