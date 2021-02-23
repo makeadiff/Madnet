@@ -78,7 +78,6 @@ const DonationForm = () => {
 
     donation.comment = JSON.stringify({source: donation.source})
 
-    // :TODO: Use comment parameter to add which platform - ketto or global giving.
     callApi({
       url: '/donations',
       method: 'post',
