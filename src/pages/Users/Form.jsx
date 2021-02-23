@@ -34,14 +34,15 @@ import './Form.css'
 
 const UserForm = () => {
   const { user_id, action } = useParams()
-  const [user, setUser] = React.useState({ name: '', groups: [] })
-  const [userGroups, setUserGroups] = React.useState([])
+  const [user, setUser] = React.useState({ name: '', groups: [], main_group: { id: 0, name: 'None Selected' } }) // :TODO: We can do away with the main_group extra array.
   const [groups, setGroups] = React.useState([])
   const [disable, setDisable] = React.useState(action === 'edit' ? false : true)
   const { callApi, deleteUser, updateUser } = React.useContext(dataContext)
   const { hasPermission } = React.useContext(authContext)
   const [confirmDelete, setConfirmDelete] = React.useState(false)
   const history = useHistory()
+
+  // :TODO: Validate that at least one main group is chosen.
 
   const sexArray = {
     m: 'Male',
@@ -53,12 +54,26 @@ const UserForm = () => {
     setUser({ ...user, [e.target.name]: e.target.value })
   }
 
+  const updateMainGroup = (e) => {
+    const main_group = user.groups.find( ele => ele.id == e.target.value)
+    setUser({ ...user, main_group: main_group })
+  }
+
   const openEdit = () => {
     setDisable(false)
   }
 
   const closeEdit = () => {
     setDisable(true)
+  }
+
+  const setUserGroups = (grps) => {
+    // Remove duplicates - for some reason it seems to keep crawling in. Taken from https://stackoverflow.com/questions/2218999/remove-duplicates-from-an-array-of-objects-in-javascript
+    const groups = grps.filter( (value, index, array) => {
+      return array.findIndex(test => (test.id === value.id)) === index 
+    })
+
+    setUser({ ...user, groups: groups })
   }
 
   const updateUserGroup = (e) => {
@@ -69,20 +84,20 @@ const UserForm = () => {
     })
 
     if (e.target.checked) {
-      if (userGroups.length) {
-        userGroups.map((group) => {
+      if (user.groups.length) {
+        user.groups.map((group) => {
           if (group.id != e.target.value) {
-            setUserGroups([...userGroups, role_detail[0]])
+            setUserGroups([...user.groups, role_detail[0]])
           }
         })
       } else {
         setUserGroups([role_detail[0]])
       }
     } else {
-      userGroups.map((group, index) => {
+      user.groups.map((group, index) => {
         if (group.id == e.target.value) {
-          userGroups.splice(index, 1)
-          setUserGroups([...userGroups])
+          user.groups.splice(index, 1)
+          setUserGroups([...user.groups])
         }
       })
     }
@@ -103,10 +118,12 @@ const UserForm = () => {
     const fetchUser = async () => {
       const user_details = await callApi({ url: `/users/${user_id}` })
       if (user_details) {
+        const main_group = user_details.groups.find( grp => grp.main === "1" )
+        if(main_group) {
+          user_details.main_group = main_group
+        }
         setUser(user_details)
-        setUserGroups(user_details.groups)
       }
-      // console.log(user_details, user_id)
     }
     fetchUser()
 
@@ -120,7 +137,7 @@ const UserForm = () => {
 
   const saveUser = async (e) => {
     e.preventDefault()
-    let updateElements = {
+    const updateElements = {
       name: user.name,
       email: user.email,
       mad_email: user.mad_email,
@@ -128,58 +145,20 @@ const UserForm = () => {
       sex: user.sex,
       user_type: user.user_type
     }
-    let update = await updateUser(user.id, updateElements)
-    var to_delete_groups = [],
-      to_add_groups = []
-    let existing_groups = user.groups
+    const update = await updateUser(user.id, updateElements)
 
-    // Section to filter out newly added Groups to the user.
-    userGroups.map((group) => {
-      existing_groups.filter(function (item) {
-        if (item.id === group.id) {
-          //Do Nothing
-        } else {
-          to_add_groups[group.id] = { user_id: user.id, group_id: group.id }
-        }
-      })
-    })
+    let groups = user.groups.map(ele => {
+      return {
+        "group_id": ele.id,
+        "main": (user.main_group.id === ele.id) ? "1" : "0"
+      }
+    });
 
-    // Section to filter out  Groups that the user doesn't hold anymore.
-    existing_groups.map((group) => {
-      userGroups.filter(function (item) {
-        if (item.id === group.id) {
-          //Do Nothing
-        } else {
-          to_delete_groups[group.id] = { user_id: user.id, group_id: group.id }
-        }
-      })
-    })
-
-    if (!existing_groups.length) {
-      userGroups.map(async (group) => {
-        let updateRoles = await callApi({
-          url: `/users/${user.id}/groups/${group.id}`,
-          method: 'post'
-        })
-        console.log(updateRoles)
-      })
-    } else {
-      to_add_groups.map(async (group) => {
-        let updateRoles = await callApi({
-          url: `/users/${group.user_id}/groups/${group.group_id}`,
-          method: 'post'
-        })
-        console.log(updateRoles)
-      })
-
-      to_delete_groups.map(async (group) => {
-        let updateRoles = await callApi({
-          url: `/users/${group.user_id}/groups/${group.group_id}`,
-          method: 'delete'
-        })
-        console.log(updateRoles)
-      })
-    }
+    await callApi({
+      url: `/users/${user.id}/groups`,
+      method: 'post',
+      params: groups
+    });
 
     if (update) {
       setDisable(true)
@@ -242,9 +221,9 @@ const UserForm = () => {
                             />
                           </IonItem>
                           {/* <IonItem>
-                                                        <IonLabel position="stacked">MAD Email</IonLabel>
-                                                        <IonInput type="email" name="mad_email" placeholder="Official Email" value={ user.mad_email }  disabled={disable} onIonChange={updateField}/>
-                                                    </IonItem> */}
+                                  <IonLabel position="stacked">MAD Email</IonLabel>
+                                  <IonInput type="email" name="mad_email" placeholder="Official Email" value={ user.mad_email }  disabled={disable} onIonChange={updateField}/>
+                              </IonItem> */}
                           <IonItem>
                             <IonLabel position="stacked">Phone</IonLabel>
                             <IonInput
@@ -257,11 +236,11 @@ const UserForm = () => {
                             />
                           </IonItem>
                           {/* {!disable? (
-                                                        <>
-                                                            <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
-                                                            <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
-                                                        </>
-                                                    ): null}*/}
+                                  <>
+                                      <InputRow label="Password" id="password" type="password" value="" disable={disable} handler={updateField}/>
+                                      <InputRow label="Confirm Password" id="confirm-password" type="password" value="" />
+                                  </>
+                              ): null}*/}
 
                           {disable ? (
                             <IonItem>
@@ -318,7 +297,7 @@ const UserForm = () => {
                           <IonItem>
                             <IonLabel position="stacked">Roles</IonLabel>
                           </IonItem>
-                          {userGroups.map((grp, index) => {
+                          {user.groups.map((grp, index) => {
                             return (
                               <IonChip key={index} className="roles">
                                 {grp.name}
@@ -339,8 +318,8 @@ const UserForm = () => {
                                       <IonCheckbox
                                         name="groups"
                                         value={grp.id}
-                                        onIonChange={updateUserGroup}
-                                        checked={userGroups.reduce(
+                                        onIonChange={ updateUserGroup }
+                                        checked={user.groups.reduce(
                                           (found, ele) => {
                                             // We are reducing the groups array of the user to a true/false based on this group.
                                             if (found) return found
@@ -357,6 +336,44 @@ const UserForm = () => {
                                 })}
                               </div>
                             </>
+                          )}
+
+                          {disable ? (
+                            <IonItem>
+                              <IonLabel position="stacked">Primary Role</IonLabel>
+                              <IonInput
+                                type="text"
+                                placeholder="Primary Role"
+                                value={ user.main_group.name }
+                                disabled={disable}
+                              />
+                            </IonItem>
+                          ) : (
+                            <IonRadioGroup
+                              name="main_group"
+                              value={user.main_group.id}
+                              onIonChange={updateMainGroup}
+                            >
+                              <IonListHeader>
+                                <IonLabel>Primary Role</IonLabel>
+                              </IonListHeader>
+
+                              {user.groups.map((grp, index) => {
+                                  return (
+                                    <IonItem
+                                      key={index}
+                                      lines="none"
+                                      className="group-selectors"
+                                    >
+                                      <IonRadio
+                                        name="main_group"
+                                        value={grp.id}
+                                      />
+                                      <IonLabel> &nbsp; {grp.name}</IonLabel>
+                                    </IonItem>
+                                  )
+                                })}
+                            </IonRadioGroup>
                           )}
 
                           {!disable ? (
@@ -402,7 +419,6 @@ const UserForm = () => {
                             <IonItem>
                               <IonLabel>Volunteer</IonLabel>
                               <IonRadio
-                                mode="ios"
                                 name="user_type"
                                 slot="start"
                                 value="volunteer"
@@ -412,7 +428,6 @@ const UserForm = () => {
                             <IonItem>
                               <IonLabel>Alumni</IonLabel>
                               <IonRadio
-                                mode="ios"
                                 name="user_type"
                                 slot="start"
                                 value="alumni"
@@ -422,7 +437,6 @@ const UserForm = () => {
                             <IonItem>
                               <IonLabel>Let Go</IonLabel>
                               <IonRadio
-                                mode="ios"
                                 name="user_typex"
                                 slot="start"
                                 value="let_go"
