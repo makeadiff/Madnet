@@ -147,6 +147,7 @@ const UserForm = () => {
     }
     const update = await updateUser(user.id, updateElements)
 
+    // :TODO: At some point, we have to save the main group information with thin the user.groups itself.
     let groups = user.groups.map(ele => {
       return {
         "group_id": ele.id,
