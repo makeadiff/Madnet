@@ -109,8 +109,8 @@ const UserForm = () => {
     let response = await deleteUser(user.id)
     if (response) {
       setConfirmDelete(false)
+      unsetLocalCache(`users_${user_id}`)
       history.push(`/users`)
-      console.log(response)
     }
   }
 
