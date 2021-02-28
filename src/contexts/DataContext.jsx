@@ -298,16 +298,17 @@ const useHandler = () => {
     if (!params) {
       return await callApi({ url: '/users_paginated' })
     } else {
-      for (let param in params) {
-        let val = params[param]
-        if (val.toString() === '0') continue
+      for (let key in params) {
+        let val = params[key]
+        if (val.toString() === '0' && key !== 'credit_lesser_than' && key !== 'credit_greater_than') continue
 
         if (Array.isArray(val)) val = val.join(',')
-        query_parts.push(`${param}=${val}`)
+        query_parts.push(`${key}=${val}`)
       }
+
       return await callApi({
         url: `/users_paginated?${query_parts.join('&')}`,
-        cache: false
+        cache: true
       })
     }
   }
