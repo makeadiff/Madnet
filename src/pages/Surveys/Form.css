@@ -1,5 +1,6 @@
 .question-text {
     font-size: large;
+    margin: 0;
 }
 
 .question-description {
@@ -10,4 +11,13 @@
 }
 h3 {
     padding: 0;
+}
+
+.action-button {
+    margin-left: 20px;
+}
+
+.category-name {
+    color: var(--ion-color-step-900);
+    margin-left: 10px;
 }

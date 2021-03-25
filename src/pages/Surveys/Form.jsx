@@ -1,4 +1,5 @@
-import { IonPage,IonContent,IonLabel, IonRadio, IonList, IonRadioGroup, IonItem, IonInput, IonTextarea, IonCheckbox, IonButton } from '@ionic/react';
+import { IonPage,IonContent,IonLabel, IonRadio, IonList, IonRadioGroup, IonItem, IonInput, IonTextarea, IonCheckbox, IonButton, 
+            IonCard,IonCardHeader,IonCardContent, IonCardTitle, IonCardSubtitle } from '@ionic/react';
 import React from 'react'
 import { useParams } from "react-router-dom"
 
@@ -110,28 +111,34 @@ const SurveyForm = () => {
         <IonPage>
             <Title name={ survey.template_name + ( survey.name ? " : " + survey.name : "" ) } />
 
-            <IonContent>
+            <IonContent className="dark">
                 <form onSubmit={e => saveResponses(e)}>
-                <IonList>
-                <QuestionsOrCategory questions={survey.questions} responses={responses} />
+                
+                <QuestionsOrCategory questions={survey.questions} responses={responses} options={ 
+                    survey.options ? JSON.parse(survey.options) : {responder_list:null, paginate: null} 
+                } />
 
-                <IonItem><IonButton color="success" type="submit">Save</IonButton></IonItem>
-                </IonList>
+                { Object.keys(responses).length ? null : // Don't show submit button if we have existing responses.
+                    <IonButton className="action-button" type="submit">Save</IonButton>
+                }
+                
                 </form>
             </IonContent>
         </IonPage>
     );
 };
 
-const QuestionsOrCategory = ({ questions, responses }) => {
+const QuestionsOrCategory = ({ questions, responses, options }) => {
     if(questions === undefined) return null
+
+    console.log(options) // :TODO: :NEXT: Implement some paging here. Both by number(paginate every x question) and by category.
 
     return questions.map((ques, index ) => {
         if(ques.type === 'category') {
             return (
                 <div className="category" key={index}>
-                <IonItem className="category-name"><h3>{ ques.name }</h3></IonItem>
-                <QuestionsOrCategory questions={ques.questions} responses={responses} />
+                    <div className="category-name"><h3>{ ques.name }</h3></div>
+                    <QuestionsOrCategory questions={ques.questions} responses={responses} />
                 </div>
             )
         } else {
@@ -146,15 +153,17 @@ const Question = ({ id, question, description, required, response_type, choices,
     let req = (required === "1" ? true : false)
 
     return (<div className="question-area" id={ "question-" + id }>
-        <IonItem className="question" lines="none">
-            <div>
-            <div className="question-text">{ question } { 
-                required === "1" ? <span className="required">*</span> : null 
-            }</div>
-            { description ? <p className="question-description">{ description }</p> : null }
-            </div>
-        </IonItem>
-        <IonItem><Response question_id={id} response_type={response_type} choices={choices} response={response} required={req} /></IonItem>
+        <IonCard className="dark no-shadow">
+            <IonCardHeader>
+                <p className="question-text">{ question } { 
+                    required === "1" ? <span className="required">*</span> : null 
+                }</p>
+                { description ? <p className="question-description">{ description }</p> : null }
+            </IonCardHeader>
+            <IonCardContent>
+                <Response question_id={id} response_type={response_type} choices={choices} response={response} required={req} />
+            </IonCardContent>
+        </IonCard>
     </div>)
 }
 
