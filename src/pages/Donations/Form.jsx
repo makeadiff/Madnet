@@ -42,7 +42,7 @@ const DonationForm = () => {
     source: '',
     added_on: ''
   })
-  const { callApi } = React.useContext(dataContext)
+  const { callApi,unsetLocalCache } = React.useContext(dataContext)
   const { showMessage } = React.useContext(appContext)
 
   const setError = (id, error) => {
@@ -98,6 +98,8 @@ const DonationForm = () => {
         setError('donor_name', '')
         setError('donor_phone', '')
         setError('amount', '')
+
+        unsetLocalCache(`users_${user.id}_donations`)
       }
     })
   }

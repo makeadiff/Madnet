@@ -28,8 +28,9 @@ const DonationIndex = () => {
     function fetchDonationList() {
       callApi({
         url: `/users/${user.id}/donations`,
+        cache_key: `users_${user.id}_donations`,
         method: `get`,
-        setter: setDonations // :TODO: There will be a cacheing issue on adding new donations - the new one won't show up
+        setter: setDonations
       })
     }
     fetchDonationList()

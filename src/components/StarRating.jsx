@@ -7,7 +7,7 @@ const StarRating = ({ min,max,value,onChange,style }) => {
     if(value === undefined) value = 0
     const [ rating, setRating ] = React.useState(0)
     let stars = []
-    for(let i=0; i<max; i++) stars.push(i+1)
+    for(let i=min; i<max; i++) stars.push(i+1)
     
     React.useEffect(() => { // This should ideally go in the React.useState(value) - but that's not working for some reason.
         setRating(value)

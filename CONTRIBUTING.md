@@ -57,7 +57,7 @@ Note: You might have to do this when pushing the branch for the first time...
 git push --set-upstream origin *<branch name>*
 ```
 
-Once all the changes are made and you can **create a pull request**. This will notify the admin of the project to merge your code in with the master branch. You can do this by going to the project page on your account(eg. github.com/*<your github username>*/Madnet.git). There should be a '**Compare & pull request**' button at the top - click on that. Write a few comments on what the feature is about and submit the request.
+Once all the changes are made and you can **create a pull request**. This will notify the admin of the project to merge your code in with the master branch. You can do this by going to the project page on your account(eg. github.com/*your github username*/Madnet.git). There should be a '**Compare & pull request**' button at the top - click on that. Write a few comments on what the feature is about and submit the request.
 
 Now the admin of the main repository will review your code and merge your feature branch into the main branch.
 

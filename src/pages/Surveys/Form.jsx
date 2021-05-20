@@ -1,11 +1,12 @@
 import { IonPage,IonContent,IonLabel, IonRadio, IonList, IonRadioGroup, IonItem, IonInput, IonTextarea, IonCheckbox, IonButton, 
-            IonCard,IonCardHeader,IonCardContent, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+            IonCard,IonCardHeader,IonCardContent } from '@ionic/react';
 import React from 'react'
 import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
 import { dataContext } from "../../contexts/DataContext"
-import { authContext } from "../../contexts/AuthContext";
+import { appContext } from "../../contexts/AppContext"
+import { authContext } from "../../contexts/AuthContext"
 import StarRating from "../../components/StarRating"
 import './Form.css'
 
@@ -36,6 +37,7 @@ const SurveyForm = () => {
     const [responses, setResponses] = React.useState({})
     const { getSurveyForm,setSurveyResponses,callApi } = React.useContext(dataContext)
     const { user } = React.useContext(authContext)
+		const { showMessage } = React.useContext(appContext)
 
     React.useEffect(() => {
         async function getSurveyResponse(responder_id) {
@@ -88,22 +90,26 @@ const SurveyForm = () => {
 
     const validateSurvey = () => { // This function is not actually needed. Responses has the 'requried' html5 attribute.
         let valid = true
+        console.log("Validating", survey_questions)
         for(let i in survey_questions) {
             let q = survey_questions[i]
             if(q.required === "1" && survey_response[q.id].response === "") {
+                console.log("No data in ", q)
                 valid = false
                 break
             }
         }
-        return false
+        return true // :DEBUG: :TODO:
     }
 
-    const saveResponses = (e) => {
+    const saveResponses = async (e) => {
+        // console.log("Submitted")
         e.preventDefault();
         if(validateSurvey()) {
-            setSurveyResponses(survey.id, survey_response)
+            const saved = await setSurveyResponses(survey.id, survey_response)
+						if(saved) showMessage('Saved survey response successfully')
+						else showMessage('Error saving Survey response! Please try again.', 'error')
             // :TODO: If data exists already, overwrite.
-            // :TODO: Show success message.
         }
     }
 
@@ -112,10 +118,16 @@ const SurveyForm = () => {
             <Title name={ survey.template_name + ( survey.name ? " : " + survey.name : "" ) } />
 
             <IonContent className="dark">
+                { survey.description ? <IonCard className="dark no-shadow">
+                    <IonCardContent>
+                        <p>{ survey.description }</p>
+                    </IonCardContent>
+                </IonCard> : null }
+
                 <form onSubmit={e => saveResponses(e)}>
                 
                 <QuestionsOrCategory questions={survey.questions} responses={responses} options={ 
-                    survey.options ? JSON.parse(survey.options) : {responder_list:null, paginate: null} 
+                    survey.options ? JSON.parse(survey.options) : { responder_list: null, paginate: null } 
                 } />
 
                 { Object.keys(responses).length ? null : // Don't show submit button if we have existing responses.
@@ -131,7 +143,7 @@ const SurveyForm = () => {
 const QuestionsOrCategory = ({ questions, responses, options }) => {
     if(questions === undefined) return null
 
-    console.log(options) // :TODO: :NEXT: Implement some paging here. Both by number(paginate every x question) and by category.
+    // console.log(options) // :TODO: :NEXT: Implement some paging here. Both by number(paginate every x question) and by category.
 
     return questions.map((ques, index ) => {
         if(ques.type === 'category') {
@@ -172,7 +184,7 @@ const Response = ({question_id, response, required, response_type, choices}) => 
 
     if(response_type === "choice") {
         // :TODO: Implement options.field_type == 'select'
-        return (<IonList><IonRadioGroup value={ response } onIonChange={e => setQuestionResponse(question_id, e.detail.value)}>
+        return (<IonList><IonRadioGroup value={ response } required={ required } onIonChange={e => setQuestionResponse(question_id, e.detail.value)}>
             { choices.map((choice, index) => {
                 return (
                     <IonItem key={ index }>
@@ -186,22 +198,22 @@ const Response = ({question_id, response, required, response_type, choices}) => 
         return (<IonTextarea value={ response } required={ required } onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
 
     } else if(response_type === "text") {
-        return (<IonInput value={ response } type="text" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        return (<IonInput value={ response } type="text" required={ required } onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     } else if(response_type === "1-5") {
-        return (<StarRating value={ response } min="0" max="5" onChange={value => setQuestionResponse(question_id, value) } />)
+        return (<StarRating value={ response } min="0" max="5" onChange={value => setQuestionResponse(question_id, value)} />)
     
     } else if(response_type === "1-10") {
         return (<StarRating value={ response } min="0" max="10" onChange={value => setQuestionResponse(question_id, value)} />)
     
     } else if(response_type === "date") {
-        return (<IonInput value={ response } type="date" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        return (<IonInput value={ response } type="date" required={ required } onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     
     } else if(response_type === "yes-no") {
         return (<IonCheckbox checked={ response ? true : false } onIonChange={e => setQuestionResponse(question_id, e.target.checked)} />)
     
     } else if(response_type === "number") {
-        return (<IonInput value={ response } type="number" onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
+        return (<IonInput value={ response } type="number" required={ required } onIonChange={e => setQuestionResponse(question_id, e.target.value)} />)
     }
     // :TODO: multi-choice
 

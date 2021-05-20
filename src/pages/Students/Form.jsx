@@ -15,9 +15,7 @@ import {
   IonIcon,
   IonTextarea,
   IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle
+  IonCardContent
 } from '@ionic/react'
 import { pencil, close } from 'ionicons/icons'
 import { useParams } from 'react-router-dom'

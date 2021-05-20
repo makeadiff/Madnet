@@ -1,4 +1,4 @@
-import { IonPage,IonList,IonItem,IonLabel,IonContent, IonSelect, IonSelectOption, IonButton, IonPopover } from '@ionic/react'
+import { IonPage,IonList,IonItem,IonLabel,IonContent, IonSelect, IonSelectOption, IonButton } from '@ionic/react'
 import React from 'react'
 
 import { authContext } from "../../../contexts/AuthContext"
