@@ -2,14 +2,17 @@
 
 name: Bug report 🐞
 about: Create a report to help us improve
+labels: invalid
 title: ''
 module/page: ''
-
 
 ---
 
 **Describe the bug**
 A clear and concise description of what the bug is.
+
+** What page/moudle is the bug on?**
+
 **To Reproduce**
 Steps to reproduce the behavior:
 
