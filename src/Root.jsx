@@ -69,7 +69,7 @@ const Root = () => {
             isOpen={typeof loading === 'string' ? true : loading}
             onDidDismiss={() => setLoading(false)}
             message={typeof loading === 'string' ? loading : 'Loading...'}
-            duration={10000}
+            duration={3000}
           />
           <IonToast
             isOpen={message[0] ? true : false}

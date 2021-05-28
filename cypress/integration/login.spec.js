@@ -1,23 +1,18 @@
-// binny.spec.js created with Cypress
-//
-// Start writing your Cypress tests below!
-// If you're unfamiliar with how Cypress works,
-// check out the link below and learn how to write your first test:
-// https://on.cypress.io/writing-first-test
+import { app_url, user_email, user_password } from '../secrets/config.js';
 
 describe('Login Page', () => {
   beforeEach(() => {
-    cy.visit('https://makeadiff.in/madnet/')
+    cy.visit(app_url);
   	cy.waitForReact(1000, '#root');
   })
 
   it('Login page should render', () => {
-    // cy.get("ion-card-title").should('be.visible');
+    cy.wait(5000)
     cy.contains("Login to MADNet").should('be.visible');
   })
 
   it('Login should not work with wrong password', () => {
-  	cy.get("ion-input#email>input").type("ideal.teacher.1@makeadiff.in").should('have.value', "ideal.teacher.1@makeadiff.in");
+  	cy.get("ion-input#email>input").type(user_email).should('have.value', user_email);
   	cy.get("ion-input#password>input").type("wrong-password").should('have.value', "wrong-password");
 
   	cy.contains("Sign In").click();
@@ -25,8 +20,8 @@ describe('Login Page', () => {
   })
 
   it('Login should work', () => {
-  	cy.get("ion-input#email>input").type("ideal.teacher.1@makeadiff.in");
-  	cy.get("ion-input#password>input").type("pass").should('have.value', "pass");
+  	cy.get("ion-input#email>input").type(user_email);
+  	cy.get("ion-input#password>input").type(user_password).should('have.value', user_password);
   	cy.contains("Sign In").click();
   	cy.url().should('include', "/dashboard")
   })
