@@ -72,20 +72,12 @@ const DonationIndex = () => {
               <IonCardContent>
                 <IonGrid>
                   <IonRow>
-                    <IonCol className="label">ID</IonCol>
-                    <IonCol pullMd="3">{donation.id}</IonCol>
-                  </IonRow>
-                  <IonRow>
                     <IonCol className="label">Donor</IonCol>
                     <IonCol pullMd="3">{donation.donor}</IonCol>
                   </IonRow>
                   <IonRow>
                     <IonCol className="label">Amount</IonCol>
                     <IonCol pullMd="3">{donation.amount}</IonCol>
-                  </IonRow>
-                  <IonRow>
-                    <IonCol className="label">Source</IonCol>
-                    <IonCol pullMd="3">{formatText(donation.type)}</IonCol>
                   </IonRow>
                   <IonRow>
                     <IonCol className="label">Date</IonCol>
