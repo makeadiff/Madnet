@@ -66,9 +66,9 @@ const DonationIndex = () => {
       <Title name={`Funds raised by you this year: ${total} Rs`} />
 
       <IonContent className="dark">
-        {donations.map((donation, index) => {
+        {donations.map((donation) => {
           return (
-            <IonCard key={index}>
+            <IonCard key={donation.id}>
               <IonCardContent>
                 <IonGrid>
                   <IonRow>
