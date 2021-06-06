@@ -201,9 +201,9 @@ const useHandler = () => {
     setLoading(true)
     try {
       if (args.type === 'rest') {
-        call_response = await api.rest(args.url, args.method, args.params)
+        call_response = await api.rest(args.url, args.method, args.params, user.jwt_token)
       } else if (args.type === 'graphql') {
-        call_response = await api.graphql(args.graphql, args.graphql_type)
+        call_response = await api.graphql(args.graphql, args.graphql_type, user.jwt_token)
       } else
         console.log('Dev Error: Unsupported type given in callApi({args.type})')
     } catch (e) {
@@ -284,7 +284,8 @@ const useHandler = () => {
     const call_response = await api.rest(
       `surveys/${survey_id}/responses`,
       'post',
-      survey_responses
+      survey_responses,
+      user.jwt_token
     )
     setLoading(false)
 
@@ -349,7 +350,9 @@ const useHandler = () => {
     if (user_id === undefined) user_id = user.id
     const device_response = await api.rest(
       `users/${user_id}/devices/${token}`,
-      'delete'
+      'delete',
+      {},
+      user.jwt_token
     )
 
     if (device_response) return device_response
