@@ -106,7 +106,7 @@ const DonationForm = () => {
 
   return (
     <IonPage>
-      <Title name="Add Crowd Funding Donations" />
+      <Title name="Add Crowd Funding Donations" back="/donations" />
       <IonContent className="dark">
         <IonCard>
           <IonCardContent>
