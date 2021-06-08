@@ -12,7 +12,6 @@ You'll need install these to work on this project...
 
 - [Git](https://git-scm.com/) - Code Version control tool
 - [NPM](https://www.npmjs.com/) - Package manager
-- [Ionic](https://ionicframework.com/) - UI Framework
 
 ### Installation
 
@@ -32,7 +31,7 @@ npm install
 To view the app in action, run this command...
 
 ```
-ionic serve
+npm start
 ```
 
 ## Contributing
