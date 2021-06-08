@@ -16,7 +16,7 @@ First, **fork the project to your personal account**.
 
 How to Fork?
 
-Go to the github page for [this project](https://github.com/makeadiff/Madnet) and click on the Fork button to the top right cornor. This will create a copy of the repository in your personal account.
+Go to the github page for [this project](https://github.com/makeadiff/Madnet) and click on the Fork button to the top right corner. This will create a copy of the repository in your personal account.
 
 Now **clone the forked project to your system**...
 
