@@ -4,7 +4,6 @@ let current_url = window.location.href
 let current_site_url = "https://makeadiff.in/"
 let current_api_base_url = current_site_url + "api/"
 
-
 if(current_url.includes("localhost")) {
     // current_site_url = "http://localhost/MAD/"
     current_site_url = "http://testing.makeadiff.in/"
