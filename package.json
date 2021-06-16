@@ -41,6 +41,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --browser",
+    "cypress": "./node_modules/.bin/cypress open",
     "lint": "eslint --config .eslintrc.js src/",
     "lint:deps": "depcruise --config .dependency-cruiser.js src",
     "prettier:check": "git diff --name-only HEAD master | xargs prettier --check",

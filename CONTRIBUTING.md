@@ -10,39 +10,50 @@ We have a list of open issues that we require help with in our [issue tracker in
 
 If you have not contributed to an GitHub project yet, this page will help you get you up to speed.
 
+### Requirements
+
+You'll need install these to work on this project...
+
+- [Git](https://git-scm.com/) - Code Version control tool
+- [NPM](https://nodejs.org/en/download/) - Package manager. Just install Node, NPM will be included with it.
+
 ## Setup
 
-First, **fork the project to your personal account**. 
+First, **fork the project to your personal account**. You can do that by going to the github page for [this project](https://github.com/makeadiff/Madnet) and click on the Fork button to the top right corner. This will create a copy of the repository in your personal account.
 
-How to Fork?
-
-Go to the github page for [this project](https://github.com/makeadiff/Madnet) and click on the Fork button to the top right cornor. This will create a copy of the repository in your personal account.
-
-Now **clone the forked project to your system**...
+Now **clone the forked project to your system**. Open a terminal and run this command(You'll need to edit the command and add your username before running it)...
 
 ```
-git clone git@github.com:<your github username>/Madnet.git
+git clone git@github.com:YOUR_GITHUB_USERNAME/Madnet.git
 ```
 
-**Install libraries** using NPM
+**Install libraries** that MADNet depends on using NPM...
 
 ```
 cd Madnet
 npm install
 ```
 
-## Submiting contributions
-
-**Create a branch** that you will have your changes
+Now you have the codebase on your system. At this point you can run the app...
 
 ```
-git checkout -b "*<branch name>*"
+npm start
+```
+
+## Submiting contributions
+
+If you want to help us in developing the app, we are very happy to get more help. We have a list of open issues in our [issue tracker in GitHub](https://github.com/makeadiff/Madnet/issues). Select one of the tasks there to start. 
+
+**Create a branch** that you will have your changes...
+
+```
+git checkout -b "YOUR_BRANCH_NAME"
 ```
 
 Make all the changes you want to that branch. And **commit the changes**. PS: This will also run the linting tool to make sure your code is formated correctly.
 
 ```
-git commit -am "*<description of the changes you made>*"
+git commit -am "DESCRIPTION OF THE CHANGES YOU MADE"
 ```
 
 **Push the code to your remote repository** as and when needed
@@ -54,7 +65,7 @@ git push
 Note: You might have to do this when pushing the branch for the first time...
 
 ```
-git push --set-upstream origin *<branch name>*
+git push --set-upstream origin YOUR_BRANCH_NAME
 ```
 
 Once all the changes are made and you can **create a pull request**. This will notify the admin of the project to merge your code in with the master branch. You can do this by going to the project page on your account(eg. github.com/*your github username*/Madnet.git). There should be a '**Compare & pull request**' button at the top - click on that. Write a few comments on what the feature is about and submit the request.
