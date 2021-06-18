@@ -1,5 +1,12 @@
-import { IonPage, IonList, IonContent } from '@ionic/react'
+import { 
+    IonPage, 
+    IonList,
+    IonFab,
+    IonIcon,
+    IonFabButton,
+    IonContent } from '@ionic/react'
 import React from 'react'
+import { add } from 'ionicons/icons'
 import { useParams } from "react-router-dom"
 
 import { authContext } from "../../contexts/AuthContext"
@@ -10,6 +17,7 @@ import ChildDetail from "../../components/Child"
 const StudentIndex = () => {
     const { shelter_id } = useParams()
     const { user } = React.useContext(authContext)
+    const { hasPermission } = React.useContext(authContext)
     const {callApi} = React.useContext(dataContext)
     const [ students, setStudents ] = React.useState([])
     const [ city_id ] = React.useState(user.city_id)
@@ -46,6 +54,13 @@ const StudentIndex = () => {
                         <ChildDetail key={index} child={child} index={index}/>
                     ))}
                 </IonList>
+
+                {shelter_id && hasPermission('kids_edit') ?
+                <IonFab vertical="bottom" horizontal="start" slot="fixed">
+                    <IonFabButton routerLink={`/shelters/${shelter_id}/students/0`}>
+                        <IonIcon icon={add} />
+                    </IonFabButton>
+                </IonFab> : null}
             </IonContent>
         </IonPage>
     );
