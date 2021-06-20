@@ -145,7 +145,7 @@ const StudentForm = () => {
       {student.id != undefined ? (
         <Title name={'View/Edit ' + student.name} />
       ) : (
-        <Title name={'Add A New Student'} />
+        <Title name={'Add A New Student for ' + user.city_name} />
       )}
       <IonContent className="dark">
         <IonCard>
@@ -256,7 +256,7 @@ const StudentForm = () => {
                       onIonChange={updateField}
                     >
                       <IonListHeader>
-                        <IonLabel>Center</IonLabel>
+                        <IonLabel>Shelter/Communnity</IonLabel>
                       </IonListHeader>
                       {shelters.map((shelter, index) => {
                         return (
