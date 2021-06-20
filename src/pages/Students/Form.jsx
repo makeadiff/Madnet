@@ -27,8 +27,17 @@ import { dataContext } from '../../contexts/DataContext'
 import Title from '../../components/Title'
 
 const StudentForm = () => {
-  const [disable, setDisable] = React.useState(true)
-  const [student, setStudent] = React.useState({ name: '', comments: [] })
+  const [ disable, setDisable ] = React.useState(false)
+  const { user } = React.useContext(authContext)
+  const [ cityId ] = React.useState(user.city_id)
+  const [ shelters, setShelters ] = React.useState([])
+  const [ student, setStudent ] = React.useState({ name:'', comments:[]})
+  const [ newstudent , setNewStudent ] = React.useState({
+    name: '',
+    sex: '',
+    birthday: '2010-01-01',
+    center_id: '',
+  })
   const [errors, setErrors] = React.useState({
     name: '',
     birthday: '',
@@ -40,6 +49,11 @@ const StudentForm = () => {
   const { student_id } = useParams()
 
   React.useEffect(() => {
+    async function fetchShelterList() {
+      const shelters_data = await callApi({url: "cities/" + cityId + "/centers" })
+      setShelters(shelters_data)            
+    }
+    fetchShelterList()
     const fetchStudent = async () => {
       const student_details = await callApi({
         graphql: `{ student(id: ${student_id}) {
@@ -60,7 +74,7 @@ const StudentForm = () => {
     return () => {
       setStudent({ name: '', comments: [] })
     }
-  }, [student_id])
+  }, [student_id, cityId])
 
   const setError = (id, error) => {
     setErrors({ ...errors, [id]: error })
@@ -90,32 +104,47 @@ const StudentForm = () => {
     if (!disable) {
       // Without this, a race-condition was overwriting the initization values of student with this update.
       setStudent({ ...student, [id]: value })
+      setNewStudent({ ...newstudent, [id]: value })
     }
   }
 
   const saveStudent = (e) => {
     e.preventDefault()
     if (!hasPermission('kids_edit')) {
-      showMessage(
-        "You don't have the necessary permissions to edit student details",
-        'error'
-      )
-      return
+       showMessage(
+       "You don't have the necessary permissions to edit student details",
+       'error'
+       )
+       return
+     }
+    if(student.id == undefined){
+      callApi({
+        url: `/students/`,
+        method: 'post',
+        params: newstudent
+      }).then((data) => {
+        unsetLocalCache(`/students/${student_id}`)
+        showMessage(`Added ${newstudent.name} details successfully`)
+      })
     }
-
-    callApi({
-      url: `/students/${student_id}`,
-      method: 'post',
-      params: student
-    }).then((data) => {
-      unsetLocalCache(`/students/${student_id}`)
-      showMessage('Saved student details successfully')
-    })
+    else{
+      callApi({
+        url: `/students/${student_id}`,
+        method: 'post',
+        params: student
+      }).then((data) => {
+        unsetLocalCache(`/students/${student_id}`)
+        showMessage('Saved student details successfully')
+      })
+    }
   }
 
   return (
     <IonPage>
-      <Title name={'View/Edit ' + student.name} />
+      {student.id != undefined ?
+        (<Title name={'View/Edit ' + student.name} />) :
+        (<Title name={'Add A New Student'} />)
+      }
       <IonContent className="dark">
         <IonCard>
           <IonCardContent>
@@ -123,33 +152,54 @@ const StudentForm = () => {
               <IonList>
                 <IonItem>
                   <IonLabel position="stacked">Name</IonLabel>
-                  <IonInput
-                    id="name"
-                    type="text"
-                    value={student.name}
-                    required={true}
-                    minlength="2"
-                    maxlength="70"
-                    pattern="[A-Za-z\-' ]{1,60}"
-                    autocapitalize={true}
-                    disabled={disable}
-                    onChange={updateField}
-                  />
+                  {student.id != undefined ?
+                    (
+                      <IonInput
+                        id="name"
+                        type="text"
+                        value={student.name}
+                        required={true}
+                        minlength="2"
+                        maxlength="70"
+                        pattern="[A-Za-z\-' ]{1,60}"
+                        autocapitalize={true}
+                        disabled={disable}
+                        onIonChange={updateField}
+                      />
+                    ) :
+                      (<IonInput
+                        id="name"
+                        type="text"
+                        value={newstudent.name}
+                        required={true}
+                        minlength="2"
+                        maxlength="70"
+                        pattern="[A-Za-z\-' ]{1,60}"
+                        autocapitalize={true}
+                        disabled={disable}
+                        onIonChange={updateField}
+                      />)
+                  }
+                  
                   {errors.name ? (
                     <p className="error-message">{errors.name}</p>
                   ) : null}
                 </IonItem>
-
-                <IonItem>
-                  <IonLabel position="stacked">Description</IonLabel>
-                  <IonTextarea
-                    id="description"
-                    type="text"
-                    value={student.description}
-                    disabled={disable}
-                    onIonChange={updateField}
-                  />
-                </IonItem>
+                
+                {student.id != undefined ?
+                  ( <IonItem>
+                      <IonLabel position="stacked">Description</IonLabel>
+                      <IonTextarea
+                        id="description"
+                        type="text"
+                        value={student.description}
+                        disabled={disable}
+                        onIonChange={updateField}
+                      />
+                    </IonItem>
+                  ) : null
+                }
+                
                 <IonItem>
                   <IonLabel position="stacked">Birthday</IonLabel>
                   <IonInput
@@ -196,6 +246,34 @@ const StudentForm = () => {
                     />
                   </IonItem>
                 </IonRadioGroup>
+
+                {/* Shows Center only if Adding New Student */}
+                {student.id == undefined ? 
+                (<span>
+                  <IonRadioGroup
+                    id="center_id"
+                    value={newstudent.center_id}
+                    onIonChange={updateField}>
+                  
+
+                  <IonListHeader>
+                    <IonLabel>Center</IonLabel>
+                  </IonListHeader>
+                    {shelters.map((shelter, index) => {
+                      return(<IonItem key={index}>
+                        <IonLabel>{shelter.name}</IonLabel>
+                        <IonRadio
+                          mode="ios"
+                          name="center_id"
+                          slot="start"
+                          value={shelter.id}
+                          disabled={disable}
+                        />
+                      </IonItem>);
+                    })}
+                  </IonRadioGroup>
+                </span>): null}
+
                 {disable ? null : (
                   <IonItem>
                     <IonButton size="default" type="submit">
@@ -210,15 +288,17 @@ const StudentForm = () => {
                                     // :TODO:
                                     Mark Student as Alumni
                                 </IonItem> */}
-
-                <IonItem
-                  routerLink={`/students/${student_id}/notes`}
-                  routerDirection="none"
-                >
-                  <IonLabel>
-                    {student.comments.length} note(s) on {student.name}
-                  </IonLabel>
-                </IonItem>
+                                
+                {student.id != undefined ?
+                  ( <IonItem
+                      routerLink={`/students/${student_id}/notes`}
+                      routerDirection="none">
+                      <IonLabel>
+                        {student.comments.length} note(s) on {student.name}
+                      </IonLabel>
+                    </IonItem>
+                  ) : null
+                }
               </IonList>
             </form>
           </IonCardContent>
