@@ -16,7 +16,7 @@ const useAuthHandler = (initialState) => {
         const user_data = getStoredUser()
         window.localStorage.clear()
         try {
-            api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete") // Some wierd issue happening when calling unsetDeviceToken
+            api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete", user.jwt_token) // Some wierd issue happening when calling unsetDeviceToken
         } catch(e) {
             console.log(e)
         }
