@@ -1,0 +1,9 @@
+{
+  "includeShadowDom": true,
+  "chromeWebSecurity": false,
+  "env": {
+    "cypress-react-selector": {
+      "root": "#root"
+    }
+  }
+}

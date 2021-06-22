@@ -56,6 +56,7 @@ const UserSearch = ({ segment }) => {
                 user_search[key] = search[key]
             }
         }
+        console.log(user_search)
         const user_data = await getUsers(user_search)
         setUsers(user_data.data)
     }
@@ -97,7 +98,7 @@ const UserSearch = ({ segment }) => {
                         </div>)
                         : <IonItem onClick={() => setShowMore(true) }><a>Show More Options...</a></IonItem> }
 
-                    <IonItem><IonButton type="submit" size="default">Search</IonButton></IonItem>
+                    <IonItem><IonButton id="action" type="submit" size="default">Search</IonButton></IonItem>
                 </IonCardContent>
             </IonCard>
         </form>

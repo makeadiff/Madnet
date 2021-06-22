@@ -69,14 +69,14 @@ const Root = () => {
             isOpen={typeof loading === 'string' ? true : loading}
             onDidDismiss={() => setLoading(false)}
             message={typeof loading === 'string' ? loading : 'Loading...'}
-            duration={10000}
+            duration={3000}
           />
           <IonToast
             isOpen={message[0] ? true : false}
             onDidDismiss={() => setMessage(['', false])}
             message={message[0]}
             className={message[1] ? message[1] + '-toast' : ''}
-            duration={3000}
+            duration={10000}
           />
 
           <IonRouterOutlet id="main">
