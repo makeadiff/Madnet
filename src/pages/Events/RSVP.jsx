@@ -31,7 +31,7 @@ const EventRSVP = () => {
 
             if(event_data.event !== undefined) {
                 let event_info = event_data.event         
-                const rsvp = await api.rest(`events/${eventId}/users/${user.id}`)
+                const rsvp = await api.rest(`events/${eventId}/users/${user.id}`, 'get', {}, user.jwt_token)
                 if(rsvp !== undefined && rsvp.user !== undefined) {                    
                     event_info['rsvp'] = rsvp.user;                                        
                     setEvent(event_info)
@@ -51,7 +51,7 @@ const EventRSVP = () => {
     const saveRsvp = async function(rsvp) {
         setLoading(true)
         setRsvp(rsvp)
-        const response = await api.rest(`events/${eventId}/users/${user.id}`, "post", {'rsvp': rsvp})
+        const response = await api.rest(`events/${eventId}/users/${user.id}`, "post", {'rsvp': rsvp}, user.jwt_token)
         if(response.user === undefined) {
             console.error("Error saving RSVP")
         }
