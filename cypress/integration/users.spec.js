@@ -1,6 +1,6 @@
 import { app_url, fellow_email, fellow_password, user_email, user_name } from '../secrets/config.js';
 
-describe('Donation Page', () => {
+describe('User Page', () => {
   // beforeEach(() => {
   // })
 
@@ -33,6 +33,11 @@ describe('Donation Page', () => {
     cy.get("#action").click();
     cy.contains(user_name)
   })
+
+  // :TODO: 
+  // - Test Pagination
+  // - Needs Attention Section
+  // - Search by UserGroup
 
 
 })

@@ -201,9 +201,9 @@ const useHandler = () => {
     setLoading(true)
     try {
       if (args.type === 'rest') {
-        call_response = await api.rest(args.url, args.method, args.params, user.jwt_token)
+        call_response = await api.rest(args.url, args.method, args.params)
       } else if (args.type === 'graphql') {
-        call_response = await api.graphql(args.graphql, args.graphql_type, user.jwt_token)
+        call_response = await api.graphql(args.graphql, args.graphql_type)
       } else
         console.log('Dev Error: Unsupported type given in callApi({args.type})')
     } catch (e) {

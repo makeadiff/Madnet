@@ -1,7 +1,8 @@
 import { API_AUTH, API_REST_URL, API_BASE_URL } from './Constants'
+import { getStoredUser } from './Helpers'
 
 const api = {
-  rest: async (url, method, params, jwt_token) => {
+  rest: async (url, method, params) => {
     if (url[0] === '/') url = url.substring(1) // Sometimes the argument url might have a '/' at the start. Causes an error.
     let response = {}
 
@@ -10,10 +11,11 @@ const api = {
       'Content-Type': 'application/json',
       Authorization: `Basic ${API_AUTH.base64}`
     }
-    if(jwt_token) {
-      call_headers.Authorization = `Bearer ${jwt_token}`
+
+    const user = getStoredUser()
+    if(user.jwt_token) {
+      call_headers.Authorization = `Bearer ${user.jwt_token}`
     }
-    console.log(call_headers)
 
     response = await fetch(API_REST_URL + url, {
       method: method,
@@ -42,7 +44,7 @@ const api = {
     return false
   },
 
-  graphql: async (query, type, jwt_token) => {
+  graphql: async (query, type) => {
     if (type === undefined) type = 'query'
     
     let call_headers = {
@@ -50,10 +52,11 @@ const api = {
       'Content-Type': 'application/json',
       Authorization: `Basic ${API_AUTH.base64}`
     }
-    if(jwt_token) {
-      call_headers.Authorization = `Bearer ${jwt_token}`
+
+    const user = getStoredUser()
+    if(user.jwt_token) {
+      call_headers.Authorization = `Bearer ${user.jwt_token}`
     }
-    console.log(call_headers)
 
     const response = await fetch(API_BASE_URL + 'graphql', {
       method: 'POST',
