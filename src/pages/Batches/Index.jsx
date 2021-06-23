@@ -35,22 +35,19 @@ const BatchIndex = () => {
         cache: true,
         cache_key: `shelter_${shelter_id}_project_${project_id}_batch_index`
       })
-      if(data.center){
+      if (data.center) {
         setShelter(data.center)
-      }
-      else{
+      } else {
         setShelter({ name: 'No Shelter' })
       }
-      if(data.batchSearch){
+      if (data.batchSearch) {
         setBatches(data.batchSearch)
-      }
-      else{
+      } else {
         setBatches([])
       }
-      if(data.project){
+      if (data.project) {
         setProject(data.project)
-      }
-      else{
+      } else {
         setProject({ id: -99, name: 'No Batches' })
       }
     }
