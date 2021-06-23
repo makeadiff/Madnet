@@ -19,7 +19,7 @@ You'll need install these to work on this project...
 
 ## Setup
 
-First, **fork the project to your personal account**. You can do that by going to the github page for [this project](https://github.com/makeadiff/Madnet) and click on the Fork button to the top right corner. This will create a copy of the repository in your personal account.
+Go to the github page for [this project](https://github.com/makeadiff/Madnet) and click on the Fork button to the top right corner. This will create a copy of the repository in your personal account.
 
 Now **clone the forked project to your system**. Open a terminal and run this command(You'll need to edit the command and add your username before running it)...
 

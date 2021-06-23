@@ -67,9 +67,13 @@ const Profile = () => {
         cache: true,
         cache_key: `shelter_community_allocation_${user.id}`
       })
-
-      setBatch(data.batches[0].batch_name)
-      setCommunity(data.batches[0].center.name)
+      if (data.batches[0]) {
+        setBatch(data.batches[0].batch_name)
+        setCommunity(data.batches[0].center.name)
+      } else {
+        setBatch('Not Assigned')
+        setCommunity('Not Assigned')
+      }
     }
     if (
       cache[`shelter_community_allocation_${user.id}`] === undefined ||

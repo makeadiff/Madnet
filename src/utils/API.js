@@ -1,17 +1,23 @@
 import { API_AUTH, API_REST_URL, API_BASE_URL } from './Constants'
 
 const api = {
-  rest: async (url, method, params) => {
+  rest: async (url, method, params, jwt_token) => {
     if (url[0] === '/') url = url.substring(1) // Sometimes the argument url might have a '/' at the start. Causes an error.
     let response = {}
 
+    let call_headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${API_AUTH.base64}`
+    }
+    if(jwt_token) {
+      call_headers.Authorization = `Bearer ${jwt_token}`
+    }
+    console.log(call_headers)
+
     response = await fetch(API_REST_URL + url, {
       method: method,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${API_AUTH.base64}`
-      },
+      headers: call_headers,
       body: params ? JSON.stringify(params) : undefined
     })
     if (response.ok) {
@@ -36,15 +42,22 @@ const api = {
     return false
   },
 
-  graphql: async (query, type) => {
+  graphql: async (query, type, jwt_token) => {
     if (type === undefined) type = 'query'
+    
+    let call_headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${API_AUTH.base64}`
+    }
+    if(jwt_token) {
+      call_headers.Authorization = `Bearer ${jwt_token}`
+    }
+    console.log(call_headers)
 
     const response = await fetch(API_BASE_URL + 'graphql', {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
+      headers: call_headers,
       body: JSON.stringify({ query: query })
     })
 

@@ -14,6 +14,7 @@ if (current_url.includes('localhost')) {
 }
 // :TODO: Handle 192.168.*
 
+// :TODO: Move this to secret
 export const GOOGLE_MAPS_API_TOKEN = 'AIzaSyCZls3ImNSUOUG6qqN7ANLHpAj3mzNXZy4'
 export const SITE_URL = current_site_url
 export const API_BASE_URL = current_api_base_url
