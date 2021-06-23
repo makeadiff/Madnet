@@ -17,8 +17,7 @@ import ChildDetail from '../../components/Child'
 
 const StudentIndex = () => {
   const { shelter_id } = useParams()
-  const { user } = React.useContext(authContext)
-  const { hasPermission } = React.useContext(authContext)
+  const { user, hasPermission } = React.useContext(authContext)
   const { callApi } = React.useContext(dataContext)
   const [students, setStudents] = React.useState([])
   const [city_id] = React.useState(user.city_id)
@@ -32,7 +31,8 @@ const StudentIndex = () => {
           graphql: `{ 
                     studentSearch(center_id: ${shelter_id}) { id name birthday sex center { name }}
                     center(id: ${shelter_id}) { name }
-                }`
+                  }`,
+          cache_key: `center_${shelter_id}_students`
         })
         setLocation(` in ${child_data.center.name}`)
       } else {
@@ -40,7 +40,8 @@ const StudentIndex = () => {
           graphql: `{ 
                     studentSearch(city_id: ${city_id}) { id name sex birthday center { name }}
                     city(id: ${city_id}) { name }
-                }`
+                  }`,
+          cache_key: `city_${city_id}_students`
         })
         setLocation(` in ${child_data.city.name}`)
       }
@@ -63,7 +64,7 @@ const StudentIndex = () => {
           ))}
         </IonList>
 
-        {hasPermission('kids_edit') ? (
+        { hasPermission('kids_add') ? (
           <IonFab vertical="bottom" horizontal="start" slot="fixed">
             <IonFabButton routerLink={`/students/0`}>
               <IonIcon icon={add} />

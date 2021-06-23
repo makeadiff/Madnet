@@ -13,7 +13,6 @@ const api = {
     if(jwt_token) {
       call_headers.Authorization = `Bearer ${jwt_token}`
     }
-    console.log(call_headers)
 
     response = await fetch(API_REST_URL + url, {
       method: method,
@@ -53,7 +52,6 @@ const api = {
     if(jwt_token) {
       call_headers.Authorization = `Bearer ${jwt_token}`
     }
-    console.log(call_headers)
 
     const response = await fetch(API_BASE_URL + 'graphql', {
       method: 'POST',
