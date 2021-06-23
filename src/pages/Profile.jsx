@@ -43,10 +43,45 @@ const Profile = () => {
   const { user } = React.useContext(authContext)
   const { setLoading, showMessage } = React.useContext(appContext)
   const { updateUser } = React.useContext(dataContext)
+  const { callApi, cache } = React.useContext(dataContext)
   const [error, setError] = React.useState('')
   const [changePassword, setChangePassword] = React.useState(false)
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
+  const [batch, setBatch] = React.useState('')
+  const [community, setCommunity] = React.useState('')
+
+  React.useEffect(() => {
+    async function fetchMapping() {
+      const data = await callApi({
+        graphql: `{
+          user(id: ${user.id}){
+            batches{
+              batch_name,
+              center{
+                name
+              }
+            }
+          } 
+        }`,
+        cache: true,
+        cache_key: `shelter_community_allocation_${user.id}`
+      })
+      if (data.batches[0]) {
+        setBatch(data.batches[0].batch_name)
+        setCommunity(data.batches[0].center.name)
+      } else {
+        setBatch('Not Assigned')
+        setCommunity('Not Assigned')
+      }
+    }
+    if (
+      cache[`shelter_community_allocation_${user.id}`] === undefined ||
+      !cache[`shelter_community_allocation_${user.id}`]
+    ) {
+      fetchMapping()
+    }
+  }, [user.id, cache[`shelter_community_allocation_${user.id}`]])
 
   let breakcondition = false
   const [disable, setDisable] = React.useState(true)
@@ -352,7 +387,25 @@ const Profile = () => {
                       <IonInput
                         required
                         type="text"
-                        value={user.city}
+                        value={user.city_name}
+                        disabled
+                      ></IonInput>
+                    </IonItem>
+                    <IonItem>
+                      <IonLabel position="stacked">Community: </IonLabel>
+                      <IonInput
+                        required
+                        type="text"
+                        value={community}
+                        disabled
+                      ></IonInput>
+                    </IonItem>
+                    <IonItem>
+                      <IonLabel position="stacked">Batch: </IonLabel>
+                      <IonInput
+                        required
+                        type="text"
+                        value={batch}
                         disabled
                       ></IonInput>
                     </IonItem>

@@ -38,7 +38,7 @@ const requestPermission = async () => {
             const user = getStoredUser()
             
             if(user && user.id && user.token !== token && token) {
-                api.rest(`users/${user.id}/devices/${token}`, "post")
+                api.rest(`users/${user.id}/devices/${token}`, "post", {}, user.jwt_token)
                 user['token'] = token
                 setStoredUser(user)
             }

@@ -69,14 +69,14 @@ const Root = () => {
             isOpen={typeof loading === 'string' ? true : loading}
             onDidDismiss={() => setLoading(false)}
             message={typeof loading === 'string' ? loading : 'Loading...'}
-            duration={10000}
+            duration={3000}
           />
           <IonToast
             isOpen={message[0] ? true : false}
             onDidDismiss={() => setMessage(['', false])}
             message={message[0]}
             className={message[1] ? message[1] + '-toast' : ''}
-            duration={3000}
+            duration={10000}
           />
 
           <IonRouterOutlet id="main">
@@ -189,6 +189,11 @@ const Root = () => {
 
             <PrivateRoute path="/students" exact={true}>
               <StudentIndex />
+            </PrivateRoute>
+            <PrivateRoute path="/students/0" exact={true}>
+              {' '}
+              {/* TBD */}
+              <StudentForm />
             </PrivateRoute>
             <PrivateRoute path="/students/:student_id" exact={true}>
               <StudentForm />
