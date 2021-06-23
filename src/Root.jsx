@@ -190,6 +190,9 @@ const Root = () => {
             <PrivateRoute path="/students" exact={true}>
               <StudentIndex />
             </PrivateRoute>
+            <PrivateRoute path="/students/0" exact={true}>
+              <StudentForm />
+            </PrivateRoute>
             <PrivateRoute path="/students/:student_id" exact={true}>
               <StudentForm />
             </PrivateRoute>
