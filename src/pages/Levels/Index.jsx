@@ -48,8 +48,16 @@ const LevelIndex = () => {
         cache: true,
         cache_key: `shelter_${shelter_id}_project_${project_id}_level_index`
       })
-      setShelter(data.center)
-      setProject(data.project)
+      if (data.center) {
+        setShelter(data.center)
+      } else {
+        setShelter({ name: 'No Shelter' })
+      }
+      if (data.project) {
+        setProject(data.project)
+      } else {
+        setProject({ id: -99, name: 'No Classes' })
+      }
       setLevels(data.levels)
     }
 
