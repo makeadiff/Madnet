@@ -22,7 +22,7 @@ describe('Events Page', () => {
     cy.get('[value="in-city"]').click()
     cy.get('[value="invitations"]').click()
   })
-
+  // This might fail cause testing.makeadiff.in is behind the master branch on github
   it('Add a new event page loads', () => {
     cy.get('.fab-horizontal-start > .ion-activatable').click()
     cy.contains('Add/Edit Event Details')
