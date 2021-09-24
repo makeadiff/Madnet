@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonItem, IonButton, IonIcon, IonChip, IonBadge } from '@ionic/react';
+import { IonItem, IonButton, IonIcon, IonBadge } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, caretBackOutline, caretForwardOutline} from 'ionicons/icons'
 
 import "./Paginator.css"
@@ -9,14 +9,15 @@ const Paginator = React.memo(({data, pageHandler}) => {
   let callPage = (e) => {    
     let url = e.target.value;
     if(url !== null){      
-      let pageNumber = url.split('page=')[1];      
+      let pageNumber = url.split('page=')[1];
       pageHandler(pageNumber);
     }    
   }
+  const fromTo = (typeof data.from != undefined && data.to != undefined) ? <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {data.to} of {data.total}</h3> : null 
   
   return (
     <>
-    <h3 className="ion-text-center pageInfo" position="stacked">{data.from} - {data.to} of {data.total}</h3>
+    { fromTo }
     <div className="paginateContainer">
       <IonItem text-center className="ion-text-center pageinateItem">      
         <IonButton shape="round" title="First" color="dark" onClick={callPage} value={data.first_page_url} disabled={(data.current_page !== 1) ? false: true } >
@@ -36,8 +37,6 @@ const Paginator = React.memo(({data, pageHandler}) => {
     </div>
     </>
   )
-
 });
-
 
 export default Paginator;

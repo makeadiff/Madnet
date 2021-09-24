@@ -1,6 +1,6 @@
 import { IonPage,IonContent,IonLabel, IonRadio, IonList, IonRadioGroup, IonItem, IonInput, IonTextarea, IonCheckbox, IonButton, 
             IonCard,IonCardHeader,IonCardContent } from '@ionic/react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from "react-router-dom"
 
 import Title from "../../components/Title"
@@ -8,6 +8,7 @@ import { dataContext } from "../../contexts/DataContext"
 import { appContext } from "../../contexts/AppContext"
 import { authContext } from "../../contexts/AuthContext"
 import StarRating from "../../components/StarRating"
+import Paginator from "../../components/Paginator"
 import './Form.css'
 
 var survey_response = {}
@@ -120,7 +121,7 @@ const SurveyForm = () => {
             <IonContent className="dark">
                 { survey.description ? <IonCard className="dark no-shadow">
                     <IonCardContent>
-                        <p>{ survey.description }</p>
+                        <div dangerouslySetInnerHTML={{ __html: survey.description }}></div>
                     </IonCardContent>
                 </IonCard> : null }
 
@@ -141,9 +142,41 @@ const SurveyForm = () => {
 };
 
 const QuestionsOrCategory = ({ questions, responses, options }) => {
+    const [page, setPage] = React.useState(1)
     if(questions === undefined) return null
 
-    // console.log(options) // :TODO: :NEXT: Implement some paging here. Both by number(paginate every x question) and by category.
+    let category = questions[page - 1]
+
+    const moveToPage = (current_page) => {
+        setPage(current_page)
+        category = questions[current_page - 1]
+    }
+
+    // :TODO: :NEXT: Rework this.
+
+    if(options && options.paginate === "category" && questions[page - 1].type === "category") {
+        console.log(options, questions, responses);
+        const url = document.location.href
+        const pagination = {
+            current_page: page,
+            last_page: questions.length,
+            first_page_url: url + "?page=1",
+            last_page_url: url + "?page=" + (questions.length + 1),
+            next_page_url: page+1 <= questions.length ? (url + "?page=" + (page+1)) : null,
+            prev_page_url: page-1 > 0 ? (url + "?page=" + (page-1)) : null,
+            data: category,
+        }
+        console.log(pagination)
+        return (
+            <div className="category">
+                <div className="category-name"><h3>{ category.name }</h3></div>
+                <Paginator data={pagination} pageHandler={moveToPage}></Paginator>
+
+                <QuestionsOrCategory questions={category.questions} responses={responses} />
+                
+            </div>
+        )
+    }
 
     return questions.map((ques, index ) => {
         if(ques.type === 'category') {

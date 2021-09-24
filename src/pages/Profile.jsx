@@ -23,7 +23,6 @@ import {
   IonFabButton,
   IonIcon,
   IonButton,
-  IonToggle,
   IonNote
 } from '@ionic/react'
 
@@ -50,6 +49,7 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = React.useState('')
   const [batch, setBatch] = React.useState('')
   const [community, setCommunity] = React.useState('')
+  const [sourcingCampaign, setSourcingCampaign] = React.useState(null)
 
   React.useEffect(() => {
     async function fetchMapping() {
@@ -74,6 +74,13 @@ const Profile = () => {
         setBatch('Not Assigned')
         setCommunity('Not Assigned')
       }
+
+      callApi({
+        method: "get",
+        url: `/users/${user.id}/sourcing_campaign`,
+        setter: setSourcingCampaign,
+        cache_key: `user_${user.id}_sourcing_campaign`
+      })
     }
     if (
       cache[`shelter_community_allocation_${user.id}`] === undefined ||
@@ -83,7 +90,7 @@ const Profile = () => {
     }
   }, [user.id, cache[`shelter_community_allocation_${user.id}`]])
 
-  let breakcondition = false
+  let breakCondition = false
   const [disable, setDisable] = React.useState(true)
   const sexArray = {
     m: 'Male',
@@ -260,7 +267,7 @@ const Profile = () => {
                       <IonLabel
                         className="trigger"
                         color="primary"
-                        onClick={(e) => setChangePassword(true)}
+                        onClick={() => setChangePassword(true)}
                       >
                         Change Password
                       </IonLabel>
@@ -347,7 +354,7 @@ const Profile = () => {
                       <ul className="roleList">
                         {user.groups
                           ? user.groups.map((roles, index) => {
-                              if (!breakcondition) {
+                              if (!breakCondition) {
                                 if (index < 3) {
                                   return (
                                     <li key={index}>
@@ -357,7 +364,7 @@ const Profile = () => {
                                     </li>
                                   )
                                 } else {
-                                  breakcondition = true
+                                  breakCondition = true
                                   return (
                                     <li key={index}>
                                       <IonChip className="roles">
@@ -419,6 +426,27 @@ const Profile = () => {
                           .slice(0, 10)}
                         disabled
                       ></IonInput>
+                    </IonItem>
+                  </IonCardContent>
+                </IonCard>
+                <IonCard className="dark no-shadow">
+                  <IonCardHeader>
+                    <IonCardTitle>Sourcing Campaign</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <IonItem>
+                      {sourcingCampaign ? 
+                        <a href={`https://makeadiff.in/apprenticeship/?c=${sourcingCampaign.campaign_id}`}>Personal Campaign ID: {sourcingCampaign.campaign_id}</a>
+                        : "No Campaign ID Found"}
+                    </IonItem>
+                    <IonItem>
+                      <IonLabel position="stacked">New Applicants Sourced: {sourcingCampaign ? sourcingCampaign.sourced_applicants.length : 0 }</IonLabel>
+                      {sourcingCampaign ? 
+                      <ul>
+                        { sourcingCampaign.sourced_applicants.map((applicant, index) => {
+                          return (<li key={index}>{applicant.name}</li>)
+                        })}
+                      </ul> : null }
                     </IonItem>
                   </IonCardContent>
                 </IonCard>

@@ -146,20 +146,27 @@ const useHandler = () => {
     localStorage.removeItem(cache_key)
   }
 
-  /// An API wrapper to make th calls.
+  /*
+   * Wrapper to make the API calls.
+   * This function has a very aggressive cacching strategy that has and will create issues in the future - so documenting it in more detail.
+   * Results of all API calls will be cached in localStorage unless explicitly told not to(using {cache: false} option.). The API call will be made ONLY if the data does not exist in the cache.
+   * Examples
+   * const data = await callApi({ url: '/users/1' })
+   * const data = await callApi({ graphql: '{ user(ID: 1) { id name email } }' })
+   */
   const callApi = async (user_args) => {
     const default_args = {
       url: '',
       type: 'rest',
       method: 'get',
       params: false,
-      graphql: '',
-      graphql_type: 'query',
-      cache: true,
-      name: '',
-      key: '',
-      cache_key: '',
-      setter: false // Setter function. If this is given, the function will automatically call the setter function with the valid data.
+      graphql: '',            // GraphQL query string
+      graphql_type: 'query',  // query or mutation. I don't think its used yet.
+      cache: true,            // If false, will not cache the results.
+      name: '',               // Human friendly name for the API call. Used in error messages.
+      key: '',                // We'll use this to extract the correct info when api returns data. Eg. API will return `{status:"success", data:{users: [ ... ]}}}` and the key is 'users', function will return just the users: [ ... ] part of the data instead of the entire result.
+      cache_key: '',          // Name of the key used for caching in localStorage. 
+      setter: false           // Setter function. If this is given, the function will automatically call the setter function with the valid data. Eg: `callApi({url: '/users/1', setter: setUser})`
     }
     if (user_args.url !== undefined) {
       default_args['name'] = user_args.url.split(/[\/\?\(]/)[0]
