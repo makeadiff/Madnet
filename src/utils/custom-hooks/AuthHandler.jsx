@@ -18,7 +18,7 @@ const useAuthHandler = (initialState) => {
         try {
             api.rest(`users/${user_data.id}/devices/${user_data.token}`, "delete", user.jwt_token) // Some wierd issue happening when calling unsetDeviceToken
         } catch(e) {
-            console.log(e)
+            console.log(e.message)
         }
         
         setUser(DEFAULT_USER_AUTH)
