@@ -123,6 +123,8 @@ const UserForm = () => {
         const main_group = user_details.groups.find( grp => grp.main === "1" )
         if(main_group) {
           user_details.main_group = main_group
+        } else {
+          user_details.main_group = { id: 0, name : "None Selected" }
         }
         setUser(user_details)
 
@@ -452,7 +454,7 @@ const UserForm = () => {
                 <IonCardTitle>User not found.</IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
-                There is no user active user (volunteer, let_go or alumni) with the specified ID.
+                There is no user(current or past volunteer) with the specified ID.
               </IonCardContent>
             </IonCard>
           </IonContent>

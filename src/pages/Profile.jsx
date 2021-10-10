@@ -35,15 +35,12 @@ import './All.css'
 
 import Title from '../components/Title'
 import { authContext } from '../contexts/AuthContext'
-import { appContext } from '../contexts/AppContext'
 import { dataContext } from '../contexts/DataContext'
 
 const Profile = () => {
   const { user } = React.useContext(authContext)
-  const { setLoading, showMessage } = React.useContext(appContext)
   const { updateUser } = React.useContext(dataContext)
   const { callApi, cache } = React.useContext(dataContext)
-  const [error, setError] = React.useState('')
   const [changePassword, setChangePassword] = React.useState(false)
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')

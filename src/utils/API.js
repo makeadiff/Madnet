@@ -4,7 +4,7 @@ import { getStoredUser, setStoredUser } from './Helpers'
 const api = {
   rest: async (url, method, params, options) => {
     const default_options = {
-      auth: "jwt",
+      auth: "basic", // or 'jwt' - but jwt is giving me issues on the server.
       type: "default"
     }
     options = { ...default_options, ...options }
@@ -46,23 +46,29 @@ const api = {
         if(data.data[0] === "Token is Expired") {
           if(options.type === "token-refresh-attempt") { // To make sure we don't go into a recursive loop
             console.error("Token has expried and refresh attempt failed. Please logout and log back in");
-            throw new Error("Token has expried and refresh attempt failed");
+            throw "Token has expried and refresh attempt failed"
           }
           let user = await api.refreshJwtToken()
           if(user) {
             return await api.rest(url, method, params, {type: "token-refresh-attempt"})
           }
         }
-        throw new Error(data.data)
+        throw data.data
       }
-      else if (data) throw new Error(data)
-      else throw new Error(response)
+      else if (data) throw data
+      else throw response
     }
 
     return false
   },
 
-  graphql: async (query, type) => {
+  graphql: async (query, type, options) => {
+    const default_options = {
+      auth: "basic", // or 'jwt' - but jwt is giving me issues on the server.
+      type: "default"
+    }
+    options = { ...default_options, ...options }
+
     if (type === undefined) type = 'query' // WHY IS THERE THE type HERE?! query vs mutation ? :TODO: 
     
     let call_headers = {
@@ -72,7 +78,7 @@ const api = {
     }
 
     const user = getStoredUser()
-    if(user.jwt_token) {
+    if(user.jwt_token && options.auth !== "basic") {
       call_headers.Authorization = `Bearer ${user.jwt_token}`
     }
 
@@ -88,16 +94,16 @@ const api = {
     } else {
       if (data.status === "fail") {
         if(data.data[0] === "Token is Expired") {
-          if(type === "token-refresh-attempt") { // To make sure we don't go into a recursive loop
+          if(options.type === "token-refresh-attempt") { // To make sure we don't go into a recursive loop
             console.error("Token has expried and refresh attempt failed. Please logout and log back in");
-            throw new Error("Token has expried and refresh attempt failed");
+            throw "Token has expried and refresh attempt failed"
           }
           let user = await api.refreshJwtToken()
           if(user) {
-            return await api.graphql(query, "token-refresh-attempt") // Dangerous. Could lead to loop.
+            return await api.graphql(query, "query", {type: "token-refresh-attempt"}) // Dangerous. Could lead to loop.
           }
         } else {
-          throw new Error(data.data)
+          throw data.data
         }
       }
     }

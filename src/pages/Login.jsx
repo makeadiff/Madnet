@@ -63,7 +63,7 @@ function Login() {
 
         let user = result.user // The signed-in user info.
         setLoading(true)
-        api.rest(`users?identifier=${user.email}`, 'get', {}).then(loginUser)
+        api.rest(`users?identifier=${user.email}`, 'get').then(loginUser)
       })
       .catch((e) => showMessage(e.message, 'error'))
   }, [])
