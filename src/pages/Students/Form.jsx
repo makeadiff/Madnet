@@ -15,7 +15,12 @@ import {
   IonIcon,
   IonTextarea,
   IonCard,
-  IonCardContent
+  IonCardContent,
+  IonCol,
+  IonRow,
+  IonGrid,
+  IonCardTitle,
+  IonCardHeader
 } from '@ionic/react'
 import { pencil, close } from 'ionicons/icons'
 import { useParams } from 'react-router-dom'
@@ -33,6 +38,7 @@ const StudentForm = () => {
 
   const [disable, setDisable] = React.useState(false)
   const [city_id] = React.useState(user.city_id)
+  const [action, setAction] = React.useState('view')
   const [shelters, setShelters] = React.useState([])
   const [student, setStudent] = React.useState({
     id: 0,
@@ -40,7 +46,8 @@ const StudentForm = () => {
     comments: [],
     sex: 'u',
     birthday: null,
-    center_id: 0
+    center_id: 0,
+    student_type: 'active'
   })
   const [errors, setErrors] = React.useState({
     name: '',
@@ -58,16 +65,16 @@ const StudentForm = () => {
       setShelters(shelters_data)
     }
     fetchShelterList()
+  }, [city_id])
 
+  React.useEffect(() => {
     const fetchStudent = async () => {
       const student_details = await callApi({
         graphql: `{ student(id: ${student_id}) {
-                id name description birthday sex
-                comments {
-                  id 
-                }
+              id name description birthday sex center_id student_type reason_for_leaving
+              comments { id }
             }}`,
-        cache_key: `/students/${student_id}`
+        cache_key: `student_${student_id}`
       })
 
       if (student_details) {
@@ -75,21 +82,10 @@ const StudentForm = () => {
         setStudent(student_details)
       }
     }
-    if (Number(student_id)) {
+    if (student_id) {
       fetchStudent()
     }
-
-    return () => {
-      setStudent({
-        id: 0,
-        name: '',
-        comments: [],
-        sex: 'u',
-        birthday: null,
-        center_id: 0
-      })
-    }
-  }, [student_id, city_id])
+  }, [student_id])
 
   const setError = (id, error) => {
     setErrors({ ...errors, [id]: error })
@@ -144,7 +140,7 @@ const StudentForm = () => {
         url: `/students/`,
         method: 'post',
         params: student
-      }).then((data) => {
+      }).then(() => {
         showMessage(`Added student '${student.name}' successfully`)
         unsetLocalCache(`city_${city_id}_students`)
         unsetLocalCache(`shelter_${student.center_id}_students`)
@@ -155,13 +151,16 @@ const StudentForm = () => {
         url: `/students/${student_id}`,
         method: 'post',
         params: student
-      }).then((data) => {
-        unsetLocalCache(`/students/${student_id}`)
+      }).then(() => {
+        unsetLocalCache(`student_${student_id}`)
         unsetLocalCache(`city_${city_id}_students`)
         unsetLocalCache(`shelter_${student.center_id}_students`)
         showMessage(`Saved details of ${student.name} successfully`)
       })
     }
+  }
+
+  const markAlumi = () => {
   }
 
   return (
@@ -172,146 +171,255 @@ const StudentForm = () => {
         <Title name={'Add Student in ' + user.city} back="/students" />
       )}
       <IonContent className="dark">
-        <IonCard>
-          <IonCardContent>
-            <form onSubmit={(e) => saveStudent(e)}>
-              <IonList>
-                <IonItem>
-                  <IonLabel position="stacked">Name</IonLabel>
-                  <IonInput
-                    id="name"
-                    type="text"
-                    value={student.name}
-                    required={true}
-                    minlength="2"
-                    maxlength="70"
-                    pattern="[A-Za-z\-' ]{1,60}"
-                    autocapitalize={true}
-                    disabled={disable}
-                    onIonChange={updateField}
-                  />
+        <IonGrid>
+          <IonRow>
+            <IonCol size-xs="12" size-md="6">
+            <IonCard>
+              <IonCardContent>
+                <form onSubmit={(e) => saveStudent(e)}>
+                  <IonList>
+                    <IonItem>
+                      <IonLabel position="stacked">Name</IonLabel>
+                      <IonInput
+                        id="name"
+                        type="text"
+                        value={student.name}
+                        required={true}
+                        minlength="2"
+                        maxlength="70"
+                        pattern="[A-Za-z\-' ]{1,60}"
+                        autocapitalize={true}
+                        disabled={disable}
+                        onIonChange={updateField}
+                      />
 
-                  {errors.name ? (
-                    <p className="error-message">{errors.name}</p>
-                  ) : null}
-                </IonItem>
+                      {errors.name ? (
+                        <p className="error-message">{errors.name}</p>
+                      ) : null}
+                    </IonItem>
 
-                <IonItem>
-                  <IonLabel position="stacked">Description</IonLabel>
-                  <IonTextarea
-                    id="description"
-                    type="text"
-                    value={student.description}
-                    disabled={disable}
-                    onIonChange={updateField}
-                  />
-                </IonItem>
+                    <IonItem>
+                      <IonLabel position="stacked">Description</IonLabel>
+                      <IonTextarea
+                        id="description"
+                        type="text"
+                        value={student.description}
+                        disabled={disable}
+                        onIonChange={updateField}
+                      />
+                    </IonItem>
 
-                <IonItem>
-                  <IonLabel position="stacked">Birthday</IonLabel>
-                  <IonInput
-                    id="birthday"
-                    type="date"
-                    value={student.birthday}
-                    max={moment().year() - 5 + '-01-01'}
-                    disabled={disable}
-                    onIonChange={updateField}
-                  />
-                  {errors.birthday ? (
-                    <p className="error-message">{errors.birthday}</p>
-                  ) : null}
-                </IonItem>
+                    <IonItem>
+                      <IonLabel position="stacked">Birthday</IonLabel>
+                      <IonInput
+                        id="birthday"
+                        type="date"
+                        value={student.birthday}
+                        max={moment().year() - 5 + '-01-01'}
+                        disabled={disable}
+                        onIonChange={updateField}
+                      />
+                      {errors.birthday ? (
+                        <p className="error-message">{errors.birthday}</p>
+                      ) : null}
+                    </IonItem>
 
-                <IonRadioGroup
-                  id="sex"
-                  value={student.sex}
-                  onIonChange={updateField}
-                >
-                  <IonListHeader>
-                    <IonLabel>Sex</IonLabel>
-                  </IonListHeader>
-
-                  <IonItem>
-                    <IonLabel>Male</IonLabel>
-                    <IonRadio
-                      mode="ios"
-                      name="sex"
-                      slot="start"
-                      value="m"
-                      disabled={disable}
-                    />
-                  </IonItem>
-
-                  <IonItem>
-                    <IonLabel>Female</IonLabel>
-                    <IonRadio
-                      mode="ios"
-                      name="sex"
-                      slot="start"
-                      value="f"
-                      disabled={disable}
-                    />
-                  </IonItem>
-
-                  <IonItem>
-                    <IonLabel>Not Specified</IonLabel>
-                    <IonRadio
-                      mode="ios"
-                      name="sex"
-                      slot="start"
-                      value="u"
-                      disabled={disable}
-                    />
-                  </IonItem>
-                </IonRadioGroup>
-
-                {/* Shows Center only if Adding New Student */}
-                {!student.id ? (
-                  <span>
                     <IonRadioGroup
-                      id="center_id"
-                      value={student.center_id}
+                      id="sex"
+                      value={student.sex}
                       onIonChange={updateField}
                     >
                       <IonListHeader>
-                        <IonLabel>Shelter/Communnity</IonLabel>
+                        <IonLabel>Sex</IonLabel>
                       </IonListHeader>
-                      {shelters.map((shelter) => {
-                        return (
-                          <IonItem key={shelter.id}>
-                            <IonLabel>{shelter.name}</IonLabel>
-                            <IonRadio
-                              mode="ios"
-                              name="center_id"
-                              slot="start"
-                              value={shelter.id}
-                              disabled={disable}
-                            />
-                          </IonItem>
-                        )
-                      })}
+
+                      <IonItem>
+                        <IonLabel>Male</IonLabel>
+                        <IonRadio
+                          mode="ios"
+                          name="sex"
+                          slot="start"
+                          value="m"
+                          disabled={disable}
+                        />
+                      </IonItem>
+
+                      <IonItem>
+                        <IonLabel>Female</IonLabel>
+                        <IonRadio
+                          mode="ios"
+                          name="sex"
+                          slot="start"
+                          value="f"
+                          disabled={disable}
+                        />
+                      </IonItem>
+
+                      <IonItem>
+                        <IonLabel>Not Specified</IonLabel>
+                        <IonRadio
+                          mode="ios"
+                          name="sex"
+                          slot="start"
+                          value="u"
+                          disabled={disable}
+                        />
+                      </IonItem>
                     </IonRadioGroup>
-                    {errors.center_id ? (
-                      <p className="error-message">{errors.center_id}</p>
-                    ) : null}
-                  </span>
-                ) : null}
 
-                {disable ? null : (
-                  <IonItem>
-                    <IonButton size="default" type="submit">
-                      Save
-                    </IonButton>
-                  </IonItem>
-                )}
+                    <span>
+                      <IonRadioGroup
+                        id="center_id"
+                        value={student.center_id}
+                        onIonChange={updateField}
+                      >
+                        <IonListHeader>
+                          <IonLabel>Shelter/Communnity</IonLabel>
+                        </IonListHeader>
+                        {shelters.map((shelter) => {
+                          return (
+                            <IonItem key={shelter.id}>
+                              <IonLabel>{shelter.name}</IonLabel>
+                              <IonRadio
+                                mode="ios"
+                                name="center_id"
+                                slot="start"
+                                value={shelter.id}
+                                disabled={disable}
+                              />
+                            </IonItem>
+                          )
+                        })}
+                      </IonRadioGroup>
+                      {errors.center_id ? (
+                        <p className="error-message">{errors.center_id}</p>
+                      ) : null}
+                    </span>
 
-                {/* <IonItemDivider><IonLabel>Other Actions</IonLabel></IonItemDivider>
+                    {disable ? null : (
+                      <IonItem>
+                        <IonButton size="default" type="submit">
+                          Save
+                        </IonButton>
+                      </IonItem>
+                    )}
+                  </IonList>
+                </form>
+              </IonCardContent>
+            </IonCard>
+          </IonCol>
+          {student.id ? (
+          <IonCol size-md="6" size-xs="12">
+            <IonCard className="light">
+              <IonCardHeader>
+                <IonCardTitle>Other Actions</IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <IonList>
+                  { action === 'view' ? (
+                    <>
                     <IonItem>
-                        // :TODO:
+                      <IonButton size="default" type="submit" onClick={() => setAction('mark_alumni')}>
                         Mark Student as Alumni
-                    </IonItem> */}
+                      </IonButton>
+                    </IonItem>
+                    <IonItem>
+                      <IonLabel>This will hide {student.name} in student listing.</IonLabel>
+                    </IonItem>
+                    </>
+                   ) : (
+                    <>
+                    <IonItem>
+                      <IonRadioGroup
+                        id="student_type"
+                        value={student.student_type}
+                        onIonChange={updateField}
+                      >
+                        <IonListHeader>
+                          <IonLabel>Update {student.name}'s Status</IonLabel>
+                        </IonListHeader>
 
-                {student.id ? (
+                        <IonItem>
+                          <IonLabel>Active</IonLabel>
+                          <IonRadio
+                            mode="ios"
+                            name="student_type"
+                            slot="start"
+                            value="active"
+                          />
+                        </IonItem>
+
+                        <IonItem>
+                          <IonLabel>Active, but away from shelter</IonLabel>
+                          <IonRadio
+                            mode="ios"
+                            name="student_type"
+                            slot="start"
+                            value="active_away"
+                          />
+                        </IonItem>
+
+                        <IonItem>
+                          <IonLabel>Alumni</IonLabel>
+                          <IonRadio
+                            mode="ios"
+                            name="student_type"
+                            slot="start"
+                            value="alumni"
+                          />
+                        </IonItem>
+
+                        <IonItem>
+                          <IonLabel>Alumni, Lost Contact</IonLabel>
+                          <IonRadio
+                            mode="ios"
+                            name="student_type"
+                            slot="start"
+                            value="alumni_no_contact"
+                          />
+                        </IonItem>
+
+                        <IonItem>
+                          <IonLabel>Alumni, Passed Away</IonLabel>
+                          <IonRadio
+                            mode="ios"
+                            name="student_type"
+                            slot="start"
+                            value="alumni_dead"
+                          />
+                        </IonItem>
+
+                        <IonItem>
+                          <IonLabel>Other</IonLabel>
+                          <IonRadio
+                            mode="ios"
+                            name="student_type"
+                            slot="start"
+                            value="other"
+                          />
+                        </IonItem>
+                      </IonRadioGroup>
+
+                      <IonItem>
+                        <IonLabel position="stacked">Reason for Leaning</IonLabel>
+                        <IonTextarea
+                          id="reason_for_leaving"
+                          type="text"
+                          value={student.reason_for_leaving}
+                          disabled={disable}
+                          onIonChange={updateField}
+                        />
+                      </IonItem>
+
+                      <IonItem>
+                        <IonButton size="default" onClick={() => markAlumi()}>
+                          Save Status
+                        </IonButton>
+                      </IonItem>
+                      </IonItem>
+                    </>
+                  )}
+                  
                   <IonItem
                     routerLink={`/students/${student_id}/notes`}
                     routerDirection="none"
@@ -320,11 +428,13 @@ const StudentForm = () => {
                       {student.comments.length} note(s) on {student.name}
                     </IonLabel>
                   </IonItem>
-                ) : null}
-              </IonList>
-            </form>
-          </IonCardContent>
-        </IonCard>
+                </IonList>
+              </IonCardContent>
+            </IonCard>
+          </IonCol>
+          ) : null}
+          </IonRow>
+        </IonGrid>
 
         {hasPermission('kids_edit') ? (
           <IonFab
@@ -338,6 +448,7 @@ const StudentForm = () => {
             </IonFabButton>
           </IonFab>
         ) : null}
+        <br /><br /><br />
       </IonContent>
     </IonPage>
   )

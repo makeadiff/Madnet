@@ -125,8 +125,7 @@ const ShelterView = () => {
               key="batches"
             >
               <IonChip className="roles">
-                {' '}
-                {project.batches.length ?? ''}{' '}
+                {project.batches.length ?? 'See '}
               </IonChip>
               <IonLabel className="shelterList"> Batch(es)</IonLabel>
             </IonItem>
@@ -140,8 +139,7 @@ const ShelterView = () => {
               key="levels"
             >
               <IonChip className="roles">
-                {' '}
-                {project.levels.length ?? ''}{' '}
+                {project.levels.length ?? 'See '}
               </IonChip>
               <IonLabel className="shelterList"> {labels.level}</IonLabel>
             </IonItem>
@@ -160,9 +158,9 @@ const ShelterView = () => {
           </IonItem>
 
           {/* <IonItem className="shelterItems" routerLink={ `/shelters/${shelter.id}/notes` } routerDirection="none"  key="notes">
-                        <IonChip className="roles">3</IonChip>
-                        <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
-                    </IonItem> */}
+            <IonChip className="roles">3</IonChip>
+            <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
+          </IonItem> */}
 
           {project_id == PROJECT_IDS.ED ||
           project_id == PROJECT_IDS.FP ||

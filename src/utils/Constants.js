@@ -6,8 +6,8 @@ let current_api_base_url = current_site_url + 'api/'
 
 // :TODO: Need a better way to handle this.
 if (current_url.includes('localhost')) {
-  current_site_url = 'http://testing.makeadiff.in/'
-  // current_site_url = 'http://localhost/MAD/'
+  // current_site_url = 'http://testing.makeadiff.in/'
+  current_site_url = 'http://localhost/MAD/'
   current_api_base_url = current_site_url + 'api/'
 } else if (current_url.includes('testing.makeadiff.in')) {
   current_site_url = 'http://testing.makeadiff.in/'
@@ -31,6 +31,8 @@ export const DEFAULT_USER_AUTH = {
   email: '',
   name: '',
   phone: '',
+  city_id: 0,
+  city_name: '',
   jwt_token: ''
 }
 export const PROJECT_IDS = {

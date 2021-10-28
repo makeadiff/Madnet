@@ -84,7 +84,7 @@ const Notes = ({ item_type }) => {
 
   return (
     <IonPage>
-      <Title name={'Notes on ' + name} />
+      <Title name={'Notes on ' + name} back={`/${item_type}s/${item_id}`} />
 
       <IonContent>
         {comments.map((comment, index) => {

@@ -44,6 +44,10 @@ const LevelForm = () => {
   })
 
   React.useEffect(() => {
+    setLevelId(param_level_id)
+  }, [param_level_id])
+
+  React.useEffect(() => {
     async function fetchLevel() {
       const level_data = await callApi({
         graphql: `{ 
