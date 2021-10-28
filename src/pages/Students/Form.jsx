@@ -34,7 +34,14 @@ const StudentForm = () => {
   const [disable, setDisable] = React.useState(false)
   const [city_id] = React.useState(user.city_id)
   const [shelters, setShelters] = React.useState([])
-  const [student, setStudent] = React.useState({ id: 0, name: '', comments: [], sex: 'u', birthday: null, center_id: 0 })
+  const [student, setStudent] = React.useState({
+    id: 0,
+    name: '',
+    comments: [],
+    sex: 'u',
+    birthday: null,
+    center_id: 0
+  })
   const [errors, setErrors] = React.useState({
     name: '',
     birthday: '',
@@ -68,12 +75,19 @@ const StudentForm = () => {
         setStudent(student_details)
       }
     }
-    if(Number(student_id)) {
+    if (Number(student_id)) {
       fetchStudent()
     }
 
     return () => {
-      setStudent({ id: 0, name: '', comments: [], sex: 'u', birthday: null, center_id: 0 })
+      setStudent({
+        id: 0,
+        name: '',
+        comments: [],
+        sex: 'u',
+        birthday: null,
+        center_id: 0
+      })
     }
   }, [student_id, city_id])
 
@@ -111,17 +125,21 @@ const StudentForm = () => {
   const saveStudent = (e) => {
     e.preventDefault()
     if (!hasPermission('kids_edit')) {
-      showMessage(`You don't have the necessary permissions to edit student details`,'error')
+      showMessage(
+        `You don't have the necessary permissions to edit student details`,
+        'error'
+      )
       return
     }
 
     // Validation
-    if(!student.center_id) {
-      setError("center_id", "Please select the shelter this student belongs to")
+    if (!student.center_id) {
+      setError('center_id', 'Please select the shelter this student belongs to')
       return
     }
 
-    if (!student.id) { // Add new student
+    if (!student.id) {
+      // Add new student
       callApi({
         url: `/students/`,
         method: 'post',
@@ -131,8 +149,8 @@ const StudentForm = () => {
         unsetLocalCache(`city_${city_id}_students`)
         unsetLocalCache(`shelter_${student.center_id}_students`)
       })
-
-    } else { // Edit existing sudent
+    } else {
+      // Edit existing sudent
       callApi({
         url: `/students/${student_id}`,
         method: 'post',
@@ -148,10 +166,10 @@ const StudentForm = () => {
 
   return (
     <IonPage>
-      { student.id ? (
-        <Title name={'View/Edit ' + student.name} back='/students' />
+      {student.id ? (
+        <Title name={'View/Edit ' + student.name} back="/students" />
       ) : (
-        <Title name={'Add Student in ' + user.city} back='/students' />
+        <Title name={'Add Student in ' + user.city} back="/students" />
       )}
       <IonContent className="dark">
         <IonCard>
@@ -160,18 +178,18 @@ const StudentForm = () => {
               <IonList>
                 <IonItem>
                   <IonLabel position="stacked">Name</IonLabel>
-                    <IonInput
-                      id="name"
-                      type="text"
-                      value={student.name}
-                      required={true}
-                      minlength="2"
-                      maxlength="70"
-                      pattern="[A-Za-z\-' ]{1,60}"
-                      autocapitalize={true}
-                      disabled={disable}
-                      onIonChange={updateField}
-                    />
+                  <IonInput
+                    id="name"
+                    type="text"
+                    value={student.name}
+                    required={true}
+                    minlength="2"
+                    maxlength="70"
+                    pattern="[A-Za-z\-' ]{1,60}"
+                    autocapitalize={true}
+                    disabled={disable}
+                    onIonChange={updateField}
+                  />
 
                   {errors.name ? (
                     <p className="error-message">{errors.name}</p>
@@ -248,7 +266,7 @@ const StudentForm = () => {
                 </IonRadioGroup>
 
                 {/* Shows Center only if Adding New Student */}
-                { !student.id ? (
+                {!student.id ? (
                   <span>
                     <IonRadioGroup
                       id="center_id"
@@ -293,7 +311,7 @@ const StudentForm = () => {
                         Mark Student as Alumni
                     </IonItem> */}
 
-                { student.id ? (
+                {student.id ? (
                   <IonItem
                     routerLink={`/students/${student_id}/notes`}
                     routerDirection="none"
@@ -310,16 +328,16 @@ const StudentForm = () => {
 
         {hasPermission('kids_edit') ? (
           <IonFab
-            onClick={() => setDisable( !disable )}
+            onClick={() => setDisable(!disable)}
             vertical="bottom"
             horizontal="start"
             slot="fixed"
           >
             <IonFabButton>
-              <IonIcon icon={ disable ? pencil : close } />
+              <IonIcon icon={disable ? pencil : close} />
             </IonFabButton>
           </IonFab>
-        ) : null }
+        ) : null}
       </IonContent>
     </IonPage>
   )

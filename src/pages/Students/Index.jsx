@@ -64,7 +64,7 @@ const StudentIndex = () => {
           ))}
         </IonList>
 
-        { hasPermission('kids_add') ? (
+        {hasPermission('kids_add') ? (
           <IonFab vertical="bottom" horizontal="start" slot="fixed">
             <IonFabButton routerLink={`/students/0`}>
               <IonIcon icon={add} />

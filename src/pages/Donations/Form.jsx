@@ -42,7 +42,7 @@ const DonationForm = () => {
     source: '',
     added_on: ''
   })
-  const { callApi,unsetLocalCache } = React.useContext(dataContext)
+  const { callApi, unsetLocalCache } = React.useContext(dataContext)
   const { showMessage } = React.useContext(appContext)
 
   const setError = (id, error) => {
@@ -76,7 +76,7 @@ const DonationForm = () => {
   const saveDonation = (e) => {
     e.preventDefault()
 
-    donation.comment = JSON.stringify({source: donation.source})
+    donation.comment = JSON.stringify({ source: donation.source })
 
     callApi({
       url: '/donations',
@@ -179,8 +179,12 @@ const DonationForm = () => {
                     value={donation.source}
                     onIonChange={updateField}
                   >
-                    <IonSelectOption value="give_india">Give India</IonSelectOption>
-                    <IonSelectOption value="global_giving">Global Giving</IonSelectOption>
+                    <IonSelectOption value="give_india">
+                      Give India
+                    </IonSelectOption>
+                    <IonSelectOption value="global_giving">
+                      Global Giving
+                    </IonSelectOption>
                     <IonSelectOption value="ketto">Ketto</IonSelectOption>
                   </IonSelect>
                   {errors.source ? (

@@ -1,45 +1,58 @@
-import React from 'react';
-import { IonHeader,IonToolbar,IonButtons,IonMenuButton,IonTitle,IonIcon, IonBadge, IonButton } from '@ionic/react';
+import React from 'react'
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonTitle,
+  IonIcon,
+  IonBadge,
+  IonButton
+} from '@ionic/react'
 import { home, chevronBack } from 'ionicons/icons'
-import { useHistory } from "react-router-dom"
+import { useHistory } from 'react-router-dom'
 
-import { appContext } from "../contexts/AppContext"
+import { appContext } from '../contexts/AppContext'
 import './Title.css'
 
 const Title = ({ name, back }) => {
-    const { notifications } = React.useContext(appContext)
-    const history = useHistory()
-    
-    return (
-        <IonHeader>
-            <IonToolbar>
-                <IonButtons slot="start">
-                    <IonMenuButton menuId="side" />
-                </IonButtons>
+  const { notifications } = React.useContext(appContext)
+  const history = useHistory()
 
-                <IonButtons slot="start">
-                    <IonButton routerLink="/dashboard">
-                        <IonIcon icon={ home } size="large" />
-                        { notifications.length ? 
-                            <IonBadge id="notifications-badge" color="danger">{ notifications.length }</IonBadge> 
-                            : null }
-                    </IonButton>
+  return (
+    <IonHeader>
+      <IonToolbar>
+        <IonButtons slot="start">
+          <IonMenuButton menuId="side" />
+        </IonButtons>
 
-                    { (back) ? 
-                        (back === "history") ? 
-                            <IonButton onClick={() => history.goBack()} >
-                                <IonIcon icon={ chevronBack } size="large" />
-                            </IonButton>
-                            : <IonButton routerLink={back} >
-                                <IonIcon icon={ chevronBack } size="large" />
-                            </IonButton>
-                        : null}
-                </IonButtons>
+        <IonButtons slot="start">
+          <IonButton routerLink="/dashboard">
+            <IonIcon icon={home} size="large" />
+            {notifications.length ? (
+              <IonBadge id="notifications-badge" color="danger">
+                {notifications.length}
+              </IonBadge>
+            ) : null}
+          </IonButton>
 
-                <IonTitle>{ name }</IonTitle>
-            </IonToolbar>
-        </IonHeader>
-    );
-};
+          {back ? (
+            back === 'history' ? (
+              <IonButton onClick={() => history.goBack()}>
+                <IonIcon icon={chevronBack} size="large" />
+              </IonButton>
+            ) : (
+              <IonButton routerLink={back}>
+                <IonIcon icon={chevronBack} size="large" />
+              </IonButton>
+            )
+          ) : null}
+        </IonButtons>
 
-export default Title;
+        <IonTitle>{name}</IonTitle>
+      </IonToolbar>
+    </IonHeader>
+  )
+}
+
+export default Title
