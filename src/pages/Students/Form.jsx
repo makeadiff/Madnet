@@ -47,7 +47,8 @@ const StudentForm = () => {
     sex: 'u',
     birthday: null,
     center_id: 0,
-    student_type: 'active'
+    student_type: 'active',
+    reason_for_leaving: ''
   })
   const [errors, setErrors] = React.useState({
     name: '',
@@ -152,6 +153,7 @@ const StudentForm = () => {
         method: 'post',
         params: student
       }).then(() => {
+        setAction('view')
         unsetLocalCache(`student_${student_id}`)
         unsetLocalCache(`city_${city_id}_students`)
         unsetLocalCache(`shelter_${student.center_id}_students`)
@@ -160,8 +162,36 @@ const StudentForm = () => {
     }
   }
 
-  const markAlumi = () => {
+  const markAlumni = () => {
+    if (!hasPermission('kids_edit')) {
+      showMessage(
+        `You don't have the necessary permissions to edit student details`,
+        'error'
+      )
+      return
+    }
+
+    // This will save all entered data of the student - not just the alumnai data
+    callApi({
+      url: `/students/${student_id}`,
+      method: 'post',
+      params: student
+    }).then(() => {
+      unsetLocalCache(`student_${student_id}`)
+      unsetLocalCache(`city_${city_id}_students`)
+      unsetLocalCache(`shelter_${student.center_id}_students`)
+      showMessage(`Saved details of ${student.name} successfully`)
+    })
   }
+
+  const all_types = {
+    active: 'Active',
+    active_away: 'Active, but away from Shelter',
+    alumni: 'Alumni',
+    alumni_no_contact: 'Alumni, Lost contact',
+    alumni_dead: 'Alumni, Passed Away',
+    other: 'Other'
+  };
 
   return (
     <IonPage>
@@ -320,11 +350,14 @@ const StudentForm = () => {
                     <>
                     <IonItem>
                       <IonButton size="default" type="submit" onClick={() => setAction('mark_alumni')}>
-                        Mark Student as Alumni
+                        { student.student_type !== 'active' ? `Set Student as Active` : `Mark Student as Alumni` }
                       </IonButton>
                     </IonItem>
                     <IonItem>
-                      <IonLabel>This will hide {student.name} in student listing.</IonLabel>
+                      <IonLabel>{ student.student_type === 'active' ? 
+                        `This will hide {student.name} in student listing.`
+                        : `Currently ${student.name} is ${all_types[student.student_type]}` 
+                      }</IonLabel>
                     </IonItem>
                     </>
                    ) : (
@@ -336,7 +369,7 @@ const StudentForm = () => {
                         onIonChange={updateField}
                       >
                         <IonListHeader>
-                          <IonLabel>Update {student.name}'s Status</IonLabel>
+                          <IonLabel>Update {student.name}&apos;s Status</IonLabel>
                         </IonListHeader>
 
                         <IonItem>
@@ -399,23 +432,23 @@ const StudentForm = () => {
                           />
                         </IonItem>
                       </IonRadioGroup>
+                      </IonItem>
 
                       <IonItem>
-                        <IonLabel position="stacked">Reason for Leaning</IonLabel>
+                        <IonLabel position="stacked">Reason for Leaving</IonLabel>
                         <IonTextarea
                           id="reason_for_leaving"
                           type="text"
+                          placeholder="Enter details about the transition"
                           value={student.reason_for_leaving}
-                          disabled={disable}
                           onIonChange={updateField}
                         />
                       </IonItem>
 
                       <IonItem>
-                        <IonButton size="default" onClick={() => markAlumi()}>
+                        <IonButton size="default" onClick={() => markAlumni()}>
                           Save Status
                         </IonButton>
-                      </IonItem>
                       </IonItem>
                     </>
                   )}
