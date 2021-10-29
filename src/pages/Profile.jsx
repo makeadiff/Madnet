@@ -73,7 +73,7 @@ const Profile = () => {
       }
 
       callApi({
-        method: "get",
+        method: 'get',
         url: `/users/${user.id}/sourcing_campaign`,
         setter: setSourcingCampaign,
         cache_key: `user_${user.id}_sourcing_campaign`
@@ -432,18 +432,32 @@ const Profile = () => {
                   </IonCardHeader>
                   <IonCardContent>
                     <IonItem>
-                      {sourcingCampaign ? 
-                        <a href={`https://makeadiff.in/apprenticeship/?c=${sourcingCampaign.campaign_id}`}>Personal Campaign ID: {sourcingCampaign.campaign_id}</a>
-                        : "No Campaign ID Found"}
+                      {sourcingCampaign ? (
+                        <a
+                          href={`https://makeadiff.in/apprenticeship/?c=${sourcingCampaign.campaign_id}`}
+                        >
+                          Personal Campaign ID: {sourcingCampaign.campaign_id}
+                        </a>
+                      ) : (
+                        'No Campaign ID Found'
+                      )}
                     </IonItem>
                     <IonItem>
-                      <IonLabel position="stacked">New Applicants Sourced: {sourcingCampaign ? sourcingCampaign.sourced_applicants.length : 0 }</IonLabel>
-                      {sourcingCampaign ? 
-                      <ul>
-                        { sourcingCampaign.sourced_applicants.map((applicant, index) => {
-                          return (<li key={index}>{applicant.name}</li>)
-                        })}
-                      </ul> : null }
+                      <IonLabel position="stacked">
+                        New Applicants Sourced:{' '}
+                        {sourcingCampaign
+                          ? sourcingCampaign.sourced_applicants.length
+                          : 0}
+                      </IonLabel>
+                      {sourcingCampaign ? (
+                        <ul>
+                          {sourcingCampaign.sourced_applicants.map(
+                            (applicant, index) => {
+                              return <li key={index}>{applicant.name}</li>
+                            }
+                          )}
+                        </ul>
+                      ) : null}
                     </IonItem>
                   </IonCardContent>
                 </IonCard>

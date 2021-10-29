@@ -160,13 +160,13 @@ const useHandler = () => {
       type: 'rest',
       method: 'get',
       params: false,
-      graphql: '',            // GraphQL query string
-      graphql_type: 'query',  // query or mutation. I don't think its used yet.
-      cache: true,            // If false, will not cache the results.
-      name: '',               // Human friendly name for the API call. Used in error messages.
-      key: '',                // We'll use this to extract the correct info when api returns data. Eg. API will return `{status:"success", data:{users: [ ... ]}}}` and the key is 'users', function will return just the users: [ ... ] part of the data instead of the entire result.
-      cache_key: '',          // Name of the key used for caching in localStorage. 
-      setter: false           // Setter function. If this is given, the function will automatically call the setter function with the valid data. Eg: `callApi({url: '/users/1', setter: setUser})`
+      graphql: '', // GraphQL query string
+      graphql_type: 'query', // query or mutation. I don't think its used yet.
+      cache: true, // If false, will not cache the results.
+      name: '', // Human friendly name for the API call. Used in error messages.
+      key: '', // We'll use this to extract the correct info when api returns data. Eg. API will return `{status:"success", data:{users: [ ... ]}}}` and the key is 'users', function will return just the users: [ ... ] part of the data instead of the entire result.
+      cache_key: '', // Name of the key used for caching in localStorage.
+      setter: false // Setter function. If this is given, the function will automatically call the setter function with the valid data. Eg: `callApi({url: '/users/1', setter: setUser})`
     }
     if (user_args.url !== undefined) {
       default_args['name'] = user_args.url.split(/[\/\?\(]/)[0]
@@ -308,7 +308,12 @@ const useHandler = () => {
     } else {
       for (let key in params) {
         let val = params[key]
-        if (val.toString() === '0' && key !== 'credit_lesser_than' && key !== 'credit_greater_than') continue
+        if (
+          val.toString() === '0' &&
+          key !== 'credit_lesser_than' &&
+          key !== 'credit_greater_than'
+        )
+          continue
 
         if (Array.isArray(val)) val = val.join(',')
         query_parts.push(`${key}=${val}`)

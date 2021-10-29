@@ -1,12 +1,11 @@
-
-.profileContainer{
+.profileContainer {
   width: 100%;
   display: flex;
   /* align-items: center; */
-  justify-content: center;  
+  justify-content: center;
 }
 
-.profileImage{
+.profileImage {
   width: 80px;
   height: 80px;
   margin: auto;
@@ -16,65 +15,65 @@
   color: var(--theme-text-color-dark) !important;
 } */
 
-.centerAlign{
+.centerAlign {
   text-align: center;
 }
 
-ion-card.userDetails{
+ion-card.userDetails {
   --background: transparent;
 }
 
-ion-chip.roles{
-  --background: var(--red-bright);  
+ion-chip.roles {
+  --background: var(--red-bright);
 }
 
-ul.roleList{
-  list-style: none;  
+ul.roleList {
+  list-style: none;
   padding-left: 0px;
 }
 
-ul.roleList li{
+ul.roleList li {
   float: left;
 }
 
-ion-card{
+ion-card {
   border-top: 5px solid var(--ion-color-primary);
 }
 
-ion-card.dark{
+ion-card.dark {
   color: var(--grey-light);
   --background: #242537;
-  border-radius: 4px;    
+  border-radius: 4px;
 }
 
-ion-card.light{
-  --background: #FFFFFF;
+ion-card.light {
+  --background: #ffffff;
   color: var(--theme-text-color-dark);
 }
 
-ion-card.light ion-card-title{
+ion-card.light ion-card-title {
   color: var(--theme-text-color-dark);
 }
 
-ion-card.no-shadow{
+ion-card.no-shadow {
   box-shadow: none;
 }
 
-ion-card.dark input.native-input[disabled], 
-ion-card.light input.native-input[disabled], 
-ion-card.dark textarea.native-textarea[disabled]{
+ion-card.dark input.native-input[disabled],
+ion-card.light input.native-input[disabled],
+ion-card.dark textarea.native-textarea[disabled] {
   opacity: 0.6;
 }
 
-.hidden{
-  display:none;
+.hidden {
+  display: none;
 }
 
-ion-label.trigger{
+ion-label.trigger {
   cursor: pointer;
 }
 
-ion-note.danger{
+ion-note.danger {
   color: red;
   font-size: 12px;
 }

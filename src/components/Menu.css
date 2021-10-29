@@ -1,12 +1,12 @@
-ion-menu{
-  border:none;
+ion-menu {
+  border: none;
 }
 
 ion-menu ion-content {
   /* --background: var(--ion-item-background, var(--ion-background-color, #fff)); */
   /* --background: linear-gradient(to top, #121212 40%, #004D40 100%); */
-  --background: #2B2D42;
-  color: #FFF;
+  --background: #2b2d42;
+  color: #fff;
   font-family: var(--ion-default-font);
 }
 
@@ -14,22 +14,23 @@ ion-menu.md ion-content {
   --padding-start: 8px;
   /* --padding-end: 8px; */
   --padding-top: 20px;
-  --padding-bottom: 20px;  
+  --padding-bottom: 20px;
 }
 
 ion-menu.md ion-list {
-  padding: 20px 0;  
+  padding: 20px 0;
 }
 
-ion-menu.md ion-list.list-md{
-  background: #2B2D42;
+ion-menu.md ion-list.list-md {
+  background: #2b2d42;
 }
 
 ion-menu.md ion-note {
   margin-bottom: 30px;
 }
 
-ion-menu.md ion-list-header, ion-menu.md ion-note {
+ion-menu.md ion-list-header,
+ion-menu.md ion-note {
   padding-left: 10px;
 }
 
@@ -40,7 +41,7 @@ ion-menu.md ion-list.sections {
 ion-menu.md ion-list#volunteer-list ion-list-header {
   font-size: 22px;
   font-weight: 600;
-  min-height: 20px;  
+  min-height: 20px;
 }
 
 ion-menu.md ion-list.section {
@@ -54,25 +55,27 @@ ion-menu.md ion-item {
   --padding-start: 10px;
   --padding-end: 10px;
   border-radius: 20px 0 0 20px;
-  --background: transparent;  
+  --background: transparent;
   margin-bottom: 5px;
 }
 
-ion-menu.md ion-item.selected, ion-menu.md ion-item:hover {
-  --background: #747E8F;
-  color: #FFFFFF
+ion-menu.md ion-item.selected,
+ion-menu.md ion-item:hover {
+  --background: #747e8f;
+  color: #ffffff;
 }
 
-ion-menu.md ion-item.noHover.selected, ion-menu.md ion-item.noHover:hover{
-  --background: transparent;  
+ion-menu.md ion-item.noHover.selected,
+ion-menu.md ion-item.noHover:hover {
+  --background: transparent;
 }
 
 ion-menu.md ion-item.selected ion-icon {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 ion-menu.md ion-item ion-icon {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 20px !important;
 }
 
@@ -98,7 +101,7 @@ ion-menu.ios ion-note {
 ion-menu.ios ion-item {
   --padding-start: 16px;
   --padding-end: 16px;
-  --min-height: 50px;    
+  --min-height: 50px;
 }
 
 ion-menu.ios ion-item ion-icon {
@@ -127,16 +130,15 @@ ion-menu.ios ion-note {
 ion-note {
   display: inline-block;
   font-size: 16px;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
 }
 
-
-ion-label.uppercase{
+ion-label.uppercase {
   text-transform: uppercase;
 }
 
-ion-img.logoIcon{
+ion-img.logoIcon {
   padding: 0 10px 0 0;
-  width: 40px;  
+  width: 40px;
 }

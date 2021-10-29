@@ -113,10 +113,7 @@ const Root = () => {
             <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:param_level_id">
               <LevelForm />
             </PrivateRoute>
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/levels"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true}>
               <LevelIndex />
             </PrivateRoute>
             <PrivateRoute path="/shelters/:shelter_id/students" exact={true}>

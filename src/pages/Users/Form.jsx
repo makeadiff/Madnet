@@ -34,12 +34,19 @@ import './Form.css'
 
 const UserForm = () => {
   const { user_id, action } = useParams()
-  const [user, setUser] = React.useState({ name: '', groups: [], main_group: { id: 0, name: 'None Selected' } , center_id: 154 }) // :TODO: We can do away with the main_group extra array.
+  const [user, setUser] = React.useState({
+    name: '',
+    groups: [],
+    main_group: { id: 0, name: 'None Selected' },
+    center_id: 154
+  }) // :TODO: We can do away with the main_group extra array.
   const [groups, setGroups] = React.useState([])
   const [shelters, setShelters] = React.useState([])
-  const [shelter, setShelter] = React.useState({id: 0, name: ""}) // Same here - we can avoid this too.
+  const [shelter, setShelter] = React.useState({ id: 0, name: '' }) // Same here - we can avoid this too.
   const [disable, setDisable] = React.useState(action === 'edit' ? false : true)
-  const { callApi, deleteUser, updateUser, unsetLocalCache } = React.useContext(dataContext)
+  const { callApi, deleteUser, updateUser, unsetLocalCache } = React.useContext(
+    dataContext
+  )
   const { hasPermission } = React.useContext(authContext)
   const [confirmDelete, setConfirmDelete] = React.useState(false)
   const history = useHistory()
@@ -57,7 +64,7 @@ const UserForm = () => {
   }
 
   const updateMainGroup = (e) => {
-    const main_group = user.groups.find( ele => ele.id == e.target.value)
+    const main_group = user.groups.find((ele) => ele.id == e.target.value)
     setUser({ ...user, main_group: main_group })
   }
 
@@ -71,8 +78,8 @@ const UserForm = () => {
 
   const setUserGroups = (grps) => {
     // Remove duplicates - for some reason it seems to keep crawling in. Taken from https://stackoverflow.com/questions/2218999/remove-duplicates-from-an-array-of-objects-in-javascript
-    const groups = grps.filter( (value, index, array) => {
-      return array.findIndex(test => (test.id === value.id)) === index 
+    const groups = grps.filter((value, index, array) => {
+      return array.findIndex((test) => test.id === value.id) === index
     })
 
     setUser({ ...user, groups: groups })
@@ -118,24 +125,31 @@ const UserForm = () => {
     if (!hasPermission('user_edit')) history.push(`/users/${user_id}/`)
 
     const fetchUser = async () => {
-      const user_details = await callApi({ url: `/users/${user_id}`, cache_key: `users_${user_id}` })
+      const user_details = await callApi({
+        url: `/users/${user_id}`,
+        cache_key: `users_${user_id}`
+      })
       if (user_details) {
-        const main_group = user_details.groups.find( grp => grp.main === "1" )
-        if(main_group) {
+        const main_group = user_details.groups.find((grp) => grp.main === '1')
+        if (main_group) {
           user_details.main_group = main_group
         } else {
-          user_details.main_group = { id: 0, name : "None Selected" }
+          user_details.main_group = { id: 0, name: 'None Selected' }
         }
         setUser(user_details)
 
-        callApi({url:`/cities/${user_details.city_id}/centers`}).then((data =>{
-          if(user_details.center_id) {
-            const selected_shelter = data.find( shel => shel.id == user_details.center_id )
-            setShelter(selected_shelter)
+        callApi({ url: `/cities/${user_details.city_id}/centers` }).then(
+          (data) => {
+            if (user_details.center_id) {
+              const selected_shelter = data.find(
+                (shel) => shel.id == user_details.center_id
+              )
+              setShelter(selected_shelter)
+            }
+
+            setShelters(data)
           }
-  
-          setShelters(data)
-        }))
+        )
       }
     }
     fetchUser()
@@ -146,7 +160,6 @@ const UserForm = () => {
       })
     }
     fetchGroups()
-
   }, [user_id])
 
   const saveUser = async (e) => {
@@ -162,18 +175,18 @@ const UserForm = () => {
     }
     const update = await updateUser(user.id, updateElements)
 
-    let groups = user.groups.map(ele => {
+    let groups = user.groups.map((ele) => {
       return {
-        "group_id": ele.id,
-        "main": (user.main_group.id === ele.id) ? "1" : "0"
+        group_id: ele.id,
+        main: user.main_group.id === ele.id ? '1' : '0'
       }
-    });
+    })
 
     await callApi({
       url: `/users/${user.id}/groups`,
       method: 'post',
       params: groups
-    });
+    })
 
     if (update) {
       unsetLocalCache(`users_${user_id}`)
@@ -183,11 +196,10 @@ const UserForm = () => {
   }
 
   React.useEffect(() => {
-    const selected_shelter = shelters.find( shel => shel.id == user.center_id )
-    if(selected_shelter) {
+    const selected_shelter = shelters.find((shel) => shel.id == user.center_id)
+    if (selected_shelter) {
       setShelter(selected_shelter)
     }
-
   }, [user.center_id])
 
   return (
@@ -277,24 +289,43 @@ const UserForm = () => {
                               />
                             </IonItem>
                           ) : (
-                            <IonRadioGroup name="sex" value={user.sex} onIonChange={updateField}>
+                            <IonRadioGroup
+                              name="sex"
+                              value={user.sex}
+                              onIonChange={updateField}
+                            >
                               <IonListHeader>
                                 <IonLabel>Sex</IonLabel>
                               </IonListHeader>
 
                               <IonItem>
                                 <IonLabel>Male</IonLabel>
-                                <IonRadio mode="ios" name="sex" slot="start" value="m" />
+                                <IonRadio
+                                  mode="ios"
+                                  name="sex"
+                                  slot="start"
+                                  value="m"
+                                />
                               </IonItem>
 
                               <IonItem>
                                 <IonLabel>Female</IonLabel>
-                                <IonRadio mode="ios" name="sex" slot="start" value="f" />
+                                <IonRadio
+                                  mode="ios"
+                                  name="sex"
+                                  slot="start"
+                                  value="f"
+                                />
                               </IonItem>
 
                               <IonItem>
                                 <IonLabel>Other</IonLabel>
-                                <IonRadio mode="ios" name="sex" slot="start" value="o" />
+                                <IonRadio
+                                  mode="ios"
+                                  name="sex"
+                                  slot="start"
+                                  value="o"
+                                />
                               </IonItem>
                             </IonRadioGroup>
                           )}
@@ -314,16 +345,21 @@ const UserForm = () => {
                             <div className="groups-area">
                               {groups.map((grp, index) => {
                                 return (
-                                  <IonItem key={index} lines="none" className="group-selectors" >
+                                  <IonItem
+                                    key={index}
+                                    lines="none"
+                                    className="group-selectors"
+                                  >
                                     <IonCheckbox
                                       name="groups"
                                       value={grp.id}
-                                      onIonChange={ updateUserGroup }
+                                      onIonChange={updateUserGroup}
                                       checked={user.groups.reduce(
                                         (found, ele) => {
                                           // We are reducing the groups array of the user to a true/false based on this group.
                                           if (found) return found
-                                          else if (ele.id === grp.id) return true
+                                          else if (ele.id === grp.id)
+                                            return true
                                           else return false
                                         },
                                         false
@@ -338,41 +374,74 @@ const UserForm = () => {
 
                           {disable ? (
                             <IonItem>
-                              <IonLabel position="stacked">Primary Role</IonLabel>
-                              <IonInput type="text" placeholder="Primary Role" value={ user.main_group.name } disabled={disable} />
+                              <IonLabel position="stacked">
+                                Primary Role
+                              </IonLabel>
+                              <IonInput
+                                type="text"
+                                placeholder="Primary Role"
+                                value={user.main_group.name}
+                                disabled={disable}
+                              />
                             </IonItem>
                           ) : (
-                            <IonRadioGroup name="main_group" value={user.main_group.id} onIonChange={updateMainGroup} >
+                            <IonRadioGroup
+                              name="main_group"
+                              value={user.main_group.id}
+                              onIonChange={updateMainGroup}
+                            >
                               <IonListHeader>
                                 <IonLabel>Primary Role</IonLabel>
                               </IonListHeader>
 
                               {user.groups.map((grp, index) => {
-                                  return (
-                                    <IonItem key={index} lines="none" className="group-selectors">
-                                      <IonRadio name="main_group" value={grp.id} />
-                                      <IonLabel> { grp.name }</IonLabel> 
-                                    </IonItem>
-                                  )
-                                })}
+                                return (
+                                  <IonItem
+                                    key={index}
+                                    lines="none"
+                                    className="group-selectors"
+                                  >
+                                    <IonRadio
+                                      name="main_group"
+                                      value={grp.id}
+                                    />
+                                    <IonLabel> {grp.name}</IonLabel>
+                                  </IonItem>
+                                )
+                              })}
                             </IonRadioGroup>
                           )}
 
-                          {disable ? ( 
-                             <IonItem>
-                              <IonLabel position="stacked">Community</IonLabel> 
-                              <IonInput type="text" placeholder="None Selected" value={ shelter.name } disabled={disable} /> 
-                            </IonItem> 
+                          {disable ? (
+                            <IonItem>
+                              <IonLabel position="stacked">Community</IonLabel>
+                              <IonInput
+                                type="text"
+                                placeholder="None Selected"
+                                value={shelter.name}
+                                disabled={disable}
+                              />
+                            </IonItem>
                           ) : (
-                            <IonRadioGroup name="center_id" value={ user.center_id } onIonChange={updateField} >
+                            <IonRadioGroup
+                              name="center_id"
+                              value={user.center_id}
+                              onIonChange={updateField}
+                            >
                               <IonListHeader>
                                 <IonLabel>Community</IonLabel>
                               </IonListHeader>
                               {shelters.map((shelt, index) => {
-                                return(
-                                  <IonItem key={index} className="group-selectors">
-                                  <IonRadio name="center_id" value={ shelt.id } />
-                                  <IonLabel> { shelt.name }</IonLabel> 
+                                return (
+                                  <IonItem
+                                    key={index}
+                                    className="group-selectors"
+                                  >
+                                    <IonRadio
+                                      name="center_id"
+                                      value={shelt.id}
+                                    />
+                                    <IonLabel> {shelt.name}</IonLabel>
                                   </IonItem>
                                 )
                               })}
@@ -380,7 +449,9 @@ const UserForm = () => {
                           )}
                           {!disable ? (
                             <IonItem>
-                              <IonButton type="submit" size="default">Save</IonButton>
+                              <IonButton type="submit" size="default">
+                                Save
+                              </IonButton>
                             </IonItem>
                           ) : null}
                         </IonList>
@@ -408,33 +479,60 @@ const UserForm = () => {
                             />
                           </IonItem>
                         ) : (
-                          <IonRadioGroup name="user_type" value={user.user_type} onIonChange={updateField}>
+                          <IonRadioGroup
+                            name="user_type"
+                            value={user.user_type}
+                            onIonChange={updateField}
+                          >
                             <IonListHeader>
                               <IonLabel>User Type</IonLabel>
                             </IonListHeader>
 
                             <IonItem>
                               <IonLabel>Volunteer</IonLabel>
-                              <IonRadio name="user_type" slot="start" value="volunteer" />
+                              <IonRadio
+                                name="user_type"
+                                slot="start"
+                                value="volunteer"
+                              />
                             </IonItem>
 
                             <IonItem>
                               <IonLabel>Alumni</IonLabel>
-                              <IonRadio name="user_type" slot="start" value="alumni" />
+                              <IonRadio
+                                name="user_type"
+                                slot="start"
+                                value="alumni"
+                              />
                             </IonItem>
 
                             <IonItem>
                               <IonLabel>Let Go</IonLabel>
-                              <IonRadio name="user_typex" slot="start" value="let_go" />
+                              <IonRadio
+                                name="user_typex"
+                                slot="start"
+                                value="let_go"
+                              />
                             </IonItem>
                           </IonRadioGroup>
                         )}
                       </IonList>
                       <IonItem>
                         {!disable ? (
-                          <IonButton type="submit" size="default" onClick={saveUser}>Save</IonButton>
+                          <IonButton
+                            type="submit"
+                            size="default"
+                            onClick={saveUser}
+                          >
+                            Save
+                          </IonButton>
                         ) : null}
-                        <IonButton color="danger" size="default" expand="full" onClick={() => setConfirmDelete(true)} >
+                        <IonButton
+                          color="danger"
+                          size="default"
+                          expand="full"
+                          onClick={() => setConfirmDelete(true)}
+                        >
                           <IonIcon icon={trash}></IonIcon>Delete User
                         </IonButton>
                       </IonItem>
@@ -454,7 +552,8 @@ const UserForm = () => {
                 <IonCardTitle>User not found.</IonCardTitle>
               </IonCardHeader>
               <IonCardContent>
-                There is no user(current or past volunteer) with the specified ID.
+                There is no user(current or past volunteer) with the specified
+                ID.
               </IonCardContent>
             </IonCard>
           </IonContent>
