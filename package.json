@@ -35,7 +35,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "typescript": "3.7.4",
-    "validator": "^12.2.0"
+    "validator": "^13.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
