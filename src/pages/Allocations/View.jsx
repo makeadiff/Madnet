@@ -31,7 +31,7 @@ const TeacherView = () => {
                     id batch_name 
                     allocations {
                       role
-                      user {
+                      users {
                         id name
                       }
                       level {
@@ -101,7 +101,7 @@ const TeacherView = () => {
                         return (
                           <IonItem key={allocation_index} className="striped">
                             <IonLabel className="allocation-info">
-                              <p>Teacher: {alloc.user.name}</p>
+                              <p>Teacher: {alloc.users ? alloc.users.name: 'None'}</p>
                               <p>Class Section: {alloc.level.level_name}</p>
                               {alloc.subject != null ? (
                                 <p>Subject: {alloc.subject.name}</p>
