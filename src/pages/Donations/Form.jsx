@@ -50,8 +50,7 @@ const DonationForm = () => {
   }
 
   const updateField = (e) => {
-    const ele = e.target
-    const { id, value } = ele
+    const { id, value } = e.target
 
     setError(id, '')
     if (id === 'donor_email' && value) {
@@ -67,6 +66,12 @@ const DonationForm = () => {
     } else if (id === 'donor_name' && value) {
       if (!value.match(/^[A-Za-z\-' ]{1,60}$/)) {
         setError(id, 'Please enter a valid name')
+      }
+    } else if (id === 'amount' ) {
+      if(value === '0') {
+        setError(id, 'Please enter a valid amount')
+      } else if (isNaN(value)) {
+        setError(id, 'Please enter a valid amount')
       }
     }
 
@@ -161,7 +166,7 @@ const DonationForm = () => {
                   <IonLabel position="stacked">Amount</IonLabel>
                   <IonInput
                     id="amount"
-                    type="number"
+                    type="text"
                     value={donation.amount}
                     required={true}
                     onIonChange={updateField}

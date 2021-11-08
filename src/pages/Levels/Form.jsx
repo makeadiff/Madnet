@@ -233,7 +233,7 @@ const LevelForm = () => {
                   <IonButton
                     routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/level/${level_id}`}
                   >
-                    Add/Remove {labels.teachers} from this {labels.level}
+                    Assign new {labels.teachers}
                   </IonButton>
                 </IonItem>
               )}

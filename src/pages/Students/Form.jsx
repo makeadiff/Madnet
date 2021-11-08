@@ -350,12 +350,12 @@ const StudentForm = () => {
                     <>
                     <IonItem>
                       <IonButton size="default" type="submit" onClick={() => setAction('mark_alumni')}>
-                        { student.student_type !== 'active' ? `Set Student as Active` : `Mark Student as Alumni` }
+                        { student.student_type !== 'active' ? `Set ${student.name} as Active` : `Mark ${student.name} as Alumni` }
                       </IonButton>
                     </IonItem>
                     <IonItem>
                       <IonLabel>{ student.student_type === 'active' ? 
-                        `This will hide {student.name} in student listing.`
+                        `This will hide ${student.name} in student listing.`
                         : `Currently ${student.name} is ${all_types[student.student_type]}` 
                       }</IonLabel>
                     </IonItem>
