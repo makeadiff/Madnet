@@ -167,7 +167,7 @@ const ShelterView = () => {
           project_id == PROJECT_IDS.TR_ASV ? (
             <IonItem
               className="shelterItems"
-              routerLink={`/shelters/${shelter.id}/projects/${project_id}/view-teachers`}
+              routerLink={`/shelters/${shelter.id}/projects/${project_id}/level/0/view-teachers`}
               routerDirection="none"
               key="assign"
             >

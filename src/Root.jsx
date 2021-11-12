@@ -198,28 +198,28 @@ const Root = () => {
             </PrivateRoute>
 
             <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/view-teachers"
+              path="/shelters/:shelter_id/projects/:project_id/level/:level_id/view-teachers"
               exact={true}
             >
               <TeacherView />
             </PrivateRoute>
 
             <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers"
+              path="/shelters/:shelter_id/projects/:project_id/level/:level_id/assign-teachers"
               exact={true}
             >
               <TeacherIndex />
             </PrivateRoute>
 
             <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers/level/:new_level_id"
+              path="/shelters/:shelter_id/projects/:project_id/level/:new_level_id/assign-teachers"
               exact={true}
             >
               <TeacherIndex />
             </PrivateRoute>
 
             <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id/level/:new_level_id"
+              path="/shelters/:shelter_id/projects/:project_id/level/:new_level_id/assign-teachers/:user_id"
               exact={true}
             >
               <TeacherForm />
