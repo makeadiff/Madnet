@@ -9,7 +9,7 @@ import Title from '../../components/Title'
 
 const TeacherIndex = () => {
   const { user } = React.useContext(authContext)
-  const { shelter_id, project_id, level_id } = useParams()
+  const { shelter_id, project_id, level_id, batch_id } = useParams()
   const { showMessage } = React.useContext(appContext)
   const { callApi } = React.useContext(dataContext)
   const [teachers, setTeachers] = React.useState([])
@@ -36,16 +36,14 @@ const TeacherIndex = () => {
     <IonPage>
       <Title
         name={`Teachers in ${location}`}
-        back={`/shelters/${shelter_id}/projects/${project_id}/level/${level_id}/view-teachers`}
+        back={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/view-teachers`}
       />
       <IonContent className="dark">
         <IonList>
           {teachers.map((teacher, index) => {
             return (
-              <IonItem
-                key={index}
-                routerLink={`/shelters/${shelter_id}/projects/${project_id}/level/${level_id}/assign-teachers/${teacher.id}`}
-              >
+              <IonItem key={index}
+                routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers/${teacher.id}`}>
                 <IonLabel>{teacher.name}</IonLabel>
               </IonItem>
             )

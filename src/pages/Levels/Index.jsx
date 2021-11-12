@@ -33,7 +33,10 @@ const LevelIndex = () => {
     async function fetchLevelList() {
       const data = await callApi({
         graphql: `{
-                levels(center_id: ${shelter_id}, project_id: ${project_id}) { 
+                levels(center_id: ${shelter_id}, project_id: ${project_id}, sort_order: [
+                      {field: "grade", order: ASC}, 
+                      {field: "name", order: ASC}
+                  ]) { 
                     id name level_name 
                     students {
                         id
@@ -105,7 +108,6 @@ const LevelIndex = () => {
               <IonItem
                 key={index}
                 routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}`}
-                routerDirection="none"
               >
                 <IonLabel>{level.level_name}</IonLabel>
                 <IonChip className="roles">

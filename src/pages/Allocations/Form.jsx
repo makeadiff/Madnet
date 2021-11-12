@@ -16,7 +16,6 @@ import { useParams } from 'react-router-dom'
 import Title from '../../components/Title'
 import { PROJECT_IDS } from '../../utils/Constants'
 
-// :TODO: Edit for this ?
 const TeacherForm = () => {
   const { shelter_id, project_id, user_id, new_level_id } = useParams()
   const [level_id] = React.useState(new_level_id ? new_level_id : 0)
@@ -61,7 +60,8 @@ const TeacherForm = () => {
 
   React.useEffect(() => {
     if (project_id === PROJECT_IDS.AFTERCARE && batches.length) {
-      setCombo({ ...combo, ['batch_id']: batches[0].id }) // If aftercare project, just set the first batch as the preselected batch. There should be only one batch in the shelter.
+      // If aftercare project, just set the first batch as the preselected batch. There should be only one batch in the shelter.
+      setCombo({ ...combo, ['batch_id']: batches[0].id }) 
     }
   }, [batches])
 

@@ -23,7 +23,7 @@ import { appContext } from '../../contexts/AppContext'
 // :TODO: Delete Levels
 
 const LevelForm = () => {
-  const { shelter_id, param_level_id, project_id } = useParams()
+  const { shelter_id, project_id, level_id } = useParams()
   const [level, setLevel] = React.useState({
     level_name: '',
     grade: '5',
@@ -33,7 +33,6 @@ const LevelForm = () => {
     students: [],
     teachers: []
   })
-  const [level_id, setLevelId] = React.useState(param_level_id)
   const [disable, setDisable] = React.useState(true)
   const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
   const { showMessage } = React.useContext(appContext)
@@ -42,10 +41,6 @@ const LevelForm = () => {
     students: 'Students',
     teachers: 'Teachers'
   })
-
-  React.useEffect(() => {
-    setLevelId(param_level_id)
-  }, [param_level_id])
 
   React.useEffect(() => {
     async function fetchLevel() {
@@ -125,11 +120,8 @@ const LevelForm = () => {
             data.students = []
             data.teachers = []
             setLevel(data)
-            setLevelId(data.id)
             showMessage(labels.level + ' Created Successfully', 'success')
-            unsetLocalCache(
-              `shelter_${shelter_id}_project_${project_id}_level_index`
-            )
+            unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
             unsetLocalCache(`shelter_view_${shelter_id}`)
           }
         }
@@ -209,9 +201,7 @@ const LevelForm = () => {
 
               {disable ? null : (
                 <IonItem>
-                  <IonButton
-                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}
-                  >
+                  <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
                     Add/Remove {labels.students} from this {labels.level}
                   </IonButton>
                 </IonItem>
@@ -230,9 +220,7 @@ const LevelForm = () => {
 
               {disable ? null : (
                 <IonItem>
-                  <IonButton
-                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/level/${level_id}/view-teachers`}
-                  >
+                  <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/0/level/${level_id}/view-teachers`}>
                     Edit {labels.teachers} Assignment
                   </IonButton>
                 </IonItem>

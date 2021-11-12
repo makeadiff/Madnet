@@ -16,12 +16,13 @@ import { appContext } from '../../contexts/AppContext'
 import { PROJECT_KEYS } from '../../utils/Constants'
 
 const TeacherView = () => {
-  const { shelter_id, project_id, level_id } = useParams()
+  const { shelter_id, project_id, level_id, batch_id } = useParams()
   const { callApi, cache, unsetLocalCache } = React.useContext(dataContext)
   const [batches, setBatches] = React.useState([])
   const [shelter, setShelter] = React.useState('')
   const [level, setLevel] = React.useState('')
   const { showMessage } = React.useContext(appContext)
+  const cache_key  = `teacher_view_${shelter_id}_${project_id}_${batch_id}_${level_id}`
 
   React.useEffect(() => {
     async function fetchMapping() {
@@ -31,11 +32,16 @@ const TeacherView = () => {
         level_check = `, level_id: ${level_id}`
         level_name_fetch = `level(id: ${level_id}) { level_name }`
       }
+      let batch_check = ''
+      if (batch_id) {
+        batch_check = `, batch_id: ${batch_id}`
+      }
+
       const data = await callApi({
         graphql: `{
                 center(id: ${shelter_id}) { name }
                 ${level_name_fetch}
-                batchSearch(center_id:${shelter_id}, project_id: ${project_id} ${level_check}) {
+                batchSearch(center_id:${shelter_id}, project_id: ${project_id} ${level_check} ${batch_check}) {
                     id batch_name 
                     allocations {
                       role
@@ -52,7 +58,7 @@ const TeacherView = () => {
                 }
               }`,
         cache: true,
-        cache_key: `teacher_view_${shelter_id}_${project_id}_${level_id}`
+        cache_key: cache_key
       })
 
       setShelter(data.center.name)
@@ -62,15 +68,17 @@ const TeacherView = () => {
       }
     }
     if (
-      cache[`teacher_view_${shelter_id}_${project_id}_${level_id}`] === undefined ||
-      !cache[`teacher_view_${shelter_id}_${project_id}_${level_id}`]
+      cache[cache_key] === undefined ||
+      !cache[cache_key]
     ) {
       fetchMapping()
     }
   }, [
     shelter_id,
     project_id,
-    cache[`teacher_view_${shelter_id}_${project_id}_${level_id}`]
+    level_id,
+    batch_id,
+    cache[cache_key]
   ])
 
   const deleteMapping = (batch_id, level_id, teacher_id, batch_index, allocation_index) => {
@@ -79,7 +87,7 @@ const TeacherView = () => {
       method: 'delete'
     }).then(() => {
       batches[batch_index].allocations.splice(allocation_index, 1)
-      unsetLocalCache(`teacher_view_${shelter_id}_${project_id}_${level_id}`)
+      unsetLocalCache(cache_key)
       showMessage('Deleted the teacher assignment')
     })
   }
@@ -92,7 +100,7 @@ const TeacherView = () => {
       />
       <IonContent className="dark">
         <IonItem
-          routerLink={`/shelters/${shelter_id}/projects/${project_id}/level/${level_id}/assign-teachers`}
+          routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers`}
           routerDirection="none"
         >
           <IonButton> Add New Teacher</IonButton>
@@ -120,10 +128,7 @@ const TeacherView = () => {
                                 <p>Subject: None </p>
                               )}
                             </IonLabel>
-                            <IonButton
-                              slot="end"
-                              onClick={() => deleteMapping(batch.id, alloc.level.id, alloc.user.id, batch_index, allocation_index)}
-                            >
+                            <IonButton slot="end" onClick={() => deleteMapping(batch.id, alloc.level.id, alloc.user.id, batch_index, allocation_index)}>
                               Delete
                             </IonButton>
                           </IonItem>
