@@ -24,6 +24,7 @@ import Dashboard from './pages/Dashboard'
 import Links from './pages/Links'
 import DonationIndex from './pages/Donations/Index'
 import DonationForm from './pages/Donations/Form'
+import DonationDetails from './pages/Donations/Details'
 import ShelterView from './pages/Shelters/View'
 import ShelterIndex from './pages/Shelters/Index'
 import BatchForm from './pages/Batches/Form'
@@ -170,6 +171,9 @@ const Root = () => {
             </PrivateRoute>
             <PrivateRoute path="/donations/0" exact={true}>
               <DonationForm />
+            </PrivateRoute>
+            <PrivateRoute path="/donations/:donation_id" exact={true}>
+              <DonationDetails />
             </PrivateRoute>
 
             <PrivateRoute path="/classes">
