@@ -63,7 +63,7 @@ const TeacherView = () => {
 
       setShelter(data.center.name)
       setBatches(data.batchSearch)
-      if(level_id) {
+      if(level_id && data.level) {
         setLevel(data.level.level_name)
       }
     }

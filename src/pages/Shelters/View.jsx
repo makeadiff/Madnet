@@ -47,7 +47,9 @@ const ShelterView = () => {
                     id name
                     projects {
                         id name
-                        batches { id batch_name }
+                        batches { id batch_name 
+                          teachers { id } 
+                        }
                         levels { id level_name }
                     }
                     students { id }
@@ -167,11 +169,14 @@ const ShelterView = () => {
           project_id == PROJECT_IDS.TR_ASV ? (
             <IonItem
               className="shelterItems"
-              routerLink={`/shelters/${shelter.id}/projects/${project_id}/level/0/view-teachers`}
+              routerLink={`/shelters/${shelter.id}/projects/${project_id}/batch/0/level/0/view-teachers`}
               routerDirection="none"
               key="assign"
             >
-              <IonLabel className="shelterList">Assign Teachers</IonLabel>
+              <IonChip className="roles">
+                { project.batches.reduce((val, ele) => { return ele.teachers.length + val}, 0) }
+              </IonChip>
+              <IonLabel className="shelterList">Teacher Assignments</IonLabel>
             </IonItem>
           ) : null}
           {project_id == PROJECT_IDS.TR_WINGMAN ? (
@@ -181,7 +186,10 @@ const ShelterView = () => {
               routerDirection="none"
               key="assign"
             >
-              <IonLabel className="shelterList">Assign Wingmen</IonLabel>
+              <IonChip className="roles">
+                { project.batches.reduce((val, ele) => { return ele.teachers.length + val}, 0) }
+              </IonChip>
+              <IonLabel className="shelterList">Wingmen Assignments</IonLabel>
             </IonItem>
           ) : null}
 

@@ -106,9 +106,7 @@ const LevelForm = () => {
       }).then((data) => {
         if (data) {
           showMessage(labels.level + ' Updated Successfully', 'success')
-          unsetLocalCache(
-            `shelter_${shelter_id}_project_${project_id}_level_index`
-          )
+          unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
           unsetLocalCache(`shelter_view_${shelter_id}`)
         }
       })
@@ -117,10 +115,11 @@ const LevelForm = () => {
       callApi({ url: `/levels`, method: 'post', params: level }).then(
         (data) => {
           if (data) {
+            data.level_name = data.grade + ' ' + data.name
             data.students = []
             data.teachers = []
             setLevel(data)
-            showMessage(labels.level + ' Created Successfully', 'success')
+            showMessage(labels.level + ' created Successfully', 'success')
             unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
             unsetLocalCache(`shelter_view_${shelter_id}`)
           }
