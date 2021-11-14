@@ -68,7 +68,7 @@ const DonationIndex = () => {
       <IonContent className="dark">
         {donations.map((donation) => {
           return (
-            <IonCard key={donation.id}>
+            <IonCard key={donation.id} routerLink={`/donations/`+donation.id}>
               <IonCardContent>
                 <IonGrid>
                   <IonRow>
