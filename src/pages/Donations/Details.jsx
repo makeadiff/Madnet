@@ -11,13 +11,11 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import { dataContext } from '../../contexts/DataContext'
-import { authContext } from '../../contexts/AuthContext'
 import Title from '../../components/Title'
   
 const DonationDetails = () => {
   const { callApi } = React.useContext(dataContext)
-  const { user } = React.useContext(authContext)
-  const [donation, setDonation] = React.useState([])
+  const [donation, setDonation] = React.useState({})
   const { donation_id } = useParams()
 
   React.useEffect(() => {     
@@ -30,6 +28,18 @@ const DonationDetails = () => {
     }
     fetchDonation()
   }, [donation_id])
+
+  const all_donation_types = {
+    'crowdfunding_patforms': 'Crowdfunding Platforms',
+    'online': 'Online',
+    'globalgiving': 'Crowdfunding Platforms',
+    'giveindia': 'Crowdfunding Platforms',
+    'cash': 'Cash',
+    'cheque': 'Cheque',
+    'nach': 'NACH, Recurring',
+    'online_recurring': 'Online, Recurring',
+    'other': 'Other'
+  }
 
   return (
     <IonPage>
@@ -48,7 +58,7 @@ const DonationDetails = () => {
               </IonRow>
               <IonRow>
                 <IonCol className="label">Fundraiser Name</IonCol>
-                <IonCol pullMd="3">{user.name}</IonCol>
+                <IonCol pullMd="3">{donation.fundraiser}</IonCol>
               </IonRow>
               <IonRow>
                 <IonCol className="label">Amount</IonCol>
@@ -62,7 +72,7 @@ const DonationDetails = () => {
               </IonRow>
               <IonRow>
                 <IonCol className="label">Donation Type</IonCol>
-                <IonCol pullMd="3">{donation.type}</IonCol>
+                <IonCol pullMd="3">{all_donation_types[donation.type] ?? donation.type}</IonCol>
               </IonRow>
             </IonGrid>
           </IonCardContent>
