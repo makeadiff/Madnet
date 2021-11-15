@@ -346,7 +346,7 @@ const Profile = () => {
                         disabled
                       ></IonInput>
                     </IonItem>
-                    <IonItem>
+                    <IonItem routerLink='/roles'>
                       <IonLabel position="stacked">Roles: </IonLabel>
                       <ul className="roleList">
                         {user.groups
