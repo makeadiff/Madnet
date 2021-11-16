@@ -28,12 +28,12 @@ const TeacherView = () => {
     async function fetchMapping() {
       let level_check = ''
       let level_name_fetch = ''
-      if (level_id) {
+      if (level_id && level_id !== '0') {
         level_check = `, level_id: ${level_id}`
         level_name_fetch = `level(id: ${level_id}) { level_name }`
       }
       let batch_check = ''
-      if (batch_id) {
+      if (batch_id && batch_id !== '0') {
         batch_check = `, batch_id: ${batch_id}`
       }
 
@@ -117,6 +117,8 @@ const TeacherView = () => {
                     </IonLabel>
                     <IonList>
                       {batch.allocations.map((alloc, allocation_index) => {
+                        if(!alloc.level) return null; // Mentor Allocation (?)
+                        if(level_id && alloc.level.id !== level_id) return null;
                         return (
                           <IonItem key={allocation_index} className="striped">
                             <IonLabel className="allocation-info">
