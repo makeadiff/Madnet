@@ -46,6 +46,7 @@ import UserIndex from './pages/Users/Index'
 import UserForm from './pages/Users/Form'
 import StudentIndex from './pages/Students/Index'
 import StudentForm from './pages/Students/Form'
+import ShelterForm from './pages/Shelters/Form'
 import TeacherIndex from './pages/Allocations/Index'
 import TeacherForm from './pages/Allocations/Form'
 import TeacherView from './pages/Allocations/View'
@@ -133,6 +134,9 @@ const Root = () => {
             </PrivateRoute>
             <PrivateRoute path="/shelters" exact={true}>
               <ShelterIndex />
+            </PrivateRoute>
+            <PrivateRoute path="/shelters/:shelter_id/edit" exact={true}>
+              <ShelterForm />
             </PrivateRoute>
 
             {/* <PrivateRoute path="/users/:user_id/view">
