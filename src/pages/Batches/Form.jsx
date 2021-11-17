@@ -100,9 +100,7 @@ const BatchForm = () => {
           if (data) {
             setDisable(true)
             showMessage('Batch Created Successfully', 'success')
-            unsetLocalCache(
-              `shelter_${shelter_id}_project_${project_id}_batch_index`
-            )
+            unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_batch_index`)
             unsetLocalCache(`shelter_view_${shelter_id}`)
             unsetLocalCache(`batch_${batch_id}`)
           }
@@ -184,7 +182,7 @@ const BatchForm = () => {
               <IonLabel>Day</IonLabel>
               <IonSelect
                 name="day"
-                value={batch.day}
+                value={batch.day.toString()}
                 onIonChange={updateField}
                 disabled={disable}
               >

@@ -72,8 +72,15 @@ const TeacherForm = () => {
     setSubjectField({ subject_id: e.target.value })
   }
 
-  const saveAssign = (e) => {
+  const saveAssignment = (e) => {
     e.preventDefault()
+
+    // :TODO: Seperate both out, and open up the relevent selection popup on validation
+    if(combo.batch_id === '0' || combo.level_id === '0') {
+      showMessage('Please select BOTH Batch and Class Section', 'error')
+      return false
+    }
+
     callApi({
       url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}`,
       method: 'post',
@@ -93,7 +100,7 @@ const TeacherForm = () => {
         back={`/shelters/${shelter_id}/projects/${project_id}`}
       />
       <IonContent className="dark">
-        <form onSubmit={saveAssign}>
+        <form onSubmit={saveAssignment}>
           <IonList>
             {project_id === PROJECT_IDS.AFTERCARE ? null : (
               <IonItem>

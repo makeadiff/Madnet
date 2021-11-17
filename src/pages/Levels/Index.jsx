@@ -103,24 +103,32 @@ const LevelIndex = () => {
 
       <IonContent className="dark">
         <IonList>
-          {levels.map((level, index) => {
-            return (
-              <IonItem
-                key={index}
-                routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}`}
-              >
-                <IonLabel>{level.level_name}</IonLabel>
-                <IonChip className="roles">
-                  {level.students ? level.students.length : 0} {labels.students}
-                  (s)
-                </IonChip>
-                <IonChip className="roles">
-                  {level.teachers ? level.teachers.length : 0} {labels.teachers}
-                  (s)
-                </IonChip>
-              </IonItem>
-            )
-          })}
+          {
+          (levels.length > 0) ? (
+            levels.map((level, index) => {
+              return (
+                <IonItem
+                  key={index}
+                  routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level.id}`}
+                >
+                  <IonLabel>{level.level_name}</IonLabel>
+                  <IonChip className="roles">
+                    {level.students ? level.students.length : 0} {labels.students}
+                    (s)
+                  </IonChip>
+                  <IonChip className="roles">
+                    {level.teachers ? level.teachers.length : 0} {labels.teachers}
+                    (s)
+                  </IonChip>
+                </IonItem>
+              )
+            })
+          ) : (
+            <IonItem>
+              <IonLabel>No {labels.level}s Found</IonLabel>
+            </IonItem>
+          )
+        }
         </IonList>
 
         <IonFab vertical="bottom" horizontal="start" slot="fixed">

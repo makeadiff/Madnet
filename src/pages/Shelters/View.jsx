@@ -24,7 +24,7 @@ const ShelterView = () => {
     students: []
   })
   const [project_id, setProjectId] = React.useState(
-    param_project_id ? param_project_id : 0
+    param_project_id ? param_project_id : "1"
   )
   const [project, setProject] = React.useState({
     id: 0,

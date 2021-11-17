@@ -4,7 +4,8 @@ import {
   IonItem,
   IonLabel,
   IonContent,
-  IonButton
+  IonButton,
+  IonAlert
 } from '@ionic/react'
 import React from 'react'
 
@@ -21,6 +22,7 @@ const TeacherView = () => {
   const [batches, setBatches] = React.useState([])
   const [shelter, setShelter] = React.useState('')
   const [level, setLevel] = React.useState('')
+  const [getConfirmation, setGetConfirmation] = React.useState({status: false, onConfirm: () => {}})
   const { showMessage } = React.useContext(appContext)
   const cache_key  = `teacher_view_${shelter_id}_${project_id}_${batch_id}_${level_id}`
 
@@ -67,11 +69,18 @@ const TeacherView = () => {
         setLevel(data.level.level_name)
       }
     }
-    if (
-      cache[cache_key] === undefined ||
-      !cache[cache_key]
-    ) {
+
+    // Nothing in cache, get data from server
+    if (cache[cache_key] === undefined || !cache[cache_key] ) {
       fetchMapping()
+
+    } else { // Use cached data
+      const data = cache[cache_key]
+      setShelter(data.center.name)
+      setBatches(data.batchSearch)
+      if(level_id && data.level) {
+        setLevel(data.level.level_name)
+      }
     }
   }, [
     shelter_id,
@@ -99,50 +108,83 @@ const TeacherView = () => {
         back={`/shelters/${shelter_id}/projects/${project_id}`}
       />
       <IonContent className="dark">
-        <IonItem
-          routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers`}
-          routerDirection="none"
-        >
-          <IonButton> Add New Teacher</IonButton>
-        </IonItem>
-
         <IonList>
-          {batches.map((batch, batch_index) => {
-            if (batch.allocations.length > 0) {
-              return (
-                <IonItem key={batch_index}>
-                  <div className="batch-area">
-                    <IonLabel>
-                      <h1>{batch.batch_name}</h1>
-                    </IonLabel>
-                    <IonList>
-                      {batch.allocations.map((alloc, allocation_index) => {
-                        if(!alloc.level) return null; // Mentor Allocation (?)
-                        if(level_id && alloc.level.id !== level_id) return null;
-                        return (
-                          <IonItem key={allocation_index} className="striped">
-                            <IonLabel className="allocation-info">
-                              <p>Teacher: {alloc.users ? alloc.users[0].name : 'None'}</p>
-                              <p>Class Section: {alloc.level.level_name}</p>
-                              {alloc.subject != null ? (
-                                <p>Subject: {alloc.subject.name}</p>
-                              ) : (
-                                <p>Subject: None </p>
-                              )}
-                            </IonLabel>
-                            <IonButton slot="end" onClick={() => deleteMapping(batch.id, alloc.level.id, alloc.user.id, batch_index, allocation_index)}>
-                              Delete
-                            </IonButton>
-                          </IonItem>
-                        )
-                      })}
-                    </IonList>
-                  </div>
-                </IonItem>
-              )
-            }
-          })}
+          <IonItem
+            routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers`}
+            routerDirection="none"
+          >
+            <IonButton> Add New Teacher</IonButton>
+          </IonItem>
+
+          {
+            (batches.length > 0) ? 
+            batches.map((batch, batch_index) => {
+              if (batch.allocations.length > 0) {
+                return (
+                  <IonItem key={batch_index}>
+                    <div className="batch-area">
+                      <IonLabel>
+                        <h2>{batch.batch_name}</h2>
+                      </IonLabel>
+                      <IonList>
+                        {batch.allocations.map((alloc, allocation_index) => {
+                          if(!alloc.level) return null; // Mentor Allocation or missing level_id info (?)
+                          if(level_id !== '0' && alloc.level.id !== level_id) return null;
+                          return (
+                            <IonItem key={allocation_index} className="striped">
+                              <IonLabel className="allocation-info">
+                                <p>Teacher: {alloc.users ? alloc.users[0].name : 'None'}</p>
+                                <p>Class Section: {alloc.level.level_name}</p>
+                                {alloc.subject != null ? (
+                                  <p>Subject: {alloc.subject.name}</p>
+                                ) : (
+                                  <p>Subject: None </p>
+                                )}
+                              </IonLabel>
+                              <IonButton slot="end" 
+                                  onClick={() => { 
+                                    setGetConfirmation({
+                                      status:true,
+                                      onConfirm: () => { deleteMapping(batch.id, alloc.level.id, alloc.users[0].id, batch_index, allocation_index) } 
+                                    })
+                                }}>
+                                Delete
+                              </IonButton>
+                            </IonItem>
+                          )
+                        })}
+                      </IonList>
+                    </div>
+                  </IonItem>
+                )
+              }
+            })
+          : (
+            <IonItem>
+              <IonLabel>No Allocations Found</IonLabel>
+            </IonItem>
+          )
+        }
         </IonList>
+
+        <IonAlert
+          isOpen={getConfirmation.status}
+          onDidDismiss={() => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }}
+          header={'Are you sure?'}
+          subHeader={'Confirm that you wish to delete this allocation'}
+          buttons={[
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }
+            },
+            {
+              text: 'Delete',
+              handler: getConfirmation.onConfirm
+            }
+          ]}
+        />
+
       </IonContent>
     </IonPage>
   )
