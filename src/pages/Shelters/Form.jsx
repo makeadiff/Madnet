@@ -4,6 +4,7 @@ import {
     IonItem,
     IonLabel,
     IonContent,
+    IonInput,
     IonSelect,
     IonSelectOption,
     IonButton,
@@ -20,6 +21,7 @@ import {
       const {shelter_id} = useParams()
       const [shelter, setShelter] = React.useState([])
       const { callApi, unsetLocalCache } = React.useContext(dataContext)
+      const { showMessage } = React.useContext(appContext)
       const [shelterData, setShelterData] = React.useState({})
 
       React.useEffect(() => {
@@ -36,8 +38,19 @@ import {
         fetchData()}, [shelter_id])
     
         const updateField = (e) => {
-            setShelterData({ ...shelterData, starts_on: e.target.value })
+            setShelterData({ ...shelterData, [e.target.name]: e.target.value })
         }
+
+        const saveAssign = (e) => {
+            e.preventDefault()
+            callApi({
+              url: `/centers/${shelter_id}`,
+              method: 'post',
+              params: shelterData
+            }).then(() => {
+              showMessage('Saved class assignment successfully')
+            })
+          }
     
 
 
@@ -48,13 +61,21 @@ import {
         back={`/shelters/${shelter_id}`}
       />
       <IonContent className="dark">
-        <form /*onSubmit={SaveAssign}*/>
+        <form onSubmit={saveAssign}>
+        <IonItem>
+            <IonLabel>Shelter Name:</IonLabel>
+            <IonInput 
+            value={shelterData.name} 
+            placeholder = "Enter Shelter Name" 
+            name = "name"
+            onIonChange = {updateField}></IonInput>
+        </IonItem>
         <IonItem>
                   <IonLabel >Class Started On: </IonLabel>
                   <IonDatetime
                     displayFormat="D MMM YYYY"
                     mode="md"
-                    min="2020"
+                    min="2021"
                     value={shelterData.starts_on}
                     name="starts_on"
                     required
