@@ -41,14 +41,15 @@ import {
             setShelterData({ ...shelterData, [e.target.name]: e.target.value })
         }
 
-        const saveAssign = (e) => {
+        const saveStartsOn = (e) => {
             e.preventDefault()
             callApi({
               url: `/centers/${shelter_id}`,
               method: 'post',
               params: shelterData
             }).then(() => {
-              showMessage('Saved class assignment successfully')
+              showMessage('Saved class date successfully')
+              unsetLocalCache(`shelter_view_${shelter_id}`)
             })
           }
     
@@ -61,23 +62,17 @@ import {
         back={`/shelters/${shelter_id}`}
       />
       <IonContent className="dark">
-        <form onSubmit={saveAssign}>
-        <IonItem>
-            <IonLabel>Shelter Name:</IonLabel>
-            <IonInput 
-            value={shelterData.name} 
-            placeholder = "Enter Shelter Name" 
-            name = "name"
-            onIonChange = {updateField}></IonInput>
-        </IonItem>
+        <form onSubmit={saveStartsOn}>
+        <IonList>
         <IonItem>
                   <IonLabel >Class Started On: </IonLabel>
                   <IonDatetime
                     displayFormat="D MMM YYYY"
                     mode="md"
                     min="2021"
-                    value={shelterData.starts_on}
-                    name="starts_on"
+                    position = "stacked"
+                    value={shelterData.class_starts_on}
+                    name="class_starts_on"
                     required
                     placeholder="Enter Starting Date"
                     onIonChange={updateField}
@@ -86,6 +81,7 @@ import {
                 <IonItem>
             <IonButton type="submit">Save Shelter Details</IonButton>
           </IonItem>
+          </IonList>
         </form>
       </IonContent>
         </IonPage>
