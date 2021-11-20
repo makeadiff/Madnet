@@ -6,9 +6,13 @@ import {
   IonContent,
   IonSegment,
   IonSegmentButton,
-  IonChip
+  IonChip,
+  IonIcon,
+  IonFab,
+  IonFabButton,
 } from '@ionic/react'
 import React from 'react'
+import { pencil } from 'ionicons/icons'
 import { useParams } from 'react-router-dom'
 
 import { PROJECT_IDS, PROJECT_KEYS } from '../../utils/Constants'
@@ -44,7 +48,7 @@ const ShelterView = () => {
       const shelter_data = await callApi({
         graphql: `{ 
                 center(id: ${shelter_id}) { 
-                    id name
+                    id name class_starts_on
                     projects {
                         id name
                         batches { id batch_name 
@@ -193,10 +197,19 @@ const ShelterView = () => {
             </IonItem>
           ) : null}
 
-          {/* <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
-                        <IonLabel>Edit { shelter.name } Details</IonLabel>
-                    </IonItem> */}
+          <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
+                        <IonLabel>Edit Class Started On Date:    {shelter.class_starts_on}</IonLabel>
+                    </IonItem>
+
         </IonList>
+
+        {/* <IonFab vertical="bottom" horizontal="start" slot="fixed">
+          <IonFabButton
+            routerLink={`/shelters/${shelter.id}/edit`}
+          >
+            <IonIcon icon={pencil} />
+          </IonFabButton>
+        </IonFab> */}
       </IonContent>
     </IonPage>
   )

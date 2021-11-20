@@ -342,7 +342,20 @@ const StudentForm = () => {
           <IonCol size-md="6" size-xs="12">
             <IonCard className="light">
               <IonCardHeader>
-                <IonCardTitle>Other Actions</IonCardTitle>
+                <IonRow>
+                  <IonCol size="11">
+                    <IonCardTitle>
+                      Other Actions
+                    </IonCardTitle>
+                  </IonCol>
+                  <IonCol size="1">
+                    {action === 'mark_alumni' ? (
+                        <IonButton size="default" type="submit" onClick={() => setAction('view')}>
+                        <ion-icon name="close"></ion-icon>
+                        </IonButton> ) :
+                    null}
+                  </IonCol>
+                </IonRow>
               </IonCardHeader>
               <IonCardContent>
                 <IonList>
