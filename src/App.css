@@ -29,3 +29,8 @@ ion-card.dark ion-label {
   right: -9px !important;
   bottom: 10px !important;
 }
+
+.text-danger {
+  color: #993739 !important;
+  font-weight: bold;
+}
