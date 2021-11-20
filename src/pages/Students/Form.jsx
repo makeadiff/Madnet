@@ -8,6 +8,7 @@ import {
   IonFab,
   IonFabButton,
   IonItem,
+  IonDatetime,
   IonList,
   IonRadioGroup,
   IonListHeader,
@@ -48,7 +49,11 @@ const StudentForm = () => {
     birthday: null,
     center_id: 0,
     student_type: 'active',
-    reason_for_leaving: ''
+    reason_for_leaving: '',
+    added_on : null,
+    levels : [],
+    past_classes: [],
+    grade : "",
   })
   const [errors, setErrors] = React.useState({
     name: '',
@@ -71,11 +76,40 @@ const StudentForm = () => {
   React.useEffect(() => {
     const fetchStudent = async () => {
       const student_details = await callApi({
-        graphql: `{ student(id: ${student_id}) {
-              id name description birthday sex center_id student_type reason_for_leaving
-              comments { id }
-            }}`,
-        cache_key: `student_${student_id}`
+        graphql: `{
+          student(id: ${student_id}) {
+            id
+            name
+            description
+            birthday
+            sex
+            center_id
+            student_type
+            added_on
+            reason_for_leaving
+            center {
+              id name
+            }
+            comments {
+              id
+            }
+            levels {
+              id grade project_id year name
+              teachers {
+                 id name
+              }
+            }
+            past_classes {
+              id class_on class_type status 
+              pivot {
+                present
+                participation
+              }
+            }
+          }
+        }
+        `,
+        // cache_key: `student_${student_id}`
       })
 
       if (student_details) {
@@ -192,6 +226,8 @@ const StudentForm = () => {
     alumni_dead: 'Alumni, Passed Away',
     other: 'Other'
   };
+  let classes = student.past_classes[0];
+  console.log(classes)
 
   return (
     <IonPage>
@@ -325,6 +361,110 @@ const StudentForm = () => {
                         <p className="error-message">{errors.center_id}</p>
                       ) : null}
                     </span>
+
+                    <IonItem>
+                      <IonLabel position="stacked">Added On</IonLabel>
+                      <IonDatetime pickerOptions={{
+                        buttons: [
+                          {
+                            text: 'Save',
+                            handler: () => console.log('Clicked Save!')
+                          }, 
+                          {
+                            text: 'Log',
+                            handler: () => {
+                              console.log('Clicked Log. Do not Dismiss.');
+                              return false;
+                              }
+                          }
+                        ]}}
+                        id="added_on"
+                        type="datetime"
+                        disabled={disable}
+                        displayFormat="DD-MM-YYYY" max={moment().year() + 5 + '-01-01'}
+                        value={student.added_on}>
+                      </IonDatetime>
+                    </IonItem>
+
+                    {student.levels.map((level, grade) => {
+                      return(
+                        <>
+                        <IonItem>
+                        <ion-text 
+                        type="ios">
+                          <h2>{level.year} Student Profile</h2>
+                        </ion-text>
+                          <IonLabel position="stacked">Class</IonLabel>
+                          <IonInput
+                            id="teachers"
+                            type="text"
+                            value={level.grade}
+                            disabled={disable}
+                            onIonChange={updateField}
+                          />
+                        </IonItem>
+
+                        <IonItem>
+                          <IonLabel position="stacked">Grade</IonLabel>
+                          <IonInput
+                            id="teachers"
+                            type="text"
+                            value={level.name}
+                            disabled={disable}
+                            onIonChange={updateField}
+                          />
+                        </IonItem>
+                        
+                        <IonLabel position="stacked">Teachers</IonLabel>
+                        {level.teachers.map((teacher, id) => {
+                          return(
+                            <>
+
+                              <IonItem> 
+                                <IonInput
+                                  id="teachers"
+                                  type="text"
+                                  value={teacher.name}
+                                  disabled={disable}
+                                  onIonChange={updateField}
+                                />
+                              </IonItem>
+                            </>
+                          );
+                        })}
+                        {/* <IonLabel position="stacked">Class Data</IonLabel>
+                        {student.past_classes.map((teacher, id) => {
+                          console.log(teacher.pivot)
+                          return(
+                            <>
+
+                              <IonItem> 
+                                <IonInput
+                                  id="teachers"
+                                  type="text"
+                                  value="{}"
+                                  disabled={disable}
+                                  onIonChange={updateField}
+                                />
+                              </IonItem>
+                            </>
+                          );
+                        })} */}
+
+                        </>
+                      )
+                    })}
+
+                    
+                    
+
+                    <IonItem>
+                    Classes Attended / Total
+                    Classes Absent
+                    Participation Average
+                    Survey Results
+
+                    </IonItem>
 
                     {disable ? null : (
                       <IonItem>
