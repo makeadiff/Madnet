@@ -23,7 +23,7 @@ import { appContext } from '../../contexts/AppContext'
 // :TODO: Delete Levels
 
 const LevelForm = () => {
-  const { shelter_id, param_level_id, project_id } = useParams()
+  const { shelter_id, project_id, level_id } = useParams()
   const [level, setLevel] = React.useState({
     level_name: '',
     grade: '5',
@@ -33,7 +33,6 @@ const LevelForm = () => {
     students: [],
     teachers: []
   })
-  const [level_id, setLevelId] = React.useState(param_level_id)
   const [disable, setDisable] = React.useState(true)
   const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
   const { showMessage } = React.useContext(appContext)
@@ -42,10 +41,6 @@ const LevelForm = () => {
     students: 'Students',
     teachers: 'Teachers'
   })
-
-  React.useEffect(() => {
-    setLevelId(param_level_id)
-  }, [param_level_id])
 
   React.useEffect(() => {
     async function fetchLevel() {
@@ -111,9 +106,7 @@ const LevelForm = () => {
       }).then((data) => {
         if (data) {
           showMessage(labels.level + ' Updated Successfully', 'success')
-          unsetLocalCache(
-            `shelter_${shelter_id}_project_${project_id}_level_index`
-          )
+          unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
           unsetLocalCache(`shelter_view_${shelter_id}`)
         }
       })
@@ -122,14 +115,12 @@ const LevelForm = () => {
       callApi({ url: `/levels`, method: 'post', params: level }).then(
         (data) => {
           if (data) {
+            data.level_name = data.grade + ' ' + data.name
             data.students = []
             data.teachers = []
             setLevel(data)
-            setLevelId(data.id)
-            showMessage(labels.level + ' Created Successfully', 'success')
-            unsetLocalCache(
-              `shelter_${shelter_id}_project_${project_id}_level_index`
-            )
+            showMessage(labels.level + ' created Successfully', 'success')
+            unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
             unsetLocalCache(`shelter_view_${shelter_id}`)
           }
         }
@@ -209,9 +200,7 @@ const LevelForm = () => {
 
               {disable ? null : (
                 <IonItem>
-                  <IonButton
-                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}
-                  >
+                  <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
                     Add/Remove {labels.students} from this {labels.level}
                   </IonButton>
                 </IonItem>
@@ -230,15 +219,21 @@ const LevelForm = () => {
 
               {disable ? null : (
                 <IonItem>
-                  <IonButton
-                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/level/${level_id}`}
-                  >
-                    Assign new {labels.teachers}
+                  <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/0/level/${level_id}/view-teachers`}>
+                    Edit {labels.teachers} Assignment
                   </IonButton>
                 </IonItem>
               )}
             </>
           ) : null}
+
+          {/* Some empty space at the bottom so that the FAB icon does NOT cover things. */}
+          <IonItem>
+            <IonLabel></IonLabel>
+          </IonItem>
+          <IonItem>
+            <IonLabel></IonLabel>
+          </IonItem>
         </IonList>
 
         {disable ? (

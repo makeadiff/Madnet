@@ -9,19 +9,18 @@ import Title from '../../components/Title'
 
 const TeacherIndex = () => {
   const { user } = React.useContext(authContext)
-  const { shelter_id, project_id, new_level_id } = useParams()
-  const [level_id] = React.useState(new_level_id ? new_level_id : 0)
+  const { shelter_id, project_id, level_id, batch_id } = useParams()
   const { showMessage } = React.useContext(appContext)
   const { callApi } = React.useContext(dataContext)
   const [teachers, setTeachers] = React.useState([])
-  const [cityId] = React.useState(user.city_id)
+  const [city_id] = React.useState(user.city_id)
   const [location, setLocation] = React.useState('')
 
   React.useEffect(() => {
     async function fetchTeacherList() {
-      const user_data = await callApi({ url: 'cities/' + cityId + '/users' }) // 1
-      // const user_data = await callApi({url:"cities/" + cityId + "/teachers"})  // 2 (Diff values. Why?)
-      const city_name = await callApi({ url: 'cities/' + cityId })
+      const user_data = await callApi({ url: 'cities/' + city_id + '/users' }) // 1
+      // const user_data = await callApi({url:"cities/" + city_id + "/teachers"})  // 2 (Diff values. Why?)
+      const city_name = await callApi({ url: 'cities/' + city_id })
 
       if (user_data) {
         setTeachers(user_data)
@@ -31,22 +30,20 @@ const TeacherIndex = () => {
       }
     }
     fetchTeacherList()
-  }, [cityId])
+  }, [city_id])
 
   return (
     <IonPage>
       <Title
         name={`Teachers in ${location}`}
-        back={`/shelters/${shelter_id}/projects/${project_id}/view-teachers`}
+        back={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/view-teachers`}
       />
       <IonContent className="dark">
         <IonList>
           {teachers.map((teacher, index) => {
             return (
-              <IonItem
-                key={index}
-                routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-teachers/${teacher.id}/level/${level_id}`}
-              >
+              <IonItem key={index}
+                routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers/${teacher.id}`}>
                 <IonLabel>{teacher.name}</IonLabel>
               </IonItem>
             )

@@ -30,22 +30,22 @@ const WingmanView = () => {
         graphql: `{
                 center(id: ${shelter_id}) { name }
                 batchSearch(center_id:${shelter_id}, project_id: ${project_id}) {
-                    id batch_name 
-                    allocations {
-                        role
-                        user {
-                            id name
-                        }
-                        level {
-                            id level_name 
-                            students {
-                                id name
-                            }
-                        }
-                        subject {
-                            id name
-                        }
+                  id batch_name 
+                  allocations {
+                    role
+                    users {
+                      id name
                     }
+                    level {
+                      id level_name 
+                      students {
+                        id name
+                      }
+                    }
+                    subject {
+                      id name
+                    }
+                  }
                 }
               }`,
         cache: true,
@@ -81,7 +81,7 @@ const WingmanView = () => {
   return (
     <IonPage>
       <Title
-        name={`Assigned Wingmen `}
+        name="Wingmen Assignments"
         back={`/shelters/${shelter_id}/projects/${project_id}`}
       />
       <IonContent className="dark">
@@ -100,16 +100,16 @@ const WingmanView = () => {
                   <IonList>
                     {batch.allocations.map((alloc, index_2) => {
                       batch_id[index_2] = batch.id
-                      wingman_id[index_2] = alloc.user.id
+                      wingman_id[index_2] = alloc.users[0].id
                       level_id[index_2] = alloc.level.id
                       return (
                         <IonItem key={index_2}>
                           <IonLabel>
-                            <p>Wingman: {alloc.user.name}</p>
+                            <p>Wingman: {alloc.users[0].name}</p>
                             {alloc.level.students.map((student, index_3) => {
                               return (
                                 <IonLabel key={index_3}>
-                                  <p>Student:{student.name}</p>
+                                  <p>Student: {student.name}</p>
                                 </IonLabel>
                               )
                             })}

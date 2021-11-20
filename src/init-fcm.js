@@ -30,23 +30,17 @@ try {
 const requestPermission = async () => {
   if (!messaging) return
 
-  // Notification.permission === "granted" - Means the notification permission is given.
-
   messaging
     .requestPermission()
     .then(async () => {
       const token = await messaging.getToken()
       // Save token to Server against curret user.
-      // Using this raw format(rather than using DataContext or Auth context) because this file is not a React component - hence will not let us use contexts within in.
+      // Using this raw format(rather than using DataContext or Auth context) because this file is not a React component 
+      // - hence will not let us use contexts within in.
       const user = getStoredUser()
 
       if (user && user.id && user.token !== token && token) {
-        api.rest(
-          `users/${user.id}/devices/${token}`,
-          'post',
-          {},
-          user.jwt_token
-        )
+        api.rest(`users/${user.id}/devices/${token}`, 'post', {}, user.jwt_token)
         user['token'] = token
         setStoredUser(user)
       }

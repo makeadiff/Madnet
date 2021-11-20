@@ -18,9 +18,7 @@ import Title from '../../../components/Title'
 
 const WingmanForm = () => {
   const { user } = React.useContext(authContext)
-  const { callApi, unsetLocalCache, setCache, cache } = React.useContext(
-    dataContext
-  )
+  const { callApi, unsetLocalCache } = React.useContext(dataContext)
   const { showMessage } = React.useContext(appContext)
 
   const { shelter_id, project_id } = useParams()

@@ -7,13 +7,15 @@ import {
   IonSegment,
   IonSegmentButton,
   IonChip,
-  IonIcon,
-  IonFab,
-  IonFabButton,
+  // IonIcon,
+  // IonFab,
+  // IonFabButton,
 } from '@ionic/react'
 import React from 'react'
-import { pencil } from 'ionicons/icons'
+// import { pencil } from 'ionicons/icons'
 import { useParams } from 'react-router-dom'
+
+import * as moment from 'moment'
 
 import { PROJECT_IDS, PROJECT_KEYS } from '../../utils/Constants'
 import Title from '../../components/Title'
@@ -28,7 +30,7 @@ const ShelterView = () => {
     students: []
   })
   const [project_id, setProjectId] = React.useState(
-    param_project_id ? param_project_id : 0
+    param_project_id ? param_project_id : "1"
   )
   const [project, setProject] = React.useState({
     id: 0,
@@ -51,7 +53,9 @@ const ShelterView = () => {
                     id name class_starts_on
                     projects {
                         id name
-                        batches { id batch_name }
+                        batches { id batch_name 
+                          teachers { id } 
+                        }
                         levels { id level_name }
                     }
                     students { id }
@@ -129,7 +133,7 @@ const ShelterView = () => {
               key="batches"
             >
               <IonChip className="roles">
-                {project.batches.length ?? 'See '}
+                { project.batches.length }
               </IonChip>
               <IonLabel className="shelterList"> Batch(es)</IonLabel>
             </IonItem>
@@ -143,11 +147,44 @@ const ShelterView = () => {
               key="levels"
             >
               <IonChip className="roles">
-                {project.levels.length ?? 'See '}
+                { project.levels.length }
               </IonChip>
               <IonLabel className="shelterList"> {labels.level}</IonLabel>
             </IonItem>
           ) : null}
+
+          {project_id == PROJECT_IDS.ED ||
+          project_id == PROJECT_IDS.FP ||
+          project_id == PROJECT_IDS.TR_ASV ? (
+            <IonItem
+              className="shelterItems"
+              routerLink={`/shelters/${shelter.id}/projects/${project_id}/batch/0/level/0/view-teachers`}
+              routerDirection="none"
+              key="assign"
+            >
+              <IonChip className="roles">
+                { project.batches.reduce((val, ele) => { return ele.teachers.length + val}, 0) }
+              </IonChip>
+              <IonLabel className="shelterList">Teacher Assignments</IonLabel>
+            </IonItem>
+          ) : null}
+          {project_id == PROJECT_IDS.TR_WINGMAN ? (
+            <IonItem
+              className="shelterItems"
+              routerLink={`/shelters/${shelter.id}/projects/${project_id}/view-wingmen`}
+              routerDirection="none"
+              key="assign"
+            >
+              <IonChip className="roles">
+                { project.batches.reduce((val, ele) => { return ele.teachers.length + val}, 0) }
+              </IonChip>
+              <IonLabel className="shelterList">Wingmen Assignments</IonLabel>
+            </IonItem>
+          ) : null}
+
+          <IonItem class="title">
+            <IonLabel>Shelter Details</IonLabel>
+          </IonItem>
 
           <IonItem
             className="shelterItems"
@@ -166,32 +203,12 @@ const ShelterView = () => {
             <IonLabel className="shelterList">Note(s) about { shelter.name }</IonLabel>
           </IonItem> */}
 
-          {project_id == PROJECT_IDS.ED ||
-          project_id == PROJECT_IDS.FP ||
-          project_id == PROJECT_IDS.TR_ASV ? (
-            <IonItem
-              className="shelterItems"
-              routerLink={`/shelters/${shelter.id}/projects/${project_id}/view-teachers`}
-              routerDirection="none"
-              key="assign"
-            >
-              <IonLabel className="shelterList">Assign Teachers</IonLabel>
-            </IonItem>
-          ) : null}
-          {project_id == PROJECT_IDS.TR_WINGMAN ? (
-            <IonItem
-              className="shelterItems"
-              routerLink={`/shelters/${shelter.id}/projects/${project_id}/view-wingmen`}
-              routerDirection="none"
-              key="assign"
-            >
-              <IonLabel className="shelterList">Assign Wingmen</IonLabel>
-            </IonItem>
-          ) : null}
-
           <IonItem routerLink={ `/shelters/${shelter.id}/edit` } routerDirection="none" >
-                        <IonLabel>Edit Class Started On Date:    {shelter.class_starts_on}</IonLabel>
-                    </IonItem>
+            <IonLabel>Classes Started On: { shelter.class_starts_on 
+              ? moment(shelter.class_starts_on).format('MMM Do')
+              : (<span><span className="text-danger">No date provided!</span> Click here to add a date.</span>)}
+            </IonLabel>
+          </IonItem>
 
         </IonList>
 

@@ -15,8 +15,6 @@ import 'feeder-react-feedback/dist/feeder-react-feedback.css'
 import { authContext } from './contexts/AuthContext'
 import { appContext } from './contexts/AppContext'
 
-import { SITE_URL } from './utils/Constants'
-
 import Menu from './components/Menu'
 import Page from './pages/Page'
 import Login from './pages/Login'
@@ -103,16 +101,13 @@ const Root = () => {
             <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches/:batch_id">
               <BatchForm />
             </PrivateRoute>
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/batches"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact={true}>
               <BatchIndex />
             </PrivateRoute>
             <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id/add-student">
               <LevelAddStudent />
             </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:param_level_id">
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id">
               <LevelForm />
             </PrivateRoute>
             <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true}>
@@ -124,10 +119,7 @@ const Root = () => {
             <PrivateRoute path="/shelters/:item_id/notes" exact={true}>
               <Notes item_type="center" />
             </PrivateRoute>
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:param_project_id"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:param_project_id" exact={true}>
               <ShelterView />
             </PrivateRoute>
             <PrivateRoute path="/shelters/:shelter_id" exact={true}>
@@ -205,63 +197,33 @@ const Root = () => {
               <Notes item_type="student" />
             </PrivateRoute>
 
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/view-teachers"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/view-teachers" exact={true}>
               <TeacherView />
             </PrivateRoute>
 
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers" exact={true}>
               <TeacherIndex />
             </PrivateRoute>
 
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers/level/:new_level_id"
-              exact={true}
-            >
+            {/* <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers" exact={true}>
               <TeacherIndex />
             </PrivateRoute>
 
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id/level/:new_level_id"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers/:user_id" exact={true}>
+              <TeacherForm />
+            </PrivateRoute> */}
+
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers/:user_id" exact={true}>
               <TeacherForm />
             </PrivateRoute>
 
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-teachers/:user_id"
-              exact={true}
-            >
-              <TeacherForm />
-            </PrivateRoute>
-
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/view-wingmen"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-wingmen" exact={true}>
               <WingmanView />
             </PrivateRoute>
 
-            <PrivateRoute
-              path="/shelters/:shelter_id/projects/:project_id/assign-wingmen"
-              exact={true}
-            >
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact={true}>
               <WingmanForm />
             </PrivateRoute>
-
-            {/* Redirect to external paths... */}
-            <Route
-              path="/donut"
-              exact={true}
-              render={() => {
-                window.location.href = SITE_URL + 'donut'
-              }}
-            />
 
             <Route
               path="/"
