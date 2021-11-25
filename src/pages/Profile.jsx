@@ -346,7 +346,7 @@ const Profile = () => {
                         disabled
                       ></IonInput>
                     </IonItem>
-                    <IonItem routerLink='/roles'>
+                    <IonItem>
                       <IonLabel position="stacked">Roles: </IonLabel>
                       <ul className="roleList">
                         {user.groups
@@ -423,6 +423,11 @@ const Profile = () => {
                           .slice(0, 10)}
                         disabled
                       ></IonInput>
+                    </IonItem>
+                    <IonItem>
+                        <IonButton size="default" type="submit" routerLink={`/users/${user.id}/history`}>
+                          History
+                        </IonButton>
                     </IonItem>
                   </IonCardContent>
                 </IonCard>

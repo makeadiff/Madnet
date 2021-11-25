@@ -40,7 +40,7 @@ import SurveyForm from './pages/Surveys/Form'
 import InductionIndex from './pages/Induction/Index'
 import InductionProfile from './pages/Induction/Profile'
 import InductionSetup from './pages/Induction/Setup'
-import Roles from './pages/Roles/Roles'
+import UserHistory from './pages/Users/History'
 import Profile from './pages/Profile'
 import Notes from './pages/Notes'
 import UserIndex from './pages/Users/Index'
@@ -143,6 +143,9 @@ const Root = () => {
             <PrivateRoute path="/users/:user_id/" exact={true}>
               <UserForm />
             </PrivateRoute>
+            <PrivateRoute path="/users/:user_id/history">
+              <UserHistory />
+            </PrivateRoute>
             <PrivateRoute path="/users/:user_id/:action" exact={true}>
               <UserForm />
             </PrivateRoute>
@@ -187,9 +190,6 @@ const Root = () => {
 
             <PrivateRoute path="/profile">
               <Profile />
-            </PrivateRoute>
-            <PrivateRoute path="/roles">
-              <Roles />
             </PrivateRoute>
 
             <PrivateRoute path="/students" exact={true}>
