@@ -74,7 +74,9 @@ const BatchIndex = () => {
 
       <IonContent className="dark">
         <IonList>
-          {batches.map((batch, index) => {
+          {
+          (batches.length > 0) ? (
+            batches.map((batch, index) => {
             return (
               <IonItem
                 key={index}
@@ -84,7 +86,13 @@ const BatchIndex = () => {
                 <IonLabel>{batch.batch_name}</IonLabel>
               </IonItem>
             )
-          })}
+          })
+          ) : (
+            <IonItem>
+              <IonLabel>No Batches Found</IonLabel>
+            </IonItem>
+          )
+        }
         </IonList>
 
         <IonFab vertical="bottom" horizontal="start" slot="fixed">

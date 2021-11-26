@@ -16,16 +16,14 @@ import { useParams } from 'react-router-dom'
 import Title from '../../components/Title'
 import { PROJECT_IDS } from '../../utils/Constants'
 
-// :TODO: Edit for this ?
 const TeacherForm = () => {
-  const { shelter_id, project_id, user_id, new_level_id } = useParams()
-  const [level_id] = React.useState(new_level_id ? new_level_id : 0)
+  const { shelter_id, project_id, user_id, level_id, batch_id } = useParams()
   const { callApi, unsetLocalCache } = React.useContext(dataContext)
   const [teacher, setTeacher] = React.useState([])
   const [batches, setBatches] = React.useState([])
   const [levels, setLevels] = React.useState([])
   const { showMessage } = React.useContext(appContext)
-  const [combo, setCombo] = React.useState({ batch_id: '', level_id: '' })
+  const [combo, setCombo] = React.useState({ batch_id: batch_id, level_id: level_id })
   const [sub, setSub] = React.useState([])
   const [subjectField, setSubjectField] = React.useState({ subject_id: '0' })
 
@@ -57,11 +55,12 @@ const TeacherForm = () => {
       setCombo({ ...combo, ['level_id']: level_id })
     }
     fetchData()
-  }, [shelter_id, project_id, user_id])
+  }, [shelter_id, project_id, user_id, batch_id, level_id])
 
   React.useEffect(() => {
     if (project_id === PROJECT_IDS.AFTERCARE && batches.length) {
-      setCombo({ ...combo, ['batch_id']: batches[0].id }) // If aftercare project, just set the first batch as the preselected batch. There should be only one batch in the shelter.
+      // If aftercare project, just set the first batch as the preselected batch. There should be only one batch in the shelter.
+      setCombo({ ...combo, ['batch_id']: batches[0].id }) 
     }
   }, [batches])
 
@@ -73,16 +72,24 @@ const TeacherForm = () => {
     setSubjectField({ subject_id: e.target.value })
   }
 
-  const saveAssign = (e) => {
+  const saveAssignment = (e) => {
     e.preventDefault()
+
+    // :TODO: Seperate both out, and open up the relevent selection popup on validation
+    if(combo.batch_id === '0' || combo.level_id === '0') {
+      showMessage('Please select BOTH Batch and Class Section', 'error')
+      return false
+    }
+
     callApi({
       url: `/batches/${combo.batch_id}/levels/${combo.level_id}/teachers/${user_id}`,
       method: 'post',
       params: subjectField
     }).then(() => {
       showMessage('Saved class assignment successfully')
-      unsetLocalCache(`teacher_view_${shelter_id}_${project_id}`)
-      unsetLocalCache(`level_${level_id}`)
+      unsetLocalCache(`teacher_view_${shelter_id}_${project_id}_${combo.batch_id}_${combo.level_id}`)
+      unsetLocalCache(`level_${combo.level_id}`)
+      unsetLocalCache(`batch_${combo.batch_id}`)
     })
   }
 
@@ -93,7 +100,7 @@ const TeacherForm = () => {
         back={`/shelters/${shelter_id}/projects/${project_id}`}
       />
       <IonContent className="dark">
-        <form onSubmit={saveAssign}>
+        <form onSubmit={saveAssignment}>
           <IonList>
             {project_id === PROJECT_IDS.AFTERCARE ? null : (
               <IonItem>

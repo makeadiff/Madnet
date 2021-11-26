@@ -83,24 +83,30 @@ const LevelAddStudent = () => {
     }).then((data) => {
       if (data) {
         showMessage(
-          `${students.length} ${labels.student}(s) added to this ${labels.level} Successfully`,
+          `Saved ${labels.student} selection to ${labels.level} successfully`,
           'success'
         )
-        unsetLocalCache(
-          `shelter_${shelter_id}_project_${project_id}_level_index`
-        )
+        unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
         unsetLocalCache(`shelter_${shelter_id}_level_${level_id}_students`)
         unsetLocalCache(`level_${level_id}`)
       }
     })
   }
 
-  const setStudentSelectedValue = (student_id, is_selected) => {
-    setSelected({ ...selected, [student_id]: is_selected })
-  }
-
   const selectStudent = (e) => {
-    setStudentSelectedValue(e.target.value, e.target.checked)
+    const student_id = e.target.value
+    const is_selected = e.target.checked
+    if(is_selected === undefined) return;
+
+    let sel = { ...selected }
+
+    if(is_selected === true) {
+      sel[student_id] = true
+    } else {
+      delete sel[student_id]
+    }
+
+    setSelected(sel)
   }
 
   return (
@@ -112,6 +118,12 @@ const LevelAddStudent = () => {
 
       <IonContent class="dark">
         <IonList>
+          <IonItem>
+            <IonButton onClick={addStudents}>
+              Save {labels.student} Selection in {level.level_name} {labels.level}
+            </IonButton>
+          </IonItem>
+
           <form onSubmit={addStudents}>
             {students.map((student, index) => {
               return (
@@ -129,8 +141,7 @@ const LevelAddStudent = () => {
 
             <IonItem>
               <IonButton onClick={addStudents}>
-                Add Selected {labels.student} to {level.level_name}{' '}
-                {labels.level}
+                Save {labels.student} Selection in {level.level_name} {labels.level}
               </IonButton>
             </IonItem>
           </form>

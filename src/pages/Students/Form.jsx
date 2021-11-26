@@ -342,7 +342,20 @@ const StudentForm = () => {
           <IonCol size-md="6" size-xs="12">
             <IonCard className="light">
               <IonCardHeader>
-                <IonCardTitle>Other Actions</IonCardTitle>
+                <IonRow>
+                  <IonCol size="11">
+                    <IonCardTitle>
+                      Other Actions
+                    </IonCardTitle>
+                  </IonCol>
+                  <IonCol size="1">
+                    {action === 'mark_alumni' ? (
+                        <IonButton size="default" type="submit" onClick={() => setAction('view')}>
+                        <ion-icon name="close"></ion-icon>
+                        </IonButton> ) :
+                    null}
+                  </IonCol>
+                </IonRow>
               </IonCardHeader>
               <IonCardContent>
                 <IonList>
@@ -350,12 +363,12 @@ const StudentForm = () => {
                     <>
                     <IonItem>
                       <IonButton size="default" type="submit" onClick={() => setAction('mark_alumni')}>
-                        { student.student_type !== 'active' ? `Set Student as Active` : `Mark Student as Alumni` }
+                        { student.student_type !== 'active' ? `Set ${student.name} as Active` : `Mark ${student.name} as Alumni` }
                       </IonButton>
                     </IonItem>
                     <IonItem>
                       <IonLabel>{ student.student_type === 'active' ? 
-                        `This will hide {student.name} in student listing.`
+                        `This will hide ${student.name} in student listing.`
                         : `Currently ${student.name} is ${all_types[student.student_type]}` 
                       }</IonLabel>
                     </IonItem>

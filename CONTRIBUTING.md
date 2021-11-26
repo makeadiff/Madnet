@@ -84,7 +84,7 @@ You can pull from the upsteam using these commands...
 
 ```
 git fetch upstream
-git merge --ff-only upstream/master
+git merge upstream/master
 ```
 
 ## More Information
