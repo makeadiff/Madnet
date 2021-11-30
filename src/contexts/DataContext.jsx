@@ -21,6 +21,7 @@ export const dataContext = React.createContext({
   getVerticals: () => {},
   getGroupTypes: () => {},
   setCache: () => {},
+  clearLocalCache: () => {},
   cache: {}
 })
 
@@ -43,7 +44,8 @@ const DataProvider = ({ children }) => {
     updateUser,
     deleteUser,
     getVerticals,
-    getGroupTypes
+    getGroupTypes,
+    clearLocalCache
   } = useHandler()
 
   return (
@@ -64,7 +66,8 @@ const DataProvider = ({ children }) => {
         updateUser,
         deleteUser,
         getVerticals,
-        getGroupTypes
+        getGroupTypes,
+        clearLocalCache
       }}
     >
       {children}
@@ -149,7 +152,8 @@ const useHandler = () => {
   /*
    * Wrapper to make the API calls.
    * This function has a very aggressive cacching strategy that has and will create issues in the future - so documenting it in more detail.
-   * Results of all API calls will be cached in localStorage unless explicitly told not to(using {cache: false} option.). The API call will be made ONLY if the data does not exist in the cache.
+   * Results of all API calls will be cached in localStorage unless explicitly told not to(using {cache: false} option.). 
+   * The API call will be made ONLY if the data does not exist in the cache.
    * Examples
    * const data = await callApi({ url: '/users/1' })
    * const data = await callApi({ graphql: '{ user(ID: 1) { id name email } }' })
@@ -379,6 +383,14 @@ const useHandler = () => {
     return await callApi({ url: `group_types` })
   }
 
+  /// Clears all localStorage Cache except for the login/current user key
+  const clearLocalCache = () => {
+    console.log("Clearing local cache")
+    const userData = window.localStorage.getItem('user')
+    window.localStorage.clear()
+    window.localStorage.setItem('user', userData)
+  }
+
   return {
     callApi,
     getCacheByKey,
@@ -395,7 +407,8 @@ const useHandler = () => {
     getEventTypes,
     deleteUser,
     getVerticals,
-    getGroupTypes
+    getGroupTypes,
+    clearLocalCache
   }
 }
 

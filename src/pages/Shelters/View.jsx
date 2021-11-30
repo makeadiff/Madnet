@@ -46,7 +46,9 @@ const ShelterView = () => {
   })
 
   React.useEffect(() => {
+    console.log('ShelterView: useEffect', shelter_id, project_id)
     async function fetchShelter() {
+      console.log('ShelterView: fetchShelter')
       const shelter_data = await callApi({
         graphql: `{ 
                 center(id: ${shelter_id}) { 
@@ -69,8 +71,7 @@ const ShelterView = () => {
       // First project is set as the default project. :TODO: This should default to current user's vertical.
       if (
         shelter_data.projects &&
-        shelter_data.projects.length &&
-        project_id === 0
+        shelter_data.projects.length
       ) {
         setProjectId(shelter_data.projects[0].id)
         setProject(shelter_data.projects[0])
@@ -92,7 +93,7 @@ const ShelterView = () => {
     ) {
       fetchShelter()
     }
-  }, [shelter_id, project_id, cache[`shelter_view_${shelter_id}`]])
+  }, [shelter_id, cache[`shelter_view_${shelter_id}`]])
 
   React.useEffect(() => {
     shelter.projects.forEach((proj) => {

@@ -33,7 +33,7 @@ describe('Donation Page', () => {
     cy.contains("Save").click();
 
     cy.get(".toast-message").should('include.text', "Donation details saved. Donation ID:");
-    // Test if Tost goes away?
+    // :TODO: Test if Toast goes away?
   });
 
   it('Shows added donation in listing page', () => {

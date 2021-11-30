@@ -13,6 +13,7 @@ import { dataContext } from '../../contexts/DataContext'
 import { appContext } from '../../contexts/AppContext'
 import { useParams } from 'react-router-dom'
 import Title from '../../components/Title'
+import './Shelters.css'
 
 const ShelterForm = () => {
   const {shelter_id} = useParams()
@@ -39,6 +40,12 @@ const ShelterForm = () => {
 
     const saveStartsOn = (e) => {
       e.preventDefault()
+
+      if(!shelterData.class_starts_on) {
+        showMessage('Please enter a valid date')
+        return
+      }
+
       callApi({
         url: `/centers/${shelter_id}`,
         method: 'post',
@@ -61,6 +68,7 @@ const ShelterForm = () => {
             <IonItem>
               <IonLabel >Class Starts On: </IonLabel>
               <IonDatetime
+                className="dark"
                 displayFormat="D MMM YYYY"
                 mode="md"
                 min="2021"
