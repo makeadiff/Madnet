@@ -124,7 +124,7 @@ const TeacherForm = () => {
             )}
             <IonItem>
               <IonLabel>
-                {project_id === PROJECT_IDS.AFTERCARE ? 'SSG' : 'Level'}:
+                {project_id === PROJECT_IDS.AFTERCARE ? 'SSG' : 'Class Section'}:
               </IonLabel>
               <IonSelect
                 slot="end"

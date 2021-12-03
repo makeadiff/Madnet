@@ -46,9 +46,7 @@ const ShelterView = () => {
   })
 
   React.useEffect(() => {
-    console.log('ShelterView: useEffect', shelter_id, project_id)
     async function fetchShelter() {
-      console.log('ShelterView: fetchShelter')
       const shelter_data = await callApi({
         graphql: `{ 
                 center(id: ${shelter_id}) { 
