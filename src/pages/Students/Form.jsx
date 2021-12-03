@@ -26,6 +26,7 @@ import {
 import { pencil, close } from 'ionicons/icons'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
+import './Form.css'
 
 import { authContext } from '../../contexts/AuthContext'
 import { appContext } from '../../contexts/AppContext'
@@ -99,6 +100,12 @@ const StudentForm = () => {
                  id name
               }
             }
+            past_levels {
+              id grade project_id year
+              teachers {
+                id name 
+              }
+            }
             past_classes {
               id class_on class_type status 
               pivot {
@@ -107,13 +114,11 @@ const StudentForm = () => {
               }
             }
           }
-        }
-        `,
+        }`,
         cache_key: `student_${student_id}`
       })
 
       if (student_details) {
-        console.log(student_details)
         setStudent(student_details)
       }
     }
@@ -228,25 +233,26 @@ const StudentForm = () => {
   };
 
   const findMetrics = (year) => {
-    let past_class = student.past_classes.filter(item => item.class_on.slice(0,4) === year )
-    const present = past_class.filter(item => item.pivot.present === '1' ).length;
-    const absent = past_class.filter(item => item.pivot.present === '0' ).length;
-    const participation = (past_class.reduce((a,v) =>  a = a + v.pivot.participation , 0 ))/past_class.length;
-    let result = [];
-    result['present'] = present;
-    result['absent'] = absent;
-    result['total'] = present+absent;
-    result['participation'] = participation;
-    return result;
-  }
-  const presnet = student.past_classes.filter(item => item.pivot.present === '1' ).length;
-  const participation = (student.past_classes.reduce((a,v) =>  a = a + v.pivot.participation , 0 ))/student.past_classes.length;
+    let past_class = student.past_classes.filter(item => item.class_on.slice(0,4) == year )
+    const present = past_class.filter(item => item.pivot.present === '1' ).length
+    const absent = past_class.filter(item => item.pivot.present === '0' ).length
+    const participation = Math.round(((past_class.reduce((a,v) =>  a = a + v.pivot.participation , 0 )) / past_class.length) * 100) / 100
 
-  let classes_data = student.past_classes.reduce((r, { class_on }) => {
-    var key = class_on.slice(0, 4);
-    r[key] = (r[key] || 0) + 1;
-    return r;
-  }, {});
+    return {
+      'present': present,
+      'absent': absent,
+      'total': present+absent,
+      'participation': participation
+    }
+  }
+  // const present = student.past_classes.filter(item => item.pivot.present === '1' ).length;
+  // const participation = (student.past_classes.reduce((a,v) =>  a = a + v.pivot.participation , 0 ))/student.past_classes.length;
+
+  // let classes_data = student.past_classes.reduce((r, { class_on }) => {
+  //   var key = class_on.slice(0, 4);
+  //   r[key] = (r[key] || 0) + 1;
+  //   return r;
+  // }, {});
 
   return (
     <IonPage>
@@ -392,137 +398,6 @@ const StudentForm = () => {
                       />
                     </IonItem>
 
-                    {student.levels.map((level, grade) => {
-                      return(
-                        <>
-                        <IonLabel position="stacked">Class</IonLabel>
-                        <IonItem>
-                          <IonInput
-                            id="teachers"
-                            type="text"
-                            value={level.grade}
-                            disabled={disable}
-                            onIonChange={updateField}
-                          />
-                        </IonItem>
-                        <IonLabel position="stacked">Grade</IonLabel>
-                        <IonItem>  
-                          <IonInput
-                            id="teachers"
-                            type="text"
-                            value={level.name}
-                            disabled={disable}
-                            onIonChange={updateField}
-                          />
-                        </IonItem>
-                        
-                        <IonLabel position="stacked">Teachers</IonLabel>
-                        
-                        {level.teachers.map((teacher, id) => {
-                          return(
-                            <>
-                              <IonItem> 
-                                <IonInput
-                                  id="teacher"
-                                  type="text"
-                                  value={teacher.name}
-                                  disabled={disable}
-                                  onIonChange={updateField}
-                                />
-                              </IonItem>
-                            </>
-                          );
-                        })}
-                        
-                        {Object.keys(classes_data).map(function(key, index) {
-                          console.log(Object.keys(classes_data)[index])
-                          console.log(classes_data[key])
-                          return (
-                            <>
-                            <IonLabel position="stacked">{Object.keys(classes_data)[index]} Data</IonLabel>
-                            <IonItem>
-                              <IonLabel position="stacked">Total Classes</IonLabel>
-                              <IonInput
-                                id="total_classes"
-                                type="text"
-                                value={findMetrics(Object.keys(classes_data)[index])['total']}
-                                disabled={disable}
-                                onIonChange={updateField}
-                              />
-                            </IonItem>
-                            <IonItem>
-                              <IonLabel position="stacked">Classes Attended</IonLabel>
-                              <IonInput
-                                id="total_classes"
-                                type="text"
-                                value={findMetrics(Object.keys(classes_data)[index])['present']}
-                                disabled={disable}
-                                onIonChange={updateField}
-                              />
-                            </IonItem>
-                            <IonItem>
-                              <IonLabel position="stacked">Classes Absent</IonLabel>
-                              <IonInput
-                                id="total_classes"
-                                type="text"
-                                value={findMetrics(Object.keys(classes_data)[index])['absent']}
-                                disabled={disable}
-                                onIonChange={updateField}
-                              />
-                            </IonItem>
-                            <IonItem>
-                              <IonLabel position="stacked">Participation Average</IonLabel>
-                              <IonInput
-                                id="total_classes"
-                                type="text"
-                                value={findMetrics(Object.keys(classes_data)[index])['participation']}
-                                disabled={disable}
-                                onIonChange={updateField}
-                              />
-                            </IonItem>
-                            </>
-                          );
-                        })}
-                        
-                        <IonLabel position="stacked">Overall Metrics</IonLabel>
-                        <IonItem>
-                          <IonLabel position="stacked">Total Classes</IonLabel>
-                          <IonInput
-                            id="total_classes"
-                            type="text"
-                            value={student.past_classes.length}
-                            disabled={disable}
-                            onIonChange={updateField}
-                          />
-                          <IonLabel position="stacked">Classes Attended</IonLabel>
-                          <IonInput
-                            id="present_classes"
-                            type="text"
-                            value={presnet}
-                            disabled={disable}
-                            onIonChange={updateField}
-                          />
-                          <IonLabel position="stacked">Classes Absent</IonLabel>
-                          <IonInput
-                            id="absent_classes"
-                            type="text"
-                            value={student.past_classes.length - presnet}
-                            disabled={disable}
-                            onIonChange={updateField}
-                          />
-                            <IonLabel position="stacked">Participation Average</IonLabel>
-                            <IonInput
-                              id="total_classes"
-                              type="text"
-                              value={participation}
-                              disabled={disable}
-                              onIonChange={updateField}
-                            />
-                        </IonItem>
-                        </>
-                      )
-                    })}
-
                     {disable ? null : (
                       <IonItem>
                         <IonButton size="default" type="submit">
@@ -535,6 +410,7 @@ const StudentForm = () => {
               </IonCardContent>
             </IonCard>
           </IonCol>
+
           {student.id ? (
           <IonCol size-md="6" size-xs="12">
             <IonCard className="light">
@@ -658,6 +534,75 @@ const StudentForm = () => {
                       {student.comments.length} note(s) on {student.name}
                     </IonLabel>
                   </IonItem>
+                </IonList>
+              </IonCardContent>
+            </IonCard>
+
+            <IonCard className="light">
+              <IonCardHeader>
+                <IonCardTitle>Historical Information</IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <IonList>
+                  <IonItem className="data-header">Current Status</IonItem>
+                  {student.levels.map((level, id) => {
+                    return(
+                      <React.Fragment key={id}>
+                        <IonItem>Class in {level.year}</IonItem>
+                        <IonItem className="data-sub">Class: {level.grade} {level.name}</IonItem>
+                        
+                        {level.teachers.length ? (
+                          <>
+                            <IonItem className="data-header data-sub">Teachers</IonItem>
+                            {level.teachers.map((teacher, id) => {
+                              return(
+                                <IonItem className="data-sub-2" key={id}>{teacher.name}</IonItem>
+                              );
+                            })}
+                          </>
+                        ) : null}
+                      </React.Fragment> 
+                    )
+                  })}
+
+                  <IonItem className="data-header">Past Data</IonItem>
+                  {student.past_levels.map((level, id) => {
+                    if(level.year === student.levels[0].year) return null; // don't show current year - already shown above
+
+                    let yearData = findMetrics(level.year)
+
+                    return (
+                      <React.Fragment key={id}>
+                        <IonItem className="data-header">Class in {level.year}</IonItem>
+                        <IonItem className="data-sub">Grade: {level.grade} {level.name}</IonItem>
+                        
+                        {level.teachers.length ? (
+                          <>
+                          <IonItem className="data-header data-sub">Teachers</IonItem>
+                          {level.teachers.map((teacher, id) => {
+                            return(
+                              <IonItem className="data-sub-2" key={id}>{teacher.name}</IonItem>
+                            );
+                          })}
+                          </>
+                        ) : null}
+
+                        {yearData.total ? (
+                          <>
+                          <IonItem className="data-sub">
+                            <span className="data-name"> Classes Attended</span>
+                            <span className="data-value"> {yearData.present} / {yearData.total}</span>
+                          </IonItem>
+                          <IonItem className="data-sub">
+                            <span className="data-name">Participation Average</span>
+                            <span className="data-value"> {yearData.participation} / 5</span>
+                          </IonItem>
+                          </>
+                        ) : null}
+                      </React.Fragment> 
+                    )
+                  })}
+
                 </IonList>
               </IonCardContent>
             </IonCard>

@@ -1,0 +1,12 @@
+.data-name::after {
+  content: ": ";
+}
+.data-header {
+  font-weight: bold;
+}
+.data-sub {
+  padding-left: 1em;
+}
+.data-sub-2 {
+  padding-left: 2em;
+}
