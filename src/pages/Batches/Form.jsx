@@ -9,11 +9,12 @@ import {
   IonFabButton,
   IonSelect,
   IonSelectOption,
-  IonButton
+  IonButton,
+  IonAlert
 } from '@ionic/react'
-import { pencil, close } from 'ionicons/icons'
+import { pencil, close, trash } from 'ionicons/icons'
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 
 import * as moment from 'moment'
 
@@ -33,12 +34,16 @@ const BatchForm = () => {
   const [disable, setDisable] = React.useState(true)
   const { callApi, unsetLocalCache, cache } = React.useContext(dataContext)
   const { showMessage } = React.useContext(appContext)
+  const [getConfirmation, setGetConfirmation] = React.useState({status: false, onConfirm: () => {}})
+  const history = useHistory()
 
   React.useEffect(() => {
     async function fetchBatch() {
       const batch_data = await callApi({
         graphql: `{ batch(id: ${batch_id}) { 
                 id batch_name day class_time project_id
+                mentors { id }
+                teachers { id }
             }}`,
         cache: true,
         cache_key: `batch_${batch_id}`
@@ -48,10 +53,7 @@ const BatchForm = () => {
     }
 
     if (batch_id !== '0') {
-      if (
-        cache[`batch_${batch_id}`] === undefined ||
-        !cache[`batch_${batch_id}`]
-      ) {
+      if (cache[`batch_${batch_id}`] === undefined || !cache[`batch_${batch_id}`]) {
         fetchBatch()
       } else {
         setBatch(cache[`batch_${batch_id}`])
@@ -86,9 +88,7 @@ const BatchForm = () => {
         if (data) {
           setDisable(true)
           showMessage('Batch Updated Successfully', 'success')
-          unsetLocalCache(
-            `shelter_${shelter_id}_project_${project_id}_batch_index`
-          )
+          unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_batch_index`)
           unsetLocalCache(`shelter_view_${shelter_id}`)
           unsetLocalCache(`batch_${batch_id}`)
         }
@@ -107,6 +107,23 @@ const BatchForm = () => {
         }
       )
     }
+  }
+
+  const deleteBatch = () => {
+    if(batch.teachers.length > 0 || batch.mentors.length > 0) {
+      showMessage(`Please delete all teacher assignments from the batch before deleting.`, 'error')
+      return false;
+    }
+    callApi({
+      url: `/batches/${batch_id}`,
+      method: 'delete'
+    }).then(() => {
+      unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_batch_index`)
+      unsetLocalCache(`shelter_view_${shelter_id}`)
+      unsetLocalCache(`batch_${batch_id}`)
+      history.push(`/shelters/${shelter_id}/projects/${project_id}/batches`)
+      showMessage('Deleted the batch')
+    })
   }
 
   const class_time_options = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
@@ -201,13 +218,45 @@ const BatchForm = () => {
               </IonItem>
             )}
           </form>
-          { batch_id == "0" ? null : 
+          { batch_id == "0" ? null :
+            <>
+            <IonItem>
+              <IonButton slot="end" 
+                          onClick={() => { 
+                            setGetConfirmation({
+                              status:true,
+                              onConfirm: () => { deleteBatch() } 
+                            })
+                          }}>
+                <IonIcon icon={trash} /> Delete this Batch
+              </IonButton>
+            </IonItem>
             <IonItem>
               <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/0/view-teachers`}>
                 Add/Remove Teachers to this Batch
               </IonButton>
-            </IonItem> }
+            </IonItem>
+            </>
+          }
         </IonList>
+
+        <IonAlert
+          isOpen={getConfirmation.status}
+          onDidDismiss={() => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }}
+          header={'Are you sure?'}
+          subHeader={'Confirm that you wish to delete this allocation'}
+          buttons={[
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }
+            },
+            {
+              text: 'Delete',
+              handler: getConfirmation.onConfirm
+            }
+          ]}
+        />
 
         {disable ? (
           <IonFab

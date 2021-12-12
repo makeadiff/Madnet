@@ -267,7 +267,7 @@ const Profile = () => {
                         color="primary"
                         onClick={() => setChangePassword(true)}
                       >
-                        Change Password
+                        Change Password...
                       </IonLabel>
                     </IonItem>
                     {changePassword ? (
@@ -470,7 +470,7 @@ const Profile = () => {
                     <IonItem>
                       <IonButton onClick={() => {
                         clearLocalCache()
-                        showMessage("Local Cache Cleared")
+                        showMessage("Local Cache Cleared. Please reload the page.")
                       }}>Clear Cache</IonButton>
                     </IonItem>
                   </IonCardContent>

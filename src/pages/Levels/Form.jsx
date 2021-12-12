@@ -9,11 +9,12 @@ import {
   IonFabButton,
   IonSelect,
   IonSelectOption,
-  IonButton
+  IonButton,
+  IonAlert
 } from '@ionic/react'
-import { pencil, close } from 'ionicons/icons'
+import { pencil, close, trash } from 'ionicons/icons'
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams,useHistory } from 'react-router-dom'
 import { PROJECT_IDS } from '../../utils/Constants'
 
 import Title from '../../components/Title'
@@ -41,6 +42,8 @@ const LevelForm = () => {
     students: 'Students',
     teachers: 'Teachers'
   })
+  const [getConfirmation, setGetConfirmation] = React.useState({status: false, onConfirm: () => {}})
+  const history = useHistory()
 
   React.useEffect(() => {
     async function fetchLevel() {
@@ -105,7 +108,7 @@ const LevelForm = () => {
         params: level
       }).then((data) => {
         if (data) {
-          showMessage(labels.level + ' Updated Successfully', 'success')
+          showMessage(labels.level + ' updated Successfully', 'success')
           unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
           unsetLocalCache(`shelter_view_${shelter_id}`)
         }
@@ -126,6 +129,23 @@ const LevelForm = () => {
         }
       )
     }
+  }
+
+  const deleteLevel = () => {
+    if(level.teachers.length > 0 || level.students.length > 0) {
+      showMessage(`Please delete all teacher and students assignments from the level before deleting the level.`, 'error')
+      return false;
+    }
+    callApi({
+      url: `/levels/${level_id}`,
+      method: 'delete'
+    }).then(() => {
+      unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
+      unsetLocalCache(`shelter_view_${shelter_id}`)
+      unsetLocalCache(`level_${level_id}`)
+      history.push(`/shelters/${shelter_id}/projects/${project_id}/levels`)
+      showMessage('Deleted the level')
+    })
   }
 
   const all_grades = ['5', '6', '7', '8', '9', '10', '11', '12', '13']
@@ -177,6 +197,17 @@ const LevelForm = () => {
                   )
                 })}
               </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonButton slot="end" 
+                          onClick={() => { 
+                            setGetConfirmation({
+                              status:true,
+                              onConfirm: () => { deleteLevel() } 
+                            })
+                          }}>
+                <IonIcon icon={trash} /> Delete this Level
+              </IonButton>
             </IonItem>
             {disable ? null : (
               <IonItem>
@@ -235,6 +266,24 @@ const LevelForm = () => {
             <IonLabel></IonLabel>
           </IonItem>
         </IonList>
+
+        <IonAlert
+          isOpen={getConfirmation.status}
+          onDidDismiss={() => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }}
+          header={'Are you sure?'}
+          subHeader={'Confirm that you wish to delete this allocation'}
+          buttons={[
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }
+            },
+            {
+              text: 'Delete',
+              handler: getConfirmation.onConfirm
+            }
+          ]}
+        />
 
         {disable ? (
           <IonFab
