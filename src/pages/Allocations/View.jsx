@@ -44,19 +44,19 @@ const TeacherView = () => {
                 center(id: ${shelter_id}) { name }
                 ${level_name_fetch}
                 batchSearch(center_id:${shelter_id}, project_id: ${project_id} ${level_check} ${batch_check}) {
-                    id batch_name 
-                    allocations {
-                      role
-                      users {
-                        id name
-                      }
-                      level {
-                        id level_name
-                      }
-                      subject {
-                        id name
-                      }
+                  id batch_name 
+                  allocations {
+                    role
+                    users {
+                      id name
                     }
+                    level {
+                      id level_name
+                    }
+                    subject {
+                      id name
+                    }
+                  }
                 }
               }`,
         cache: true,
@@ -106,6 +106,10 @@ const TeacherView = () => {
       <Title
         name={`Teachers at ${shelter} ${level} (${PROJECT_KEYS[project_id]})`}
         back={`/shelters/${shelter_id}/projects/${project_id}`}
+        refresh={() => {
+          unsetLocalCache(cache_key)
+          window.location.reload()
+        }}
       />
       <IonContent className="dark">
         <IonList>

@@ -77,10 +77,14 @@ const DataProvider = ({ children }) => {
 
 const useHandler = () => {
   const { setLoading, showMessage } = React.useContext(appContext)
-  const [error, setError] = React.useState([])
-  const [cache, setCacheAll] = React.useState({}) // Right now, this is used only to see if the data should be refreshed. There is a duplication here - the data is stored in this variable and in localstorage. For now, this can continue. If memory issues come, rather than storing the entire data, just store a flag. 1/0.
+  const [error, setError] = React.useState([]) // eslint-disable-line
   const { user } = React.useContext(authContext)
 
+  // Right now, this is used only to see if the data should be refreshed. There is a duplication here 
+  // - the data is stored in this variable and in localstorage. For now, this can continue. If memory 
+  // issues come, rather than storing the entire data, just store a flag. 1/0.
+  const [cache, setCacheAll] = React.useState({}) 
+  
   const setCache = (key, value) => {
     let new_cache = cache
     new_cache[key] = value
@@ -101,13 +105,13 @@ const useHandler = () => {
 
   const getLocalCache = (type, key_seed, cache_key) => {
     if (!cache_key) cache_key = getCacheKey(type, key_seed)
-    const itemStr = localStorage.getItem(cache_key)
+    const item_json = localStorage.getItem(cache_key)
 
-    if (!itemStr) {
+    if (!item_json) {
       return null
     }
 
-    const item = JSON.parse(itemStr)
+    const item = JSON.parse(item_json)
     const now = new Date()
 
     // compare the expiry time of the item with the current time
@@ -123,12 +127,12 @@ const useHandler = () => {
   }
 
   const getCacheByKey = (cache_key) => {
-    const itemStr = localStorage.getItem(cache_key)
-    if (!itemStr) {
+    const item_json = localStorage.getItem(cache_key)
+    if (!item_json) {
       return null
     }
 
-    const item = JSON.parse(itemStr)
+    const item = JSON.parse(item_json)
     setCache(cache_key, item.data)
     return item.data
   }
@@ -163,17 +167,37 @@ const useHandler = () => {
       url: '',
       type: 'rest',
       method: 'get',
+
+      // POST parameters that should be passed to the API
       params: false,
-      graphql: '', // GraphQL query string
-      graphql_type: 'query', // query or mutation. I don't think its used yet.
-      cache: true, // If false, will not cache the results.
-      name: '', // Human friendly name for the API call. Used in error messages.
-      key: '', // We'll use this to extract the correct info when api returns data. Eg. API will return `{status:"success", data:{users: [ ... ]}}}` and the key is 'users', function will return just the users: [ ... ] part of the data instead of the entire result.
-      cache_key: '', // Name of the key used for caching in localStorage.
-      setter: false // Setter function. If this is given, the function will automatically call the setter function with the valid data. Eg: `callApi({url: '/users/1', setter: setUser})`
+
+      // GraphQL query string
+      graphql: '', 
+
+      // query or mutation. I don't think its used yet.
+      graphql_type: 'query', 
+      
+      // If false, will not cache the results.
+      cache: true, 
+
+      // Human friendly name for the API call. Used in error messages.
+      name: '', 
+
+      // We'll use this to extract the correct info when api returns data. Eg. API will return 
+      //  `{status:"success", data:{users: [ ... ]}}}` and the key is 'users', function will return just the 
+      //  users: [ ... ] part of the data instead of the entire result.
+      key: '', 
+      
+      // Name of the key used for caching in localStorage.
+      cache_key: '', 
+      
+      // Setter function. If this is given, the function will automatically call the setter function with the 
+      //  valid data. Eg: `callApi({url: '/users/1', setter: setUser})`
+      setter: false
     }
+
     if (user_args.url !== undefined) {
-      default_args['name'] = user_args.url.split(/[\/\?\(]/)[0]
+      default_args['name'] = user_args.url.split(/[\/\?\(]/)[0] // eslint-disable-line
       default_args['key'] = default_args['name']
     } else if (user_args.graphql !== undefined) {
       default_args['type'] = 'graphql'
@@ -182,9 +206,7 @@ const useHandler = () => {
         .trim()
       default_args['key'] = default_args['name']
     } else {
-      console.log(
-        'Dev Error: Unsupported call in callApi() - url or graphql must be given.'
-      )
+      console.log('Dev Error: Unsupported call in callApi() - url or graphql must be given.')
     }
 
     let call_response

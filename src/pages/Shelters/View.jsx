@@ -24,6 +24,8 @@ import './Shelters.css'
 
 const ShelterView = () => {
   const { shelter_id, param_project_id } = useParams()
+  const { callApi, cache, unsetLocalCache } = React.useContext(dataContext)
+
   const [shelter, setShelter] = React.useState({
     name: '',
     projects: [],
@@ -38,12 +40,13 @@ const ShelterView = () => {
     batches: [],
     levels: []
   })
-  const { callApi, cache } = React.useContext(dataContext)
+  
   // Custom text labels for specific projects.
   const [labels, setLabels] = React.useState({
     student: 'Students',
     level: 'Class Section(s)'
   })
+  const cache_key = `shelter_view_${shelter_id}`
 
   React.useEffect(() => {
     async function fetchShelter() {
@@ -61,7 +64,7 @@ const ShelterView = () => {
                     students { id }
                 }}`,
         cache: true,
-        cache_key: `shelter_view_${shelter_id}`
+        cache_key: cache_key
       })
 
       setShelter(shelter_data)
@@ -84,14 +87,14 @@ const ShelterView = () => {
 
     // Some unknown cache related issue was messing with back button functonality - hence the lot of OR cases.
     if (
-      cache[`shelter_view_${shelter_id}`] === undefined ||
-      !cache[`shelter_view_${shelter_id}`] ||
+      cache[cache_key] === undefined ||
+      !cache[cache_key] ||
       !shelter.name ||
       shelter_id != shelter.id
     ) {
       fetchShelter()
     }
-  }, [shelter_id, cache[`shelter_view_${shelter_id}`]])
+  }, [shelter_id, cache[cache_key]])
 
   React.useEffect(() => {
     shelter.projects.forEach((proj) => {
@@ -104,7 +107,12 @@ const ShelterView = () => {
 
   return (
     <IonPage>
-      <Title name={`Manage ${shelter.name}`} back={`/shelters`} />
+      <Title name={`Manage ${shelter.name}`} 
+          back={`/shelters`} 
+          refresh={() => {
+            unsetLocalCache(cache_key)
+            window.location.reload()
+          }} />
 
       <IonContent className="dark">
         {shelter.projects.length > 1 ? (

@@ -258,7 +258,7 @@ const LevelForm = () => {
             </>
           ) : null}
 
-          {/* Some empty space at the bottom so that the FAB icon does NOT cover things. */}
+          {/* Some empty space at the bottom so that the FAB icon does NOT cover things. :UGLY: */}
           <IonItem>
             <IonLabel></IonLabel>
           </IonItem>
