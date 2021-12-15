@@ -16,11 +16,12 @@ import { dataContext } from '../../contexts/DataContext'
 import Title from '../../components/Title'
 
 const BatchIndex = () => {
-  const { callApi, cache } = React.useContext(dataContext)
+  const { callApi, cache, unsetLocalCache } = React.useContext(dataContext)
   const [shelter, setShelter] = React.useState({ name: '' })
   const [batches, setBatches] = React.useState([])
   const [project, setProject] = React.useState({ id: 0, name: '' })
   const { shelter_id, project_id } = useParams()
+  const cache_key = `shelter_${shelter_id}_project_${project_id}_batch_index`
 
   React.useEffect(() => {
     async function fetchBatchList() {
@@ -33,7 +34,7 @@ const BatchIndex = () => {
                 center(id: ${shelter_id}) { id name }
             }`,
         cache: true,
-        cache_key: `shelter_${shelter_id}_project_${project_id}_batch_index`
+        cache_key: cache_key
       })
       if (data.center) {
         setShelter(data.center)
@@ -53,16 +54,16 @@ const BatchIndex = () => {
     }
 
     if (
-      cache[`shelter_${shelter_id}_project_${project_id}_batch_index`] ===
+      cache[cache_key] ===
         undefined ||
-      !cache[`shelter_${shelter_id}_project_${project_id}_batch_index`]
+      !cache[cache_key]
     ) {
       fetchBatchList()
     }
   }, [
     shelter_id,
     project_id,
-    cache[`shelter_${shelter_id}_project_${project_id}_batch_index`]
+    cache[cache_key]
   ])
 
   return (
@@ -70,6 +71,10 @@ const BatchIndex = () => {
       <Title
         name={`Batches in ${shelter.name}(${project.name})`}
         back={`/shelters/${shelter_id}/projects/${project_id}`}
+        refresh={() => {
+          unsetLocalCache(cache_key)
+          window.location.reload()
+        }}
       />
 
       <IonContent className="dark">

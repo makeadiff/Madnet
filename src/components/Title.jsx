@@ -9,13 +9,13 @@ import {
   IonBadge,
   IonButton
 } from '@ionic/react'
-import { home, chevronBack } from 'ionicons/icons'
+import { home, chevronBack, refreshCircle } from 'ionicons/icons'
 import { useHistory } from 'react-router-dom'
 
 import { appContext } from '../contexts/AppContext'
 import './Title.css'
 
-const Title = ({ name, back }) => {
+const Title = ({ name, back, refresh }) => {
   const { notifications } = React.useContext(appContext)
   const history = useHistory()
 
@@ -27,15 +27,6 @@ const Title = ({ name, back }) => {
         </IonButtons>
 
         <IonButtons slot="start">
-          <IonButton routerLink="/dashboard">
-            <IonIcon icon={home} size="large" />
-            {notifications.length ? (
-              <IonBadge id="notifications-badge" color="danger">
-                {notifications.length}
-              </IonBadge>
-            ) : null}
-          </IonButton>
-
           {back ? (
             back === 'history' ? (
               <IonButton onClick={() => history.goBack()}>
@@ -47,6 +38,21 @@ const Title = ({ name, back }) => {
               </IonButton>
             )
           ) : null}
+
+          <IonButton routerLink="/dashboard">
+            <IonIcon icon={home} size="large" />
+            {notifications.length ? (
+              <IonBadge id="notifications-badge" color="danger">
+                {notifications.length}
+              </IonBadge>
+            ) : null}
+          </IonButton>
+
+          { refresh ? 
+            <IonButton onClick={refresh}>
+              <IonIcon icon={refreshCircle} size="large" />
+            </IonButton>
+          : null}
         </IonButtons>
 
         <IonTitle>{name}</IonTitle>

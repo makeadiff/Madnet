@@ -5,3 +5,7 @@ ion-label.shelterList {
 ion-item.shelterItems {
   padding: 5px !important;
 }
+
+ion-datetime {
+  color: #ffffff !important;
+}

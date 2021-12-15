@@ -88,6 +88,7 @@ const TeacherForm = () => {
     }).then(() => {
       showMessage('Saved class assignment successfully')
       unsetLocalCache(`teacher_view_${shelter_id}_${project_id}_${combo.batch_id}_${combo.level_id}`)
+      unsetLocalCache(`teacher_view_${shelter_id}_${project_id}_0_0`)
       unsetLocalCache(`level_${combo.level_id}`)
       unsetLocalCache(`batch_${combo.batch_id}`)
     })
@@ -124,7 +125,7 @@ const TeacherForm = () => {
             )}
             <IonItem>
               <IonLabel>
-                {project_id === PROJECT_IDS.AFTERCARE ? 'SSG' : 'Level'}:
+                {project_id === PROJECT_IDS.AFTERCARE ? 'SSG' : 'Class Section'}:
               </IonLabel>
               <IonSelect
                 slot="end"

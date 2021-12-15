@@ -36,11 +36,12 @@ import './All.css'
 import Title from '../components/Title'
 import { authContext } from '../contexts/AuthContext'
 import { dataContext } from '../contexts/DataContext'
+import { appContext } from '../contexts/AppContext'
 
 const Profile = () => {
   const { user } = React.useContext(authContext)
-  const { updateUser } = React.useContext(dataContext)
-  const { callApi, cache } = React.useContext(dataContext)
+  const { callApi, cache, updateUser, clearLocalCache } = React.useContext(dataContext)
+  const { showMessage } = React.useContext(appContext)
   const [changePassword, setChangePassword] = React.useState(false)
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
@@ -266,7 +267,7 @@ const Profile = () => {
                         color="primary"
                         onClick={() => setChangePassword(true)}
                       >
-                        Change Password
+                        Change Password...
                       </IonLabel>
                     </IonItem>
                     {changePassword ? (
@@ -433,9 +434,7 @@ const Profile = () => {
                   <IonCardContent>
                     <IonItem>
                       {sourcingCampaign ? (
-                        <a
-                          href={`https://makeadiff.in/apprenticeship/?c=${sourcingCampaign.campaign_id}`}
-                        >
+                        <a href={`https://makeadiff.in/apprenticeship/?c=${sourcingCampaign.campaign_id}`}>
                           Personal Campaign ID: {sourcingCampaign.campaign_id}
                         </a>
                       ) : (
@@ -461,17 +460,23 @@ const Profile = () => {
                     </IonItem>
                   </IonCardContent>
                 </IonCard>
-                {/* <IonCard className="dark no-shadow">
-                                    <IonCardHeader>
-                                        <IonCardTitle>Profile Settings</IonCardTitle>
-                                    </IonCardHeader>
-                                    <IonCardContent>
-                                        <IonItem>
-                                            <IonLabel>Notifcation</IonLabel>
-                                            <IonToggle color="primary" />
-                                        </IonItem>
-                                    </IonCardContent>
-                                </IonCard> */}
+                
+                { disable ? null : (
+                <IonCard className="dark no-shadow">
+                  <IonCardHeader>
+                    <IonCardTitle>Settings</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <IonItem>
+                      <IonButton onClick={() => {
+                        clearLocalCache()
+                        showMessage("Local Cache Cleared. Please reload the page.")
+                      }}>Clear Cache</IonButton>
+                    </IonItem>
+                  </IonCardContent>
+                </IonCard>
+                )}
+
               </IonList>
             </IonCol>
           </IonRow>
