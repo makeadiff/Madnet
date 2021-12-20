@@ -198,7 +198,9 @@ const LevelForm = () => {
                 })}
               </IonSelect>
             </IonItem>
-            <IonItem>
+            {level_id == '0' ? null : 
+              (
+                <IonItem>
               <IonButton slot="end" 
                           onClick={() => { 
                             setGetConfirmation({
@@ -209,6 +211,9 @@ const LevelForm = () => {
                 <IonIcon icon={trash} /> Delete this Level
               </IonButton>
             </IonItem>
+              )
+            }
+            
             {disable ? null : (
               <IonItem>
                 <IonButton type="submit">Save</IonButton>
