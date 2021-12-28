@@ -444,11 +444,11 @@ const Profile = () => {
                     <IonItem>
                       <IonLabel position="stacked">
                         New Applicants Sourced:{' '}
-                        {sourcingCampaign
-                          ? sourcingCampaign.sourced_applicants.length
+                        {sourcingCampaign && sourcingCampaign.sourced_applicants !== null 
+                          ? sourcingCampaign.sourced_applicants.length 
                           : 0}
                       </IonLabel>
-                      {sourcingCampaign ? (
+                      {sourcingCampaign && sourcingCampaign.sourced_applicants !== null ? (
                         <ul>
                           {sourcingCampaign.sourced_applicants.map(
                             (applicant, index) => {
