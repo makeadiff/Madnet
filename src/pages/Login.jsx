@@ -121,9 +121,9 @@ function Login() {
         'get'
       )
       .then((user_data) => loginUser(user_data, 'api'))
-      .catch((err) => {
+      .catch(() => {
         setLoading(false)
-        showMessage(err.message, 'error')
+        showMessage('Invalid credentials provided.', 'error')
       })
   }
 
