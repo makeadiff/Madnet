@@ -425,6 +425,11 @@ const Profile = () => {
                         disabled
                       ></IonInput>
                     </IonItem>
+                    <IonItem>
+                        <IonButton size="default" type="submit" routerLink={`/users/${user.id}/history`}>
+                          History
+                        </IonButton>
+                    </IonItem>
                   </IonCardContent>
                 </IonCard>
                 <IonCard className="dark no-shadow">
