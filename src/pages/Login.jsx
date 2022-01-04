@@ -140,7 +140,7 @@ function Login() {
   const validateLoginForm = (email, password) => {
     // Check for undefined or empty input fields
     if (!email || !password) {
-      showMessage('Please enter a valid email and password.', 'error')
+      showMessage('Please enter a valid email and password.', 'error') // Do we want a custom error message if the email is wrong?
       return false
     }
 
