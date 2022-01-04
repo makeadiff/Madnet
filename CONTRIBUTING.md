@@ -10,6 +10,17 @@ We have a list of open issues that we require help with in our [issue tracker in
 
 If you have not contributed to an GitHub project yet, this page will help you get you up to speed.
 
+## Contributing if you are NOT a Make a Difference Volunteer
+
+Since this tool is an internal app for our organization [Make a Difference](https://makeadiff.in), we were not expecting outside contributions. But I have been getting help from multiple people outside the organization - and we are very excited about it 😃. So here is a small introduction to our organization - and some additional help for you all...
+
+Make a Difference(or MAD as we like to call it) is a 15+ year old Indian NGO. We work with children in need of care and protection. We have a volunteer base of 2000-3000 people who take classes and support the children in other ways. We use MADNet to track these interactions. To know more, visit our [website](https://makeadiff.in).
+
+Since MADNet is an internal app, you need a login to access the app. Please use this to access the app...
+
+- Username: forge.simulation@makeadiff.in
+- Password: mad4ever
+
 ### Requirements
 
 You'll need install these to work on this project...
