@@ -22,6 +22,7 @@ import './Form.css'
 const UserSearch = ({ segment }) => {
   const { user } = React.useContext(authContext)
   const [groups, setGroups] = React.useState([])
+  const [shelter, setShelter] = React.useState([])
   const [showMore, setShowMore] = React.useState(false)
   const { getUsers, callApi } = React.useContext(dataContext)
   const [users, setUsers] = React.useState(null)
@@ -31,7 +32,8 @@ const UserSearch = ({ segment }) => {
     phone: '',
     any_email: '',
     groups_in: '',
-    user_type: 'volunteer'
+    user_type: '',
+    center_id: ''
   })
 
   React.useEffect(() => {
@@ -43,6 +45,16 @@ const UserSearch = ({ segment }) => {
     fetchGroups()
   }, [segment])
 
+  //Fetching all shelters
+  React.useEffect(() => {
+    const fetchShelters = () => {
+      callApi({ url: `/cities/${search.city_id}/centers` }).then((data) => {
+        setShelter(data)
+      })
+    }
+    fetchShelters()
+  }, [segment])
+
   const setSearchValue = (key, value) => {
     const new_search = { ...search, [key]: value }
     setSearch(new_search)
@@ -51,7 +63,7 @@ const UserSearch = ({ segment }) => {
   // This converts the selected checkboxes into a coma seperated list of ids.
   const setGroupSearch = (e) => {
     let groups = []
-    if (search.group_in) groups = search.group_in.split(',')
+    if (search.groups_in) groups = search.group_in.split(',')
     const value = e.target.value
     if (e.target.checked) {
       groups.push(value)
@@ -135,6 +147,26 @@ const UserSearch = ({ segment }) => {
                     )
                   })}
                 </div>
+
+                <IonItem>
+                  <IonLabel>Shelters</IonLabel>
+                  <IonSelect
+                    value={search.center_id}
+                    placeholder="Select Shelter"
+                    interface="popover"
+                    onIonChange={(e) =>
+                      setSearchValue('center_id', e.target.value)
+                    }
+                  >
+                    {shelter.map((sh) => {
+                      return (
+                        <IonSelectOption value={sh.id}>
+                          {sh.name}
+                        </IonSelectOption>
+                      )
+                    })}
+                  </IonSelect>
+                </IonItem>
 
                 <IonItem>
                   <IonLabel>User Type</IonLabel>

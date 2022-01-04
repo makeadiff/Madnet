@@ -14,7 +14,7 @@ import {
 } from '@ionic/react'
 import { pencil, close, trash } from 'ionicons/icons'
 import React from 'react'
-import { useParams,useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { PROJECT_IDS } from '../../utils/Constants'
 
 import Title from '../../components/Title'
@@ -42,7 +42,10 @@ const LevelForm = () => {
     students: 'Students',
     teachers: 'Teachers'
   })
-  const [getConfirmation, setGetConfirmation] = React.useState({status: false, onConfirm: () => {}})
+  const [getConfirmation, setGetConfirmation] = React.useState({
+    status: false,
+    onConfirm: () => {}
+  })
   const history = useHistory()
 
   React.useEffect(() => {
@@ -109,7 +112,9 @@ const LevelForm = () => {
       }).then((data) => {
         if (data) {
           showMessage(labels.level + ' updated Successfully', 'success')
-          unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
+          unsetLocalCache(
+            `shelter_${shelter_id}_project_${project_id}_level_index`
+          )
           unsetLocalCache(`shelter_view_${shelter_id}`)
         }
       })
@@ -123,7 +128,9 @@ const LevelForm = () => {
             data.teachers = []
             setLevel(data)
             showMessage(labels.level + ' created Successfully', 'success')
-            unsetLocalCache(`shelter_${shelter_id}_project_${project_id}_level_index`)
+            unsetLocalCache(
+              `shelter_${shelter_id}_project_${project_id}_level_index`
+            )
             unsetLocalCache(`shelter_view_${shelter_id}`)
           }
         }
@@ -132,9 +139,12 @@ const LevelForm = () => {
   }
 
   const deleteLevel = () => {
-    if(level.teachers.length > 0 || level.students.length > 0) {
-      showMessage(`Please delete all teacher and students assignments from the level before deleting the level.`, 'error')
-      return false;
+    if (level.teachers.length > 0 || level.students.length > 0) {
+      showMessage(
+        `Please delete all teacher and students assignments from the level before deleting the level.`,
+        'error'
+      )
+      return false
     }
     callApi({
       url: `/levels/${level_id}`,
@@ -198,17 +208,25 @@ const LevelForm = () => {
                 })}
               </IonSelect>
             </IonItem>
-            <IonItem>
-              <IonButton slot="end" 
-                          onClick={() => { 
-                            setGetConfirmation({
-                              status:true,
-                              onConfirm: () => { deleteLevel() } 
-                            })
-                          }}>
-                <IonIcon icon={trash} /> Delete this Level
-              </IonButton>
-            </IonItem>
+            
+            {level_id == '0' ? null : (
+              <IonItem>
+                <IonButton
+                  slot="end"
+                  onClick={() => {
+                    setGetConfirmation({
+                      status: true,
+                      onConfirm: () => {
+                        deleteLevel()
+                      }
+                    })
+                  }}
+                >
+                  <IonIcon icon={trash} /> Delete this Level
+                </IonButton>
+              </IonItem>
+            )}
+
             {disable ? null : (
               <IonItem>
                 <IonButton type="submit">Save</IonButton>
@@ -231,7 +249,9 @@ const LevelForm = () => {
 
               {disable ? null : (
                 <IonItem>
-                  <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}>
+                  <IonButton
+                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/levels/${level_id}/add-student`}
+                  >
                     Add/Remove {labels.students} from this {labels.level}
                   </IonButton>
                 </IonItem>
@@ -250,7 +270,9 @@ const LevelForm = () => {
 
               {disable ? null : (
                 <IonItem>
-                  <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/0/level/${level_id}/view-teachers`}>
+                  <IonButton
+                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/0/level/${level_id}/view-teachers`}
+                  >
                     Edit {labels.teachers} Assignment
                   </IonButton>
                 </IonItem>
@@ -269,14 +291,24 @@ const LevelForm = () => {
 
         <IonAlert
           isOpen={getConfirmation.status}
-          onDidDismiss={() => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }}
+          onDidDismiss={() => {
+            setGetConfirmation({
+              status: false,
+              onConfirm: getConfirmation.onConfirm
+            })
+          }}
           header={'Are you sure?'}
           subHeader={'Confirm that you wish to delete this allocation'}
           buttons={[
             {
               text: 'Cancel',
               role: 'cancel',
-              handler: () => { setGetConfirmation({ status: false, onConfirm: getConfirmation.onConfirm }) }
+              handler: () => {
+                setGetConfirmation({
+                  status: false,
+                  onConfirm: getConfirmation.onConfirm
+                })
+              }
             },
             {
               text: 'Delete',

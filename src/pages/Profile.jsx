@@ -425,6 +425,11 @@ const Profile = () => {
                         disabled
                       ></IonInput>
                     </IonItem>
+                    <IonItem>
+                        <IonButton size="default" type="submit" routerLink={`/users/${user.id}/history`}>
+                          History
+                        </IonButton>
+                    </IonItem>
                   </IonCardContent>
                 </IonCard>
                 <IonCard className="dark no-shadow">
@@ -444,11 +449,11 @@ const Profile = () => {
                     <IonItem>
                       <IonLabel position="stacked">
                         New Applicants Sourced:{' '}
-                        {sourcingCampaign
-                          ? sourcingCampaign.sourced_applicants.length
+                        {sourcingCampaign && sourcingCampaign.sourced_applicants !== null 
+                          ? sourcingCampaign.sourced_applicants.length 
                           : 0}
                       </IonLabel>
-                      {sourcingCampaign ? (
+                      {sourcingCampaign && sourcingCampaign.sourced_applicants !== null ? (
                         <ul>
                           {sourcingCampaign.sourced_applicants.map(
                             (applicant, index) => {
