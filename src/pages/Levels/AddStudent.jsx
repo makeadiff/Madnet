@@ -29,7 +29,8 @@ const LevelAddStudent = () => {
     level: 'Class Section',
     student: 'Student'
   })
-  const [selected, setSelected] = React.useState({})
+  const [selected, setSelected] = React.useState([])
+ 
 
   React.useEffect(() => {
     async function fetchLevel() {
@@ -56,10 +57,10 @@ const LevelAddStudent = () => {
         if (data.level.students.length > 0) {
           let sel = {}
           for (var i in data.level.students) {
-            let stu = data.level.students[i]
-            sel[stu.id] = true
-          }
-          setSelected(sel)
+            let stu = data.level.students[i]  
+            sel[stu.id] = true    
+          } 
+          setSelected(sel)       
         }
       }
       if (data.studentSearch) setStudents(data.studentSearch)
@@ -75,7 +76,7 @@ const LevelAddStudent = () => {
     e.preventDefault()
 
     let students = Object.keys(selected)
-
+    
     callApi({
       url: `/levels/${level_id}/students`,
       method: 'post',
@@ -97,15 +98,13 @@ const LevelAddStudent = () => {
     const student_id = e.target.value
     const is_selected = e.target.checked
     if(is_selected === undefined) return;
-
     let sel = { ...selected }
-
+    //True or false if checkbox selected
     if(is_selected === true) {
       sel[student_id] = true
     } else {
       delete sel[student_id]
     }
-
     setSelected(sel)
   }
 
@@ -125,19 +124,33 @@ const LevelAddStudent = () => {
           </IonItem>
 
           <form onSubmit={addStudents}>
-            {students.map((student, index) => {
-              return (
-                <IonItem key={index} className="striped">
-                  <IonCheckbox
-                    value={student.id}
-                    checked={selected[student.id]}
-                    onIonChange={selectStudent}
-                    slot="start"
-                  ></IonCheckbox>
-                  <IonLabel>{student.name}</IonLabel>
-                </IonItem>
-              )
-            })}
+            {
+              students
+                .sort((a,b) => {
+                  const aSelected = !!selected[a.id]
+                  const bSelected = !!selected[b.id]
+                  //console.log('a', aSelected, 'b', bSelected);
+                  if(aSelected === true && bSelected === false){ 
+                    return -1
+                  }else if(aSelected === false && bSelected === true){ 
+                    return 1
+                  }else {
+                    return 0
+                  }
+                })
+                .map((student, index) => {
+                  return (
+                    <IonItem key={index} className="striped">
+                      <IonCheckbox
+                        value={student.id}
+                        checked={selected[student.id]}
+                        onIonChange={selectStudent}
+                        slot="start"
+                      ></IonCheckbox>
+                      <IonLabel>{student.name}</IonLabel>
+                    </IonItem>
+                  )
+                })}
 
             <IonItem>
               <IonButton onClick={addStudents}>
