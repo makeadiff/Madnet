@@ -5,7 +5,8 @@ import {
   IonLabel,
   IonContent,
   IonButton,
-  IonCheckbox
+  IonCheckbox,
+  IonInput
 } from '@ionic/react'
 import React from 'react'
 import { useParams } from 'react-router-dom'
@@ -30,6 +31,7 @@ const LevelAddStudent = () => {
     student: 'Student'
   })
   const [selected, setSelected] = React.useState([])
+  const [searchText, setSearchText] = React.useState("")
  
 
   React.useEffect(() => {
@@ -108,6 +110,10 @@ const LevelAddStudent = () => {
     setSelected(sel)
   }
 
+  const updateField = (e) => {
+    setSearchText(e.target.value)
+  }
+
   return (
     <IonPage>
       <Title
@@ -121,6 +127,16 @@ const LevelAddStudent = () => {
             <IonButton onClick={addStudents}>
               Save {labels.student} Selection in {level.level_name} {labels.level}
             </IonButton>
+          </IonItem>
+
+          <IonItem>
+            <IonInput
+              type="text"
+              placeholder="Search Student"
+              value={searchText}
+              maxlength="100"
+              onIonChange={updateField}
+            />
           </IonItem>
 
           <form onSubmit={addStudents}>
@@ -139,17 +155,19 @@ const LevelAddStudent = () => {
                   }
                 })
                 .map((student, index) => {
-                  return (
-                    <IonItem key={index} className="striped">
-                      <IonCheckbox
-                        value={student.id}
-                        checked={selected[student.id]}
-                        onIonChange={selectStudent}
-                        slot="start"
-                      ></IonCheckbox>
-                      <IonLabel>{student.name}</IonLabel>
-                    </IonItem>
-                  )
+                  if(student.name.toLowerCase().includes(searchText.toLowerCase())){
+                    return (
+                      <IonItem key={index} className="striped">
+                        <IonCheckbox
+                          value={student.id}
+                          checked={selected[student.id]}
+                          onIonChange={selectStudent}
+                          slot="start"
+                        ></IonCheckbox>
+                        <IonLabel>{student.name}</IonLabel>
+                      </IonItem>
+                    )
+                  }
                 })}
 
             <IonItem>
