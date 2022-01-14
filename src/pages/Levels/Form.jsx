@@ -159,7 +159,7 @@ const LevelForm = () => {
   }
 
   const all_grades = ['5', '6', '7', '8', '9', '10', '11', '12', '13']
-  const grade_names = ['A', 'B', 'C', 'D', 'E', 'F']
+  const grade_names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
   return (
     <IonPage>

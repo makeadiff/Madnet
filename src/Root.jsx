@@ -105,10 +105,10 @@ const Root = () => {
             <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact={true}>
               <BatchIndex />
             </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id/add-student">
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id/add-student" exact={true}>
               <LevelAddStudent />
             </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id">
+            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id" exact={true}>
               <LevelForm />
             </PrivateRoute>
             <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true}>
