@@ -6,7 +6,9 @@ import {
   IonContent,
   IonButton,
   IonCheckbox,
-  IonInput
+  IonInput,
+  IonCard,
+  IonCardContent
 } from '@ionic/react'
 import React from 'react'
 import { useParams } from 'react-router-dom'
@@ -122,64 +124,70 @@ const LevelAddStudent = () => {
       />
 
       <IonContent class="dark">
-        <IonList>
-          <IonItem>
-            <IonButton onClick={addStudents}>
-              Save {labels.student} Selection in {level.level_name} {labels.level}
-            </IonButton>
-          </IonItem>
+        <IonCard className="dark no-shadow">
+          <IonCardContent>
+            <IonList>
+              <IonItem>
+                <IonButton onClick={addStudents}>
+                  Save {labels.student} Selection in {level.level_name} {labels.level}
+                </IonButton>
+              </IonItem>
 
-          <IonItem>
-            <IonInput
-              type="text"
-              placeholder="Search Student"
-              value={searchText}
-              maxlength="100"
-              onIonChange={updateField}
-            />
-          </IonItem>
+              <IonItem>
+                <IonInput
+                  type="text"
+                  placeholder="Search Student"
+                  value={searchText}
+                  maxlength="100"
+                  onIonChange={updateField}
+                />
+              </IonItem>
 
-          <form onSubmit={addStudents}>
-            {
-              students
-                .sort((a,b) => {
-                  const aSelected = !!selected[a.id]
-                  const bSelected = !!selected[b.id]
-                  //console.log('a', aSelected, 'b', bSelected);
-                  if(aSelected === true && bSelected === false){ 
-                    return -1
-                  }else if(aSelected === false && bSelected === true){ 
-                    return 1
-                  }else {
-                    return 0
-                  }
-                })
-                .map((student, index) => {
-                  if(student.name.toLowerCase().includes(searchText.toLowerCase())){
-                    return (
-                      <IonItem key={index} className="striped">
-                        <IonCheckbox
-                          value={student.id}
-                          checked={selected[student.id]}
-                          onIonChange={selectStudent}
-                          slot="start"
-                        ></IonCheckbox>
-                        <IonLabel>{student.name}</IonLabel>
-                      </IonItem>
-                    )
-                  }
-                })}
+              <form onSubmit={addStudents}>
+                {
+                  students
+                    .sort((a,b) => {
+                      const aSelected = !!selected[a.id]
+                      const bSelected = !!selected[b.id]
+                      
+                      if(aSelected === true && bSelected === false){ 
+                        return -1
+                      }else if(aSelected === false && bSelected === true){ 
+                        return 1
+                      }else {
+                        return 0
+                      }
+                    })
+                    .map((student, index) => {
+                      if(student.name.toLowerCase().includes(searchText.toLowerCase())){
+                        return (
+                          <IonItem key={index} className="striped">
+                            <IonCheckbox
+                              value={student.id}
+                              checked={selected[student.id]}
+                              onIonChange={selectStudent}
+                              slot="start"
+                            ></IonCheckbox>
+                            <IonLabel>{student.name}</IonLabel>
+                          </IonItem>
+                        )
+                      }
+                    })}
 
-            <IonItem>
-              <IonButton onClick={addStudents}>
-                Save {labels.student} Selection in {level.level_name} {labels.level}
-              </IonButton>
-            </IonItem>
-          </form>
-        </IonList>
+                <IonItem>
+                  <IonButton onClick={addStudents}>
+                    Save {labels.student} Selection in {level.level_name} {labels.level}
+                  </IonButton>
+                </IonItem>
+              </form>
+            </IonList>
+          </IonCardContent>
+        </IonCard>
       </IonContent>
     </IonPage>
   )
 }
 
 export default LevelAddStudent
+
+
