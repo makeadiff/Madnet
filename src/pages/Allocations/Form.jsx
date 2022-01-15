@@ -174,7 +174,7 @@ const TeacherForm = () => {
           </IonItem>
         </form>
         <IonItem
-          routerLink={`/shelters/${shelter_id}/projects/${project_id}/view-teachers`}
+          routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/view-teachers`}
           routerDirection="none"
         >
           <IonButton color="light">&lt; Back</IonButton>
