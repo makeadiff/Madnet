@@ -20,11 +20,13 @@ import * as moment from 'moment'
 import { PROJECT_IDS, PROJECT_KEYS } from '../../utils/Constants'
 import Title from '../../components/Title'
 import { dataContext } from '../../contexts/DataContext'
+import { authContext } from '../../contexts/AuthContext'
 import './Shelters.css'
 
 const ShelterView = () => {
   const { shelter_id, param_project_id } = useParams()
   const { callApi, cache, unsetLocalCache } = React.useContext(dataContext)
+  const { user } = React.useContext(authContext)
 
   const [shelter, setShelter] = React.useState({
     name: '',
@@ -69,13 +71,28 @@ const ShelterView = () => {
 
       setShelter(shelter_data)
 
-      // First project is set as the default project. :TODO: This should default to current user's vertical.
+      // Default project is decided by the current user's vertical.
       if (
         shelter_data.projects &&
         shelter_data.projects.length
       ) {
-        setProjectId(shelter_data.projects[0].id)
-        setProject(shelter_data.projects[0])
+        for(let i = 0; i < user.groups.length; i++) {
+          const group = user.groups[i]
+          for(let j = 0; j < shelter_data.projects.length; j++) {
+            const project = shelter_data.projects[j]
+
+            if(
+                (group.id == 19 && project.id == 1)  // Ed Support Fellow
+              ||  (group.id == 272 && project.id == 4)  // TR ASV
+              ||  (group.id == 375 && project.id == 2)  // FP
+              ||  ((group.id == 378 || group.id == 389) && project.id == 5)  // Aftercare.
+            ) {
+              setProjectId(project.id)
+              setProject(project)
+              break
+            }
+          }
+        }
       }
     }
 

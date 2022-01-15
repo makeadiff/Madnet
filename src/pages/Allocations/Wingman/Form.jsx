@@ -53,10 +53,32 @@ const WingmanForm = () => {
                 studentSearch(city_id:${user.city_id}) {
                     id name
                 }
-            }`
+            }`,
+        cache: false
       })
 
-      setBatchId(data.batchSearch[0].id.toString())
+      let batch_id = null
+
+      if(!data.batchSearch.length) { // No batches found
+        const newBatch = await callApi({ // Create a Default batch - this is how wingman assignments work.
+          method: 'post',
+          url: '/batches',
+          params: {
+            day: 0,
+            class_time: '00:00:00',
+            center_id: shelter_id,
+            project_id: project_id
+          }
+        })
+        
+        if(newBatch.id) {
+          batch_id = newBatch.id
+        }
+      } else {
+        batch_id = data.batchSearch[0].id
+      }
+
+      setBatchId(batch_id.toString())
       setSubjects(data.subjects)
       setWingmen(data.userSearch)
       setStudents(data.studentSearch)
@@ -87,12 +109,12 @@ const WingmanForm = () => {
       url: `/levels/${level_id}/students`,
       method: 'post',
       params: student_id
-    }).then((data) => {})
+    }).then(() => {})
     callApi({
       url: `/batches/${batch_id}/levels/${level_id}/teachers/${wingman_id.id}`,
       method: 'post',
       params: subjectField
-    }).then((data) => {
+    }).then(() => {
       showMessage('Saved Wingman Assignment Successfully')
       unsetLocalCache(`wingman_view_${shelter_id}_${project_id}`)
     })
@@ -151,8 +173,7 @@ const WingmanForm = () => {
                 onIonChange={updateSubField}
               >
                 <IonSelectOption key="0" value="0">
-                  {' '}
-                  None{' '}
+                  None
                 </IonSelectOption>
                 {subjects.map((subject, index) => {
                   return (

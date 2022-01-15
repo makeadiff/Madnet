@@ -141,7 +141,7 @@ const LevelForm = () => {
   const deleteLevel = () => {
     if (level.teachers.length > 0 || level.students.length > 0) {
       showMessage(
-        `Please delete all teacher and students assignments from the level before deleting the level.`,
+        `Please delete all teacher and students assignments from the class section before deleting it.`,
         'error'
       )
       return false
@@ -222,7 +222,7 @@ const LevelForm = () => {
                     })
                   }}
                 >
-                  <IonIcon icon={trash} /> Delete this Level
+                  <IonIcon icon={trash} /> Delete this Class Section
                 </IonButton>
               </IonItem>
             )}
@@ -297,8 +297,8 @@ const LevelForm = () => {
               onConfirm: getConfirmation.onConfirm
             })
           }}
-          header={'Are you sure?'}
-          subHeader={'Confirm that you wish to delete this allocation'}
+          header='Are you sure?'
+          subHeader='Confirm that you wish to delete this class section'
           buttons={[
             {
               text: 'Cancel',
