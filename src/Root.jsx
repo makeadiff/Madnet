@@ -7,7 +7,7 @@ import {
   IonToast
 } from '@ionic/react'
 import { IonReactHashRouter } from '@ionic/react-router'
-import { Redirect, Route, useLocation } from 'react-router-dom'
+import { Redirect, Route, useLocation, Switch } from 'react-router-dom'
 
 import Feedback from 'feeder-react-feedback'
 import 'feeder-react-feedback/dist/feeder-react-feedback.css'
@@ -70,170 +70,172 @@ const Root = () => {
             isOpen={typeof loading === 'string' ? true : loading}
             onDidDismiss={() => setLoading(false)}
             message={typeof loading === 'string' ? loading : 'Loading...'}
-            duration={3000}
+            duration={5000}
           />
           <IonToast
             isOpen={message[0] ? true : false}
             onDidDismiss={() => setMessage(['', false])}
             message={message[0]}
             className={message[1] ? message[1] + '-toast' : ''}
-            duration={10000}
+            duration={3000}
           />
 
           <IonRouterOutlet id="main">
-            <Route path="/login">
-              <Login />
-            </Route>
+            <Switch>
+              <Route path="/login">
+                <Login />
+              </Route>
 
-            <Route path="/induction/profile">
-              <InductionProfile />
-            </Route>
-            <Route path="/induction/setup">
-              <InductionSetup />
-            </Route>
-            <Route path="/induction/join">
-              <InductionIndex />
-            </Route>
+              <Route path="/induction/profile">
+                <InductionProfile />
+              </Route>
+              <Route path="/induction/setup">
+                <InductionSetup />
+              </Route>
+              <Route path="/induction/join">
+                <InductionIndex />
+              </Route>
 
-            <PrivateRoute path="/dashboard">
-              <Dashboard />
-            </PrivateRoute>
+              <PrivateRoute path="/dashboard">
+                <Dashboard />
+              </PrivateRoute>
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches/:batch_id">
-              <BatchForm />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact={true}>
-              <BatchIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id/add-student" exact={true}>
-              <LevelAddStudent />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id" exact={true}>
-              <LevelForm />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact={true}>
-              <LevelIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/students" exact={true}>
-              <StudentIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:item_id/notes" exact={true}>
-              <Notes item_type="center" />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/projects/:param_project_id" exact={true}>
-              <ShelterView />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id" exact={true}>
-              <ShelterView />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters" exact={true}>
-              <ShelterIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/shelters/:shelter_id/edit" exact={true}>
-              <ShelterForm />
-            </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches/:batch_id">
+                <BatchForm />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batches" exact>
+                <BatchIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id/add-student" exact>
+                <LevelAddStudent />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels/:level_id" exact>
+                <LevelForm />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/levels" exact>
+                <LevelIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/students" exact>
+                <StudentIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:item_id/notes" exact>
+                <Notes item_type="center" />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:param_project_id" exact>
+                <ShelterView />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id" exact>
+                <ShelterView />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters" exact>
+                <ShelterIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/edit" exact>
+                <ShelterForm />
+              </PrivateRoute>
 
-            {/* <PrivateRoute path="/users/:user_id/view">
-                            <UserView />
-                        </PrivateRoute> */}
-            <PrivateRoute path="/users/:user_id/" exact={true}>
-              <UserForm />
-            </PrivateRoute>
-            <PrivateRoute path="/users/:user_id/history">
-              <UserHistory />
-            </PrivateRoute>
-            <PrivateRoute path="/users/:user_id/:action" exact={true}>
-              <UserForm />
-            </PrivateRoute>
-            <PrivateRoute path="/users" exact={true}>
-              <UserIndex />
-            </PrivateRoute>
+              {/* <PrivateRoute path="/users/:user_id/view">
+                              <UserView />
+                          </PrivateRoute> */}
+              <PrivateRoute path="/users/:user_id/" exact>
+                <UserForm />
+              </PrivateRoute>
+              <PrivateRoute path="/users/:user_id/history">
+                <UserHistory />
+              </PrivateRoute>
+              <PrivateRoute path="/users/:user_id/:action" exact>
+                <UserForm />
+              </PrivateRoute>
+              <PrivateRoute path="/users" exact>
+                <UserIndex />
+              </PrivateRoute>
 
-            <PrivateRoute path="/surveys/:surveyId">
-              <SurveyForm />
-            </PrivateRoute>
+              <PrivateRoute path="/surveys/:surveyId">
+                <SurveyForm />
+              </PrivateRoute>
 
-            <PrivateRoute path="/events/:eventId/rsvp" exact={true}>
-              <EventRSVP />
-            </PrivateRoute>
-            <PrivateRoute path="/events" exact={true}>
-              <EventIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/events/0" exact={true}>
-              <EventCreate />
-            </PrivateRoute>
-            <PrivateRoute path="/events/:eventId" exact={true}>
-              <EventCreate />
-            </PrivateRoute>
+              <PrivateRoute path="/events/:eventId/rsvp" exact>
+                <EventRSVP />
+              </PrivateRoute>
+              <PrivateRoute path="/events" exact>
+                <EventIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/events/0" exact>
+                <EventCreate />
+              </PrivateRoute>
+              <PrivateRoute path="/events/:eventId" exact>
+                <EventCreate />
+              </PrivateRoute>
 
-            <PrivateRoute path="/donations" exact={true}>
-              <DonationIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/donations/0" exact={true}>
-              <DonationForm />
-            </PrivateRoute>
-            <PrivateRoute path="/donations/:donation_id" exact={true}>
-              <DonationDetails />
-            </PrivateRoute>
+              <PrivateRoute path="/donations" exact>
+                <DonationIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/donations/0" exact>
+                <DonationForm />
+              </PrivateRoute>
+              <PrivateRoute path="/donations/:donation_id">
+                <DonationDetails />
+              </PrivateRoute>
 
-            <PrivateRoute path="/classes">
-              <Page page={{ name: 'My Classes' }} />
-            </PrivateRoute>
+              <PrivateRoute path="/classes">
+                <Page page={{ name: 'My Classes' }} />
+              </PrivateRoute>
 
-            <PrivateRoute path="/links">
-              <Links />
-            </PrivateRoute>
+              <PrivateRoute path="/links">
+                <Links />
+              </PrivateRoute>
 
-            <PrivateRoute path="/profile">
-              <Profile />
-            </PrivateRoute>
+              <PrivateRoute path="/profile">
+                <Profile />
+              </PrivateRoute>
 
-            <PrivateRoute path="/students" exact={true}>
-              <StudentIndex />
-            </PrivateRoute>
-            <PrivateRoute path="/students/0" exact={true}>
-              <StudentForm />
-            </PrivateRoute>
-            <PrivateRoute path="/students/:student_id" exact={true}>
-              <StudentForm />
-            </PrivateRoute>
-            <PrivateRoute path="/students/:item_id/notes" exact={true}>
-              <Notes item_type="student" />
-            </PrivateRoute>
+              <PrivateRoute path="/students" exact>
+                <StudentIndex />
+              </PrivateRoute>
+              <PrivateRoute path="/students/0" exact>
+                <StudentForm />
+              </PrivateRoute>
+              <PrivateRoute path="/students/:student_id" exact>
+                <StudentForm />
+              </PrivateRoute>
+              <PrivateRoute path="/students/:item_id/notes" exact>
+                <Notes item_type="student" />
+              </PrivateRoute>
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/view-teachers" exact={true}>
-              <TeacherView />
-            </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/view-teachers" exact>
+                <TeacherView />
+              </PrivateRoute>
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers" exact={true}>
-              <TeacherIndex />
-            </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers" exact>
+                <TeacherIndex />
+              </PrivateRoute>
 
-            {/* <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers" exact={true}>
-              <TeacherIndex />
-            </PrivateRoute>
+              {/* <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers" exact>
+                <TeacherIndex />
+              </PrivateRoute>
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers/:user_id" exact={true}>
-              <TeacherForm />
-            </PrivateRoute> */}
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers/:user_id" exact>
+                <TeacherForm />
+              </PrivateRoute> */}
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers/:user_id" exact={true}>
-              <TeacherForm />
-            </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers/:user_id" exact>
+                <TeacherForm />
+              </PrivateRoute>
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-wingmen" exact={true}>
-              <WingmanView />
-            </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/view-wingmen" exact>
+                <WingmanView />
+              </PrivateRoute>
 
-            <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact={true}>
-              <WingmanForm />
-            </PrivateRoute>
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact>
+                <WingmanForm />
+              </PrivateRoute>
 
-            <Route
-              path="/"
-              render={() => <Redirect to="/dashboard" />}
-              exact={true}
-            />
+              <Route
+                path="/"
+                render={() => <Redirect to="/dashboard" />}
+                exact
+              />
+            </Switch>
           </IonRouterOutlet>
 
           <Feedback
