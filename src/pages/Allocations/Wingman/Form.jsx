@@ -50,7 +50,7 @@ const WingmanForm = () => {
                 subjects {
                     id name
                 }
-                studentSearch(city_id:${user.city_id}) {
+                studentSearch(center_id:${shelter_id}) {
                     id name
                 }
             }`,
@@ -154,7 +154,16 @@ const WingmanForm = () => {
                 onIonChange={updateStudent}
                 required="true"
               >
-                {students.map((student, index) => {
+                {students
+                  .sort((a,b) => { 
+                    if(a.name.toUpperCase() < b.name.toUpperCase()) {
+                      return -1
+                    } else if(a.name.toUpperCase() > b.name.toUpperCase()) {
+                      return 1
+                    } else {
+                      return 0
+                    }
+                  }).map((student, index) => {
                   return (
                     <IonSelectOption key={index} value={student.id.toString()}>
                       {student.name}
