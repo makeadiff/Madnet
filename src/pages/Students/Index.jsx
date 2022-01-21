@@ -59,7 +59,15 @@ const StudentIndex = () => {
 
       <IonContent className="dark">
         <IonList>
-          {students.map((child, index) => (
+          {students.sort((a,b) => {
+            if(a.name.toUpperCase() > b.name.toUpperCase()) {
+              return 1
+            } else if(a.name.toUpperCase() < b.name.toUpperCase()) {
+              return -1
+            } else {
+              return 0
+            }
+          }).map((child, index) => (
             <ChildDetail key={index} child={child} index={index} />
           ))}
         </IonList>
