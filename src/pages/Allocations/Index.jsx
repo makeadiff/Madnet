@@ -1,6 +1,7 @@
-import { IonPage, IonList, IonItem, IonLabel, IonContent } from '@ionic/react'
+import { IonPage, IonList, IonItem, IonLabel, IonContent, IonCardContent, IonInput} from '@ionic/react'
 import React from 'react'
 
+import './Index.css'
 import { authContext } from '../../contexts/AuthContext'
 import { dataContext } from '../../contexts/DataContext'
 import { appContext } from '../../contexts/AppContext'
@@ -15,6 +16,7 @@ const TeacherIndex = () => {
   const [teachers, setTeachers] = React.useState([])
   const [city_id] = React.useState(user.city_id)
   const [location, setLocation] = React.useState('')
+  const [query, setQuery] = React.useState("")
 
   React.useEffect(() => {
     async function fetchTeacherList() {
@@ -40,14 +42,31 @@ const TeacherIndex = () => {
       />
       <IonContent className="dark">
         <IonList>
-          {teachers.map((teacher, index) => {
-            return (
-              <IonItem key={index}
-                routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers/${teacher.id}`}>
-                <IonLabel>{teacher.name}</IonLabel>
-              </IonItem>
-            )
-          })}
+          <IonCardContent>
+                <IonItem>
+                  <IonInput 
+                    type="text"
+                    id="name"
+                    placeholder="Enter Volunteer Name"
+                    onIonChange={(e) => setQuery(e.target.value)}
+                    class="placeholder-text"
+                  />
+                </IonItem>
+          </IonCardContent>
+            {teachers.filter(teacher => {
+                if (query === '') {
+                  return teacher;
+                } else if (teacher.name.toLowerCase().includes(query.toLowerCase())) {
+                  return teacher;
+                }
+              }).map((teacher, index) => {
+                return (
+                  <IonItem key={index}
+                    routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/assign-teachers/${teacher.id}`}>
+                    <IonLabel>{teacher.name}</IonLabel>
+                  </IonItem>
+                )
+            })}
         </IonList>
       </IonContent>
     </IonPage>
