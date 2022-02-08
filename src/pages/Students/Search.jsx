@@ -107,10 +107,7 @@ const StudentSearch = ({ segment, shelter_id }) => {
       ) {
         filtered_students.push(student)
       }
-      console.log(search.shelter_ids.includes(student.center.id))
     })
-    console.log(filtered_students)
-    console.log(search.shelter_ids.length)
     setStudentsFiltered(filtered_students)
     setLoading(false)
   }
