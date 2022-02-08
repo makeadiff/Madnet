@@ -34,7 +34,7 @@ const StudentList = ({ segment, shelter_id }) => {
       if (shelter_id) {
         child_data = await callApi({
           graphql: `{
-                    studentSearch(center_id: ${shelter_id}) { id name birthday sex center { name }}
+                    studentSearch(center_id: ${shelter_id}) { id name birthday sex center { id name }}
                     center(id: ${shelter_id}) { name }
                   }`,
           cache_key: `center_${shelter_id}_students`
@@ -42,7 +42,7 @@ const StudentList = ({ segment, shelter_id }) => {
       } else {
         child_data = await callApi({
           graphql: `{
-                    studentSearch(city_id: ${city_id}) { id name sex birthday center { name }}
+                    studentSearch(city_id: ${city_id}) { id name sex birthday center { id name }}
                     city(id: ${city_id}) { name }
                   }`,
           cache_key: `city_${city_id}_students`
