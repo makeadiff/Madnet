@@ -39,12 +39,13 @@ const WingmanForm = () => {
 
   React.useEffect(() => {
     async function fetchData() {
+      const wingman_group_id = 348
       const data = await callApi({
         graphql: `{
                 batchSearch(center_id:${shelter_id}, project_id:${project_id}){
                     id batch_name
                 }
-                userSearch(city_id:${user.city_id}) {
+                userSearch(city_id:${user.city_id}, group_id: ${wingman_group_id}) {
                     id name
                 }
                 subjects {
@@ -144,6 +145,7 @@ const WingmanForm = () => {
                 })}
               </IonSelect>
             </IonItem>
+            { !wingmen.length ? <IonItem className="text-danger">No Wingmen Found. Please mark volunteers as TR Wingman before using this.</IonItem> : null }
 
             <IonItem>
               <IonLabel>Student:</IonLabel>
