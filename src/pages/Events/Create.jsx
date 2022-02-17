@@ -533,6 +533,7 @@ const EventUserList = React.memo(function UserList(props) {
 
           {props.disable ? (
             <IonButton
+              routerLink={`/events`}
               disabled={!props.editable}
               color="primary"
               size="default"

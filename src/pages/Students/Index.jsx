@@ -24,12 +24,9 @@ const StudentIndex = () => {
       let center_data = {}
       if (shelter_id) {
         center_data = await callApi({
-          graphql: `{
-                    center(id: ${shelter_id}) { name }
-                  }`,
+          graphql: `{ center(id: ${shelter_id}) { name } }`,
           cache_key: `center_${shelter_id}_name`
         })
-        console.log(center_data)
         if (center_data.name) {
           setLocation(` in ${center_data.name} Shelter`)
         }

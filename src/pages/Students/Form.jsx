@@ -201,13 +201,13 @@ const StudentForm = () => {
   }
 
   const markAlumni = () => {
-    if (!hasPermission('kids_edit')) {
-      showMessage(
-        `You don't have the necessary permissions to edit student details`,
-        'error'
-      )
-      return
-    }
+    // if (!hasPermission('kids_edit')) { // Not working for fellows. :TEMP: Fix
+    //   showMessage(
+    //     `You don't have the necessary permissions to edit student details`,
+    //     'error'
+    //   )
+    //   return
+    // }
 
     // This will save all entered data of the student - not just the alumnai data
     callApi({
@@ -556,64 +556,72 @@ const StudentForm = () => {
               </IonCardHeader>
               <IonCardContent>
                 <IonList>
-                  <IonItem className="data-header">Current Status</IonItem>
-                  {student.levels.map((level, id) => {
-                    return(
-                      <React.Fragment key={id}>
-                        <IonItem>Class in {level.year}</IonItem>
-                        <IonItem className="data-sub">Class: {level.grade} {level.name}</IonItem>
-                        
-                        {level.teachers.length ? (
-                          <>
+                  <IonItem className="data-header">Current Class</IonItem>
+                  {
+                    (Array.isArray(student.levels) && student.levels.length) ? 
+                    student.levels.map((level, id) => {
+                      return(
+                        <React.Fragment key={id}>
+                          <IonItem>Class in {level.year}</IonItem>
+                          <IonItem className="data-sub">Class: {level.grade} {level.name}</IonItem>
+                          
+                          {level.teachers.length ? (
+                            <>
+                              <IonItem className="data-header data-sub">Teachers</IonItem>
+                              {level.teachers.map((teacher, id) => {
+                                return(
+                                  <IonItem className="data-sub-2" key={id}>{teacher.name}</IonItem>
+                                );
+                              })}
+                            </>
+                          ) : null}
+                        </React.Fragment> 
+                      )
+                    })
+                  : "No information available"
+                  }
+
+                  <IonItem className="data-header">Past Data</IonItem>
+                  {
+                    (Array.isArray(student.levels) && Array.isArray(student.past_levels) && student.levels.length) ? 
+                    student.past_levels.map((level, id) => {
+                      if(level.year === student.levels[0].year) return null; // don't show current year - already shown above
+
+                      let yearData = findMetrics(level.year)
+
+                      return (
+                        <React.Fragment key={id}>
+                          <IonItem className="data-header">Class in {level.year}</IonItem>
+                          <IonItem className="data-sub">Grade: {level.grade} {level.name}</IonItem>
+                          
+                          {level.teachers.length ? (
+                            <>
                             <IonItem className="data-header data-sub">Teachers</IonItem>
                             {level.teachers.map((teacher, id) => {
                               return(
                                 <IonItem className="data-sub-2" key={id}>{teacher.name}</IonItem>
                               );
                             })}
-                          </>
-                        ) : null}
-                      </React.Fragment> 
-                    )
-                  })}
+                            </>
+                          ) : null}
 
-                  <IonItem className="data-header">Past Data</IonItem>
-                  {student.past_levels.map((level, id) => {
-                    if(level.year === student.levels[0].year) return null; // don't show current year - already shown above
-
-                    let yearData = findMetrics(level.year)
-
-                    return (
-                      <React.Fragment key={id}>
-                        <IonItem className="data-header">Class in {level.year}</IonItem>
-                        <IonItem className="data-sub">Grade: {level.grade} {level.name}</IonItem>
-                        
-                        {level.teachers.length ? (
-                          <>
-                          <IonItem className="data-header data-sub">Teachers</IonItem>
-                          {level.teachers.map((teacher, id) => {
-                            return(
-                              <IonItem className="data-sub-2" key={id}>{teacher.name}</IonItem>
-                            );
-                          })}
-                          </>
-                        ) : null}
-
-                        {yearData.total ? (
-                          <>
-                          <IonItem className="data-sub">
-                            <span className="data-name"> Classes Attended</span>
-                            <span className="data-value"> {yearData.present} / {yearData.total}</span>
-                          </IonItem>
-                          <IonItem className="data-sub">
-                            <span className="data-name">Participation Average</span>
-                            <span className="data-value"> {yearData.participation} / 5</span>
-                          </IonItem>
-                          </>
-                        ) : null}
-                      </React.Fragment> 
-                    )
-                  })}
+                          {yearData.total ? (
+                            <>
+                            <IonItem className="data-sub">
+                              <span className="data-name"> Classes Attended</span>
+                              <span className="data-value"> {yearData.present} / {yearData.total}</span>
+                            </IonItem>
+                            <IonItem className="data-sub">
+                              <span className="data-name">Participation Average</span>
+                              <span className="data-value"> {yearData.participation} / 5</span>
+                            </IonItem>
+                            </>
+                          ) : null}
+                        </React.Fragment> 
+                      )
+                    })
+                  : "No information available"
+                  }
 
                 </IonList>
               </IonCardContent>

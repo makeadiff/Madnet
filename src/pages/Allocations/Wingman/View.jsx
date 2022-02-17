@@ -4,7 +4,9 @@ import {
   IonItem,
   IonLabel,
   IonContent,
-  IonButton
+  IonButton,
+  IonCard,
+  IonCardContent
 } from '@ionic/react'
 import React from 'react'
 
@@ -85,57 +87,62 @@ const WingmanView = () => {
         back={`/shelters/${shelter_id}/projects/${project_id}`}
       />
       <IonContent className="dark">
-        <IonList>
-          <IonItem
-            routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-wingmen`}
-            routerDirection="none"
-          >
-            <IonButton> Add New Wingman</IonButton>
-          </IonItem>
-
-          {batches.map((batch, index) => {
-            return (
-              <IonItem key={index}>
-                <IonLabel>
-                  <IonList>
-                    {batch.allocations.map((alloc, index_2) => {
-                      batch_id[index_2] = batch.id
-                      wingman_id[index_2] = alloc.users[0].id
-                      level_id[index_2] = alloc.level.id
-                      return (
-                        <IonItem key={index_2}>
-                          <IonLabel>
-                            <p>Wingman: {alloc.users[0].name}</p>
-                            {alloc.level.students.map((student, index_3) => {
-                              return (
-                                <IonLabel key={index_3}>
-                                  <p>Student: {student.name}</p>
-                                </IonLabel>
-                              )
-                            })}
-                            {alloc.subject != null ? (
-                              <p>Subject: {alloc.subject.name}</p>
-                            ) : (
-                              <p>Subject: None</p>
-                            )}
-                          </IonLabel>
-                          <IonButton
-                            key={index_2}
-                            slot="end"
-                            onClick={() => deleteMapping(index_2)}
-                          >
-                            {' '}
-                            Delete{' '}
-                          </IonButton>
-                        </IonItem>
-                      )
-                    })}
-                  </IonList>
-                </IonLabel>
+        <IonCard className="dark no-shadow">
+          <IonCardContent>
+            <IonList>
+              <IonItem
+                routerLink={`/shelters/${shelter_id}/projects/${project_id}/assign-wingmen`}
+                routerDirection="none"
+              >
+                <IonButton> Add New Wingman</IonButton>
               </IonItem>
-            )
-          })}
-        </IonList>
+
+              {batches.map((batch, index) => {
+                return (
+                  <IonItem key={index}>
+                    <IonLabel>
+                      <IonList>
+                        {batch.allocations.map((alloc, index_2) => {
+                          if(alloc.role === 'mentor') return null
+
+                          batch_id[index_2] = batch.id
+                          wingman_id[index_2] = alloc.users[0].id
+                          level_id[index_2] = alloc.level.id
+                          return (
+                            <IonItem key={index_2}>
+                              <IonLabel>
+                                <p>Wingman: {alloc.users[0].name}</p>
+                                {alloc.level.students.map((student, index_3) => {
+                                  return (
+                                    <IonLabel key={index_3}>
+                                      <p>Student: {student.name}</p>
+                                    </IonLabel>
+                                  )
+                                })}
+                                {alloc.subject != null ? (
+                                  <p>Subject: {alloc.subject.name}</p>
+                                ) : (
+                                  <p>Subject: None</p>
+                                )}
+                              </IonLabel>
+                              <IonButton
+                                key={index_2}
+                                slot="end"
+                                onClick={() => deleteMapping(index_2)}
+                              >
+                                Delete
+                              </IonButton>
+                            </IonItem>
+                          )
+                        })}
+                      </IonList>
+                    </IonLabel>
+                  </IonItem>
+                )
+              })}
+            </IonList>
+          </IonCardContent>
+        </IonCard>
       </IonContent>
     </IonPage>
   )
