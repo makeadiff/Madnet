@@ -50,6 +50,8 @@ import ShelterForm from './pages/Shelters/Form'
 import TeacherIndex from './pages/Allocations/Index'
 import TeacherForm from './pages/Allocations/Form'
 import TeacherView from './pages/Allocations/View'
+import MentorView from './pages/Allocations/ViewMentors'
+import MentorIndex from './pages/Allocations/IndexMentors'
 import WingmanForm from './pages/Allocations/Wingman/Form'
 import WingmanView from './pages/Allocations/Wingman/View'
 
@@ -206,8 +208,16 @@ const Root = () => {
                 <TeacherView />
               </PrivateRoute>
 
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/view-mentors" exact>
+                <MentorView />
+              </PrivateRoute>
+
               <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-teachers" exact>
                 <TeacherIndex />
+              </PrivateRoute>
+
+              <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:level_id/assign-mentors" exact>
+                <MentorIndex />
               </PrivateRoute>
 
               {/* <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/batch/:batch_id/level/:new_level_id/assign-teachers" exact>
