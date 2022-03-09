@@ -235,6 +235,9 @@ const BatchForm = () => {
               <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/0/view-teachers`}>
                 Add/Remove Teachers to this Batch
               </IonButton>
+              <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/0/view-mentors`}>
+                Add/Remove Mentors to this Batch
+              </IonButton>
             </IonItem>
             </>
           }
