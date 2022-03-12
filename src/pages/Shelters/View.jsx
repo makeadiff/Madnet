@@ -25,7 +25,7 @@ import './Shelters.css'
 
 const ShelterView = () => {
   const { shelter_id, param_project_id } = useParams()
-  const { callApi, cache, unsetLocalCache, setCache } = React.useContext(dataContext)
+  const { callApi, cache, unsetLocalCache } = React.useContext(dataContext)
   const { user } = React.useContext(authContext)
 
   const [shelter, setShelter] = React.useState({
@@ -72,7 +72,7 @@ const ShelterView = () => {
       setShelter(shelter_data)
 
       // Default project is decided by the current user's vertical.
-      let default_shelter_project;
+      let default_shelter_project = project;
       if (
         shelter_data.projects &&
         shelter_data.projects.length
