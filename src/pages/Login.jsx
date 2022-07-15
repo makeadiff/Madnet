@@ -123,7 +123,11 @@ function Login() {
       .then((user_data) => loginUser(user_data, 'api'))
       .catch((err) => {
         setLoading(false)
-        showMessage(err.message, 'error')
+        if(Array.isArray(err)) {
+          showMessage(err[0], 'error')
+        } else {
+          showMessage('Invalid credentials provided.', 'error')
+        }
       })
   }
 
@@ -227,7 +231,8 @@ function Login() {
                     )}
                   </IonItem>
                 ) : null}
-                <div className="cardCaption">
+
+                {/* <div className="cardCaption">
                   <IonLabel position="stacked">
                     Coming here for the first time?
                   </IonLabel>
@@ -243,7 +248,7 @@ function Login() {
                     Register
                     <IonIcon icon={arrowForward} />
                   </IonButton>
-                </div>
+                </div> */}
               </form>
             </IonList>
           </IonCardContent>

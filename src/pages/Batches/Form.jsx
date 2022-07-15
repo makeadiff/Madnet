@@ -126,7 +126,7 @@ const BatchForm = () => {
     })
   }
 
-  const class_time_options = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+  const class_time_options = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23] // 7 AM to 11 PM
   const day_options = [
     'Sunday',
     'Monday',
@@ -234,6 +234,9 @@ const BatchForm = () => {
             <IonItem>
               <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/0/view-teachers`}>
                 Add/Remove Teachers to this Batch
+              </IonButton>
+              <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/0/view-mentors`}>
+                Add/Remove Mentors to this Batch
               </IonButton>
             </IonItem>
             </>

@@ -20,11 +20,13 @@ import * as moment from 'moment'
 import { PROJECT_IDS, PROJECT_KEYS } from '../../utils/Constants'
 import Title from '../../components/Title'
 import { dataContext } from '../../contexts/DataContext'
+import { authContext } from '../../contexts/AuthContext'
 import './Shelters.css'
 
 const ShelterView = () => {
   const { shelter_id, param_project_id } = useParams()
   const { callApi, cache, unsetLocalCache } = React.useContext(dataContext)
+  const { user } = React.useContext(authContext)
 
   const [shelter, setShelter] = React.useState({
     name: '',
@@ -69,14 +71,41 @@ const ShelterView = () => {
 
       setShelter(shelter_data)
 
-      // First project is set as the default project. :TODO: This should default to current user's vertical.
+      // Default project is decided by the current user's vertical.
+      let default_shelter_project = project;
       if (
         shelter_data.projects &&
         shelter_data.projects.length
       ) {
-        setProjectId(shelter_data.projects[0].id)
-        setProject(shelter_data.projects[0])
+        for(let i = 0; i < user.groups.length; i++) {
+          const group = user.groups[i]
+          for(let j = 0; j < shelter_data.projects.length; j++) {
+            const shelter_project = shelter_data.projects[j]
+
+            if(shelter_project.id === project_id) default_shelter_project = shelter_project
+
+            if(
+                (group.id == 19 && shelter_project.id == 1)  // Ed Support Fellow
+              ||  (group.id == 272 && shelter_project.id == 4)  // TR ASV
+              ||  (group.id == 375 && shelter_project.id == 2)  // FP
+              ||  ((group.id == 378 || group.id == 389) && shelter_project.id == 5)  // Aftercare.
+            ) {
+              setProjectId(shelter_project.id)
+              setProject(shelter_project)
+              break
+            }
+          }
+        }
       }
+
+      // :UGLY: For some reason the shelter and porject data is getting reset after its set in line 82
+      //  This is an ugly hack to make sure its set correctly.
+      setTimeout(() => {
+        if(!shelter.name) {
+          setShelter(shelter_data)
+          setProject(default_shelter_project)
+        }
+      }, 300)
     }
 
     if (project_id == PROJECT_IDS.AFTERCARE) {

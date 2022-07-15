@@ -101,7 +101,16 @@ const LevelAddStudent = () => {
   const selectStudent = (e) => {
     const student_id = e.target.value
     const is_selected = e.target.checked
-    if(is_selected === undefined) return;
+
+    if(is_selected === undefined) {
+      if(selected[student_id]) {
+        let sel = { ...selected }
+        delete sel[student_id]
+        setSelected(sel)
+      }
+      return;
+    }
+    
     let sel = { ...selected }
     //True or false if checkbox selected
     if(is_selected === true) {
@@ -136,7 +145,7 @@ const LevelAddStudent = () => {
               <IonItem>
                 <IonInput
                   type="text"
-                  placeholder="Search Student"
+                  placeholder="Search Student..."
                   value={searchText}
                   maxlength="100"
                   onIonChange={updateField}
@@ -152,9 +161,9 @@ const LevelAddStudent = () => {
                       
                       if(aSelected === true && bSelected === false){ 
                         return -1
-                      }else if(aSelected === false && bSelected === true){ 
+                      } else if(aSelected === false && bSelected === true){ 
                         return 1
-                      }else {
+                      } else {
                         return 0
                       }
                     })

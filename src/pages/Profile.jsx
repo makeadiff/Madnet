@@ -28,7 +28,6 @@ import {
 
 import { pencil, close } from 'ionicons/icons'
 import React from 'react'
-// import ExploreContainer from '../components/ExploreContainer';
 
 import './Profile.css'
 import './All.css'
@@ -127,7 +126,7 @@ const Profile = () => {
     } else {
       delete userData.password
     }
-    console.log(userData)
+    
     let update = await updateUser(user.id, userData)
     if (update) {
       setDisable(true)
@@ -136,7 +135,7 @@ const Profile = () => {
 
   return (
     <IonPage>
-      <Title />
+      <Title name={userData.name + " Profile"} />
       <IonContent className="dark">
         <IonGrid>
           <IonRow>
