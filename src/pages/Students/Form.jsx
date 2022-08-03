@@ -364,7 +364,7 @@ const StudentForm = () => {
                         onIonChange={updateField}
                       >
                         <IonListHeader>
-                          <IonLabel>Shelter/Communnity</IonLabel>
+                          <IonLabel>Shelter/Community</IonLabel>
                         </IonListHeader>
                         {shelters.map((shelter) => {
                           return (
