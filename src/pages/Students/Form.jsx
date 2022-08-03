@@ -399,7 +399,7 @@ const StudentForm = () => {
 
                     {disable ? null : (
                       <IonItem>
-                        <IonButton size="default" type="submit">
+                        <IonButton routerLink={`/students`} size="default" type="submit">
                           Save
                         </IonButton>
                       </IonItem>
