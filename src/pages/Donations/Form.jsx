@@ -212,7 +212,7 @@ const DonationForm = () => {
                 </IonItem>
 
                 <IonItem>
-                  <IonButton size="default" type="submit">
+                  <IonButton routerLink={`/donations`} size="default" type="submit">
                     Save
                   </IonButton>
                 </IonItem>

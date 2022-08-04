@@ -364,7 +364,7 @@ const StudentForm = () => {
                         onIonChange={updateField}
                       >
                         <IonListHeader>
-                          <IonLabel>Shelter/Communnity</IonLabel>
+                          <IonLabel>Shelter/Community</IonLabel>
                         </IonListHeader>
                         {shelters.map((shelter) => {
                           return (
@@ -399,7 +399,7 @@ const StudentForm = () => {
 
                     {disable ? null : (
                       <IonItem>
-                        <IonButton size="default" type="submit">
+                        <IonButton routerLink={`/students`} size="default" type="submit">
                           Save
                         </IonButton>
                       </IonItem>
