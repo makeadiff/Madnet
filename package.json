@@ -83,7 +83,7 @@
     "protractor-react-selector": "^2.2.2",
     "puppeteer": "^5.3.1",
     "query-selector-shadow-dom": "^0.7.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.14.0"
   },
   "description": "Make A Difference(MAD) Internal App"
 }
