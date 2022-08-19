@@ -170,7 +170,8 @@ const TeacherForm = () => {
             )}
           </IonList>
           <IonItem>
-            <IonButton type="submit">Save Assignment</IonButton>
+            <IonButton routerLink={`/shelters/${shelter_id}/projects/${project_id}/batch/${batch_id}/level/${level_id}/view-teachers`}
+          routerDirection="none" type="submit">Save Assignment</IonButton>
           </IonItem>
         </form>
         <IonItem
