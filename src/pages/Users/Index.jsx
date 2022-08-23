@@ -3,9 +3,13 @@ import {
   IonLabel,
   IonContent,
   IonSegment,
-  IonSegmentButton
+  IonSegmentButton,
+  IonFab,
+  IonFabButton,
+  IonIcon
 } from '@ionic/react'
 import React from 'react'
+import { add } from 'ionicons/icons'
 
 import Title from '../../components/Title'
 import UserList from './List'
@@ -34,6 +38,13 @@ const UserIndex = () => {
         </IonSegment>
 
         <UserList segment={segment} />
+        <IonFab vertical="top" horizontal="start" slot="fixed">
+          <IonFabButton
+            routerLink={`/newuser`}
+          >
+            <IonIcon icon={add} />
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   )
