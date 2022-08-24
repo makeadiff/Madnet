@@ -125,7 +125,7 @@ import {
                             type = "password">
                             </IonInput>
                         </IonItem>
-                        <IonItem>
+                        {/* <IonItem>
                             <IonLabel>Joined on:</IonLabel>
                             <IonInput name="joined_on" 
                             value = {newUser.joined_on} 
@@ -133,7 +133,7 @@ import {
                             color= "dark"
                             type = "date">
                             </IonInput>
-                        </IonItem>
+                        </IonItem> */}
                         {/* <IonItem>    
                             <IonDatetime
                                 displayFormat="D MMM YYYY h:mm A"
