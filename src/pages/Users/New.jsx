@@ -153,7 +153,7 @@ import {
                             <IonSelectOption value = "volunteer">Volunteer</IonSelectOption>
                             <IonSelectOption value = "applicant">Applicant</IonSelectOption>
                             <IonSelectOption value = "let_go">Let Go</IonSelectOption>
-                            <IonSelectOption value = "alumnai">Alumni</IonSelectOption>
+                            <IonSelectOption value = "alumni">Alumni</IonSelectOption>
                             <IonSelectOption value = "well_wisher">Well Wisher</IonSelectOption>
                             </IonSelect>
                         </IonItem>
