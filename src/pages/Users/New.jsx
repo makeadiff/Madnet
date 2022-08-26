@@ -5,20 +5,13 @@ import {
     IonLabel,
     IonContent,
     IonInput,
-    IonDatetime,
-    IonIcon,
-    IonFab,
-    IonFabButton,
     IonSelect,
     IonSelectOption,
     IonButton,
-    IonAlert
+    //IonAlert
   } from '@ionic/react'
-  import { pencil, close, trash } from 'ionicons/icons'
   import React from 'react'
-  import { useParams, useHistory } from 'react-router-dom'
-  
-  import * as moment from 'moment'
+ 
   
   import Title from '../../components/Title'
   import { dataContext } from '../../contexts/DataContext'
