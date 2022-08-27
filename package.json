@@ -24,7 +24,7 @@
     "firebase": "^7.14.3",
     "ionicons": "^5.0.0",
     "loadash": "^1.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-geocode": "^0.2.1",
