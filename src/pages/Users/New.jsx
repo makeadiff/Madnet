@@ -18,21 +18,23 @@ import {
   import { appContext } from '../../contexts/AppContext'
   import { authContext } from '../../contexts/AuthContext'
 
+
   const UserNew = () => {
     const { user } = React.useContext(authContext)
     const { callApi } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
     const [ city, setCity ] = React.useState()
+    const [ passField, setPassField ]= React.useState({pass:"pass", confpass:"pass"})
     const [newUser, setNewUser ] = React.useState({
             name:"",
             phone:"",
             email: "",
             city_id:user.city_id,
             mad_email:"",
-            password: "pass",
+            password: "",
             joined_on: "",
             center_id:'',
-            user_type:""
+            user_type:"volunteer"
         })
 
     React.useEffect(() => {
@@ -54,8 +56,25 @@ import {
         setNewUser({ ...newUser, [e.target.name]: e.target.value })
       }
 
-    const saveUser = (e) => {
+    const updatePass = (e) => {
+        setPassField({ ...passField, [e.target.name]: e.target.value})
+        //checkPass()
+    }
+
+    const checkPass = () =>{
+        //setPassField({ ...passField, [e.target.name]: e.target.value})
+        if(passField.pass == passField.confpass){
+            setNewUser({...newUser, ['password'] : passField.pass})
+        }
+        else
+        {
+            showMessage('Passwords should match', 'retry')
+        }
+    }
+
+    const saveUser = (e) => {   
     e.preventDefault()
+    checkPass()
         callApi({
             url: `/users`,
             method: 'post',
@@ -111,10 +130,20 @@ import {
                         </IonItem>
                         <IonItem>
                             <IonLabel>Password:</IonLabel>
-                            <IonInput name="password" 
-                            value = {newUser.password} 
-                            onIonChange = {updateField}
+                            <IonInput name="pass" 
+                            value = {passField.pass} 
+                            onIonChange = {updatePass}
                             color= "dark"
+                            type = "password">
+                            </IonInput>
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel>Confirm Password:</IonLabel>
+                            <IonInput name="confpass" 
+                            value = {passField.confpass} 
+                            onIonChange = {updatePass}
+                            color= "dark"
+                            defaultValue={"pass"}
                             type = "password">
                             </IonInput>
                         </IonItem>

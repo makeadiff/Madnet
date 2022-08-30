@@ -38,7 +38,7 @@ const UserIndex = () => {
         </IonSegment>
 
         <UserList segment={segment} />
-        <IonFab vertical="top" horizontal="start" slot="fixed">
+        <IonFab vertical="bottom" horizontal="start" slot="fixed">
           <IonFabButton
             routerLink={`/newuser`}
           >
