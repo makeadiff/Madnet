@@ -141,7 +141,7 @@ import {
                             onIonChange = {updateField}
                             color= "dark"
                             type = "email"
-                            placeholder='Please enter makeadiff email ID'>
+                            placeholder='Enter makeadiff email ID'>
                             </IonInput>
                         </IonItem>
                         <IonItem>
