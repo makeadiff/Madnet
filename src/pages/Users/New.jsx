@@ -17,12 +17,14 @@ import {
   import { dataContext } from '../../contexts/DataContext'
   import { appContext } from '../../contexts/AppContext'
   import { authContext } from '../../contexts/AuthContext'
+  import { useHistory } from 'react-router-dom'
 
 
   const UserNew = () => {
     const { user } = React.useContext(authContext)
     const { callApi } = React.useContext(dataContext)
     const { showMessage } = React.useContext(appContext)
+    const history = useHistory()
     const [ city, setCity ] = React.useState()
     const [ passField, setPassField ]= React.useState({pass:"pass", confpass:"pass"})
     const [newUser, setNewUser ] = React.useState({
@@ -79,8 +81,11 @@ import {
             url: `/users`,
             method: 'post',
             params: newUser
-        }).then(() => {
+        }).then((data) => {
+        if(data) {
             showMessage('User added successfully', 'success')
+            history.push(`/users`)
+        }
         })
     }
 
