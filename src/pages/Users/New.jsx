@@ -108,7 +108,8 @@ import {
                             value = {newUser.name} 
                             onIonChange = {updateField}
                             color = "dark"
-                            required = "true">
+                            required = "true"
+                            placeholder='Enter name of the volunteer'>
                             </IonInput>
                         </IonItem>
                         <IonItem>
@@ -117,8 +118,9 @@ import {
                             value = {newUser.phone} 
                             onIonChange = {updateField}
                             color = "dark"
-                            type = "phone"
-                            required ="true">
+                            type = "tel"
+                            required ="true"
+                            placeholder='Enter a valid phone number'>
                             </IonInput>
                         </IonItem>
                         <IonItem>
@@ -128,7 +130,8 @@ import {
                             onIonChange = {updateField}
                             color= "dark"
                             required = "true"
-                            type = "email">
+                            type = "email"
+                            placeholder='Enter a valid email ID'>
                             </IonInput>
                         </IonItem>
                         <IonItem>
@@ -137,7 +140,8 @@ import {
                             value = {newUser.mad_email} 
                             onIonChange = {updateField}
                             color= "dark"
-                            type = "email">
+                            type = "email"
+                            placeholder='Please enter makeadiff email ID'>
                             </IonInput>
                         </IonItem>
                         <IonItem>
