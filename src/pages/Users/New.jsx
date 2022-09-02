@@ -73,9 +73,15 @@ import {
             showMessage('Passwords should match', 'retry')
         }
     }
-
+    const checkPhone = () =>{
+        if(!newUser.phone.match(/^(\+?\d{1,3}[\- ]?)?\d{10}$/))
+        {
+            showMessage('Enter a valid phone number', 'retry')
+        }
+    }
     const saveUser = (e) => {   
     e.preventDefault()
+    checkPhone()
     checkPass()
         callApi({
             url: `/users`,
@@ -111,6 +117,7 @@ import {
                             value = {newUser.phone} 
                             onIonChange = {updateField}
                             color = "dark"
+                            type = "phone"
                             required ="true">
                             </IonInput>
                         </IonItem>
