@@ -155,7 +155,8 @@ import {
                             value = {passField.pass} 
                             onIonChange = {updatePass}
                             color= "dark"
-                            type = "password">
+                            type = "password"
+                            placeholder = "Enter password">
                             </IonInput>
                         </IonItem>
                         <IonItem>
@@ -165,7 +166,8 @@ import {
                             onIonChange = {updatePass}
                             color= "dark"
                             defaultValue={"pass"}
-                            type = "password">
+                            type = "password"
+                            placeholder = "Confirm password">
                             </IonInput>
                         </IonItem>
                         {/* <IonItem>
