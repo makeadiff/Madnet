@@ -8,6 +8,8 @@ import {
     IonSelect,
     IonSelectOption,
     IonButton,
+    IonCard,
+    IonCardContent
     //IonAlert
   } from '@ionic/react'
   import React from 'react'
@@ -26,7 +28,7 @@ import {
     const { showMessage } = React.useContext(appContext)
     const history = useHistory()
     const [ city, setCity ] = React.useState()
-    const [ passField, setPassField ]= React.useState({pass:"pass", confpass:"pass"})
+    const [ passField, setPassField ]= React.useState({pass:"", confpass:""})
     const [newUser, setNewUser ] = React.useState({
             name:"",
             phone:"",
@@ -99,11 +101,14 @@ import {
         <IonPage>
             <Title 
                 name = {`Add new volunteer to ${city}`}></Title>
-            <IonContent class = "dark">
-                <IonList>
+            <IonContent className = "dark">
+            <IonCard>
+            <IonCardContent>
+                
                     <form onSubmit = {saveUser}>
+                        <IonList>
                         <IonItem>
-                            <IonLabel>Name:</IonLabel>
+                            <IonLabel position = "stacked">Name:</IonLabel>
                             <IonInput name="name" 
                             value = {newUser.name} 
                             onIonChange = {updateField}
@@ -113,7 +118,7 @@ import {
                             </IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel>Phone:</IonLabel>
+                            <IonLabel position = "stacked">Phone:</IonLabel>
                             <IonInput name="phone" 
                             value = {newUser.phone} 
                             onIonChange = {updateField}
@@ -124,7 +129,7 @@ import {
                             </IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel>Email:</IonLabel>
+                            <IonLabel position = "stacked">Email:</IonLabel>
                             <IonInput name="email" 
                             value = {newUser.email} 
                             onIonChange = {updateField}
@@ -135,7 +140,7 @@ import {
                             </IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel>MAD Email:</IonLabel>
+                            <IonLabel position = "stacked">MAD Email:</IonLabel>
                             <IonInput name="mad_email" 
                             value = {newUser.mad_email} 
                             onIonChange = {updateField}
@@ -145,7 +150,7 @@ import {
                             </IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel>Password:</IonLabel>
+                            <IonLabel position = "stacked">Password:</IonLabel>
                             <IonInput name="pass" 
                             value = {passField.pass} 
                             onIonChange = {updatePass}
@@ -154,7 +159,7 @@ import {
                             </IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel>Confirm Password:</IonLabel>
+                            <IonLabel position = "stacked">Confirm Password:</IonLabel>
                             <IonInput name="confpass" 
                             value = {passField.confpass} 
                             onIonChange = {updatePass}
@@ -183,7 +188,7 @@ import {
                             </IonDatetime>
                         </IonItem> */}
                         <IonItem>
-                            <IonLabel>User Type:</IonLabel>
+                            <IonLabel position = "stacked">User Type:</IonLabel>
                             <IonSelect name="user_type" 
                             value = {newUser.user_type} 
                             onIonChange = {updateField}
@@ -198,8 +203,10 @@ import {
                         <IonItem>
                             <IonButton type="submit">Save</IonButton>
                         </IonItem>
+                        </IonList> 
                     </form>
-                </IonList>
+                    </IonCardContent>
+                 </IonCard>   
             </IonContent>
         </IonPage>
     )
