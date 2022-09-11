@@ -5,7 +5,9 @@ import {
     IonLabel,
     IonContent,
     IonButton,
-    IonDatetime
+    IonDatetime,
+    IonCardContent,
+    IonCard
   } from '@ionic/react'
 import React from 'react'
 
@@ -63,10 +65,12 @@ const ShelterForm = () => {
         back={`/shelters/${shelter_id}`}
       />
       <IonContent className="dark">
+        <IonCard>
+          <IonCardContent>
         <form onSubmit={saveStartsOn}>
           <IonList>
             <IonItem>
-              <IonLabel >Class Starts On: </IonLabel>
+              <IonLabel position = "stacked" >Class Starts On: </IonLabel>
               <IonDatetime
                 className="dark"
                 displayFormat="D MMM YYYY"
@@ -85,6 +89,8 @@ const ShelterForm = () => {
               </IonItem>
           </IonList>
         </form>
+        </IonCardContent>
+        </IonCard> 
       </IonContent>
     </IonPage>
   )

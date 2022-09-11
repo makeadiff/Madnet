@@ -54,6 +54,7 @@ import MentorView from './pages/Allocations/ViewMentors'
 import MentorIndex from './pages/Allocations/IndexMentors'
 import WingmanForm from './pages/Allocations/Wingman/Form'
 import WingmanView from './pages/Allocations/Wingman/View'
+import UserNew from './pages/Users/New'
 
 const Root = () => {
   const { loading, setLoading, message, setMessage } = React.useContext(
@@ -238,6 +239,10 @@ const Root = () => {
 
               <PrivateRoute path="/shelters/:shelter_id/projects/:project_id/assign-wingmen" exact>
                 <WingmanForm />
+              </PrivateRoute>
+
+              <PrivateRoute path="/newuser" exact>
+                <UserNew />
               </PrivateRoute>
 
               <Route
