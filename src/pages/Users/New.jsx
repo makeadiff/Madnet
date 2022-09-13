@@ -34,7 +34,7 @@ import {
             phone:"",
             email: "",
             city_id:user.city_id,
-            mad_email:"",
+            //mad_email:"",
             password: "",
             joined_on: "",
             center_id:'',
