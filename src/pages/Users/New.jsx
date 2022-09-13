@@ -34,12 +34,22 @@ import {
             phone:"",
             email: "",
             city_id:user.city_id,
-            //mad_email:"",
+            mad_email:"",
             password: "",
             joined_on: "",
             center_id:'',
             user_type:"volunteer"
         })
+
+    const useComponentDidMount = () => {
+            const ref = React.useRef();
+            React.useEffect(() => {
+              ref.current = true;
+            }, []);
+            return ref.current;
+          };
+    
+    const isComponentMounted = useComponentDidMount();
 
     React.useEffect(() => {
         async function fetchData() {
@@ -65,36 +75,67 @@ import {
         //checkPass()
     }
 
-    const checkPass = () =>{
+    const checkPass = () => {
         //setPassField({ ...passField, [e.target.name]: e.target.value})
-        if(passField.pass == passField.confpass){
+        if(!passField.pass) {
+            showMessage('Password should be present', 'retry')
+            return false;
+        }
+
+        if(passField.pass == passField.confpass && passField.pass!= "") {
             setNewUser({...newUser, ['password'] : passField.pass})
+            console.log("set")
+            return true
         }
         else
         {
             showMessage('Passwords should match', 'retry')
+            return false
         }
     }
-    const checkPhone = () =>{
+
+    const checkPhone = () => {
         if(!newUser.phone.match(/^(\+?\d{1,3}[\- ]?)?\d{10}$/))
         {
             showMessage('Enter a valid phone number', 'retry')
+            return false
+        }
+        else
+        {
+            return true
         }
     }
-    const saveUser = (e) => {   
-    e.preventDefault()
-    checkPhone()
-    checkPass()
+
+    const saveFunc = () => {
+
         callApi({
             url: `/users`,
             method: 'post',
             params: newUser
         }).then((data) => {
-        if(data) {
-            showMessage('User added successfully', 'success')
-            history.push(`/users`)
-        }
+            if(data) {
+                showMessage('User added successfully', 'success')
+                history.push(`/users`)
+            }
         })
+
+    } 
+
+    React.useEffect(() => {
+       if(isComponentMounted) {
+        const onValid = () => {
+            if(checkPhone() && checkPass()) {
+                setNewUser({...newUser, ['password']: passField.pass })
+            } onValid()
+        }
+        saveFunc()
+    }    
+    }, [newUser.password])
+
+    const saveUser = (e) => {   
+        e.preventDefault()
+        checkPhone()
+        checkPass()
     }
 
     return(
