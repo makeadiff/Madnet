@@ -6,7 +6,9 @@ import {
   IonContent,
   IonSelect,
   IonSelectOption,
-  IonButton
+  IonButton,
+  IonCardContent,
+  IonCard
 } from '@ionic/react'
 import React from 'react'
 
@@ -125,6 +127,8 @@ const WingmanForm = () => {
     <IonPage>
       <Title name="Assign Wingman" />
       <IonContent className="dark">
+      <IonCard>
+        <IonCardContent>
         <form onSubmit={saveAssign}>
           <IonList>
             <IonItem>
@@ -206,6 +210,8 @@ const WingmanForm = () => {
         >
           <IonButton color="light">&lt; Back</IonButton>
         </IonItem>
+        </IonCardContent>
+        </IonCard>
       </IonContent>
     </IonPage>
   )

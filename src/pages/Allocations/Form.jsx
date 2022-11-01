@@ -6,7 +6,9 @@ import {
   IonContent,
   IonSelect,
   IonSelectOption,
-  IonButton
+  IonButton,
+  IonCardContent,
+  IonCard
 } from '@ionic/react'
 import React from 'react'
 
@@ -101,6 +103,8 @@ const TeacherForm = () => {
         back={`/shelters/${shelter_id}/projects/${project_id}`}
       />
       <IonContent className="dark">
+      <IonCard>
+      <IonCardContent>
         <form onSubmit={saveAssignment}>
           <IonList>
             {project_id === PROJECT_IDS.AFTERCARE ? null : (
@@ -112,6 +116,7 @@ const TeacherForm = () => {
                   value={combo.batch_id}
                   onIonChange={updateField}
                   required="true"
+                  color='dark'
                 >
                   {batches.map((batch, index) => {
                     return (
@@ -179,7 +184,9 @@ const TeacherForm = () => {
           routerDirection="none"
         >
           <IonButton color="light">&lt; Back</IonButton>
-        </IonItem>
+        </IonItem>        
+      </IonCardContent>
+      </IonCard>
       </IonContent>
     </IonPage>
   )
